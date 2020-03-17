@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import ViewAnimator
 
 class EditorViewController: UIViewController {
     
@@ -34,6 +35,10 @@ class EditorViewController: UIViewController {
     }
     lazy var actoinButtons = [UIButton]()
     
+    lazy var weatherPicker = WeatherPicker()
+    lazy var moodPicker = MoodPicker()
+    lazy var popMaskView = UIView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //                DairyAPI.getDairy { (data) in
@@ -50,68 +55,71 @@ class EditorViewController: UIViewController {
     }
 }
 
-// MARK: - 相册上传图片代理
-extension EditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    // 上传图片
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let pickedImage = info[.originalImage] as! UIImage
-        var imageData = pickedImage.pngData()
-        // 控制在2M以内
-        var rate = imageData!.count / 2 * 1024 * 1024
-        rate = rate <= 1 ? 1 : rate
-        imageData = pickedImage.jpegData(compressionQuality: CGFloat(rate))
-        if let path = DairyImageAPI.saveImageToTmp(image: UIImage(data: imageData!)!) {
-            editorView.insertImage(url: path)
-        }
-        picker.dismiss(animated: true, completion: nil)
-    }
-}
-
-extension EditorViewController {
-    func insertImage() {
-        let photosStatus = PHPhotoLibrary.authorizationStatus()
-        switch photosStatus {
-        case .authorized:
-            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                picker = UIImagePickerController()
-                picker?.delegate = self
-                picker?.sourceType = .photoLibrary
-                present(picker!, animated: true, completion: nil)
-            } else {
-                //                MessageManager.share.showMessage(theme: .warning, body: "Sorry, currently the device cannot access the album.")
-            }
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization { [weak self] (status) in
-                guard let strongSelf = self else { return }
-                if status == .authorized {
-                    if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                        DispatchQueue.main.async {
-                            strongSelf.picker = UIImagePickerController()
-                            strongSelf.picker?.delegate = self
-                            strongSelf.picker?.sourceType = .photoLibrary
-                            strongSelf.present(strongSelf.picker!, animated: true, completion: nil)
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            //                            MessageManager.share.showMessage(theme: .warning, body: "Sorry, currently the device cannot access the album.")
-                        }
-                    }
-                }
-            }
-        case .denied:
-            break
-        //            MessageManager.share.showMessage(theme: .warning, title: "Pemisseion denied", body: "Please authorize in the 'Settings'.")
-        case .restricted:
-            break
-        //            MessageManager.share.showMessage(theme: .warning, title: "Pemisseion denied", body: "Please authorize in the 'Settings'.")
-        @unknown default:
-            fatalError()
-        }
-    }
-}
-
 // MARK: - 事件处理
 extension EditorViewController {
+    @objc func hideMask() {
+        hideWeatherPicker()
+        hideMoodPicker()
+    }
+    
+    func showMask() {
+        UIView.animate(withDuration: 0.3) {
+            self.popMaskView.alpha = 1
+        }
+    }
+    
+    func hideMoodPicker() {
+        UIView.animate(withDuration: 0.5) {
+            self.moodPicker.alpha = 0
+            self.popMaskView.alpha = 0
+        }
+    }
+    
+    func chooseMood(mood: String) {
+        actoinButtons[1].setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
+        actoinButtons[1].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        hideMoodPicker()
+    }
+    
+    @objc func showMoodPicker() {
+        showMask()
+        editorView.collpaseKeyboard()
+        let animation = AnimationType.from(direction: .top, offset: 200.0)
+        moodPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
+    }
+    
+    func chooseWeather(weather: String) {
+        actoinButtons[0].setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
+        actoinButtons[0].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        hideWeatherPicker()
+    }
+    
+    @objc func showWeatherPicker() {
+        showMask()
+        editorView.collpaseKeyboard()
+        let animation = AnimationType.from(direction: .top, offset: 200.0)
+        weatherPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
+    }
+    
+    func hideWeatherPicker() {
+        UIView.animate(withDuration: 0.5) {
+            self.weatherPicker.alpha = 0
+            self.popMaskView.alpha = 0
+        }
+    }
+    
+    @objc func clickPicker(sender: UIButton) {
+        switch sender.tag {
+        case 0:
+            showWeatherPicker()
+        case 1:
+            showMoodPicker()
+        case 2:
+            break
+        default:
+            break
+        }
+    }
     
     /// 上传HTML前先保存图片，将URL替换成图片唯一的名称
     /// - Parameter html: html 字符串
@@ -168,51 +176,76 @@ extension EditorViewController {
     }
 }
 
-extension EditorViewController: SQTextEditorDelegate {
-    func editorDidLoad(_ editor: SQTextEditorView) {
-        print("editorDidLoad")
-    }
-    
-    func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {
-        print("测试 ===> change的值为: \(222)")
-        toolbar.toolbarCollectionView.reloadData()
-    }
-    
-    func editor(_ editor: SQTextEditorView, contentHeightDidChange height: Int) {
-        print("contentHeightDidChange = \(height)")
-    }
-}
-
+// MARK: - UI 界面
 extension EditorViewController {
     func setupUI() {
         setupBg()
         setupEditorHeader()
         setupEditor()
+        setupPickers()
+    }
+    
+    func setupPickers() {
+        _ = popMaskView.then {
+            $0.alpha = 0
+            $0.backgroundColor = UIColor(hexString: "000000", alpha: 0.5)
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideMask))
+            $0.addGestureRecognizer(tapGesture)
+        }
+        
+        _ = weatherPicker.then {
+            $0.alpha = 0
+            $0.delegate = self
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.center.equalToSuperview()
+                $0.width.equalTo(WeatherFrameModel.totalWidth)
+                $0.height.equalTo(WeatherFrameModel.totalHeight)
+            }
+        }
+        
+        _ = moodPicker.then {
+            $0.alpha = 0
+            $0.delegate = self
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.center.equalToSuperview()
+                $0.width.equalTo(MoodFrameModel.totalWidth)
+                $0.height.equalTo(MoodFrameModel.totalHeight)
+            }
+        }
     }
     
     func setupEditorHeader() {
         _ = actionBar.then {
-                   view.addSubview($0)
-                   $0.snp.makeConstraints {
-                       $0.left.equalToSuperview().offset(24)
-                       $0.right.equalToSuperview().offset(-24)
-                       $0.top.equalTo(lineView.snp.bottom)
-                       $0.height.equalTo(44)
-                   }
-               }
-               
-               for (index, item) in ActionBarOptions.all.enumerated() {
-                   _ = UIButton().then {
-                       actoinButtons.append($0)
-                       $0.setImage(UIImage(named: "icon_editor_\(item.rawValue)"), for: .normal)
-                       actionBar.addSubview($0)
-                       $0.snp.makeConstraints {
-                           $0.left.equalToSuperview().offset((index * 44))
-                           $0.centerY.equalToSuperview()
-                           $0.width.height.equalTo(44)
-                       }
-                   }
-               }
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.width.equalTo(ActionBarOptions.all.count * 44)
+                $0.top.equalTo(lineView.snp.bottom)
+                $0.height.equalTo(44)
+            }
+        }
+        
+        for (index, item) in ActionBarOptions.all.enumerated() {
+            _ = UIButton().then {
+                actoinButtons.append($0)
+                $0.setImage(UIImage(named: "icon_editor_\(item.rawValue)"), for: .normal)
+                $0.imageView?.contentMode = .scaleAspectFill
+                actionBar.addSubview($0)
+                $0.snp.makeConstraints {
+                    $0.left.equalToSuperview().offset((index * 44))
+                    $0.centerY.equalToSuperview()
+                    $0.width.height.equalTo(44)
+                }
+                $0.tag = index
+                $0.addTarget(self, action: #selector(clickPicker), for: .touchUpInside)
+            }
+        }
         
         _ = titleField.then {
             $0.text = ""
@@ -223,7 +256,7 @@ extension EditorViewController {
             $0.textColor = UIColor(hexString: "303133")
             $0.contentVerticalAlignment = .center
             $0.returnKeyType = .done
-//            $0.delegate = self
+            //            $0.delegate = self
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.top.equalTo(actionBar.snp.bottom)
@@ -311,5 +344,81 @@ extension EditorViewController {
                 $0.left.right.bottom.equalToSuperview()
             }
         }
+    }
+}
+
+// MARK: - 相册上传图片代理
+extension EditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    // 上传图片
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let pickedImage = info[.originalImage] as! UIImage
+        var imageData = pickedImage.pngData()
+        // 控制在2M以内
+        var rate = imageData!.count / 2 * 1024 * 1024
+        rate = rate <= 1 ? 1 : rate
+        imageData = pickedImage.jpegData(compressionQuality: CGFloat(rate))
+        if let path = DairyImageAPI.saveImageToTmp(image: UIImage(data: imageData!)!) {
+            editorView.insertImage(url: path)
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension EditorViewController {
+    func insertImage() {
+        let photosStatus = PHPhotoLibrary.authorizationStatus()
+        switch photosStatus {
+        case .authorized:
+            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                picker = UIImagePickerController()
+                picker?.delegate = self
+                picker?.sourceType = .photoLibrary
+                present(picker!, animated: true, completion: nil)
+            } else {
+                //                MessageManager.share.showMessage(theme: .warning, body: "Sorry, currently the device cannot access the album.")
+            }
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { [weak self] (status) in
+                guard let strongSelf = self else { return }
+                if status == .authorized {
+                    if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                        DispatchQueue.main.async {
+                            strongSelf.picker = UIImagePickerController()
+                            strongSelf.picker?.delegate = self
+                            strongSelf.picker?.sourceType = .photoLibrary
+                            strongSelf.present(strongSelf.picker!, animated: true, completion: nil)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            //                            MessageManager.share.showMessage(theme: .warning, body: "Sorry, currently the device cannot access the album.")
+                        }
+                    }
+                }
+            }
+        case .denied:
+            break
+        //            MessageManager.share.showMessage(theme: .warning, title: "Pemisseion denied", body: "Please authorize in the 'Settings'.")
+        case .restricted:
+            break
+        //            MessageManager.share.showMessage(theme: .warning, title: "Pemisseion denied", body: "Please authorize in the 'Settings'.")
+        @unknown default:
+            fatalError()
+        }
+    }
+}
+
+// MARK: - editor delegate
+extension EditorViewController: SQTextEditorDelegate {
+    func editorDidLoad(_ editor: SQTextEditorView) {
+        print("editorDidLoad")
+    }
+    
+    func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {
+        print("测试 ===> change的值为: \(222)")
+        toolbar.toolbarCollectionView.reloadData()
+    }
+    
+    func editor(_ editor: SQTextEditorView, contentHeightDidChange height: Int) {
+        print("contentHeightDidChange = \(height)")
     }
 }

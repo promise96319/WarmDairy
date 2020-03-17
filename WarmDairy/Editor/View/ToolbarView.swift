@@ -100,7 +100,6 @@ extension ToolbarView: UICollectionViewDelegate {
     }
 }
 
-
 extension ToolbarView {
     func setupUI() {
         backgroundColor = UIColor(hexString: "#eeeeee")
@@ -147,6 +146,5 @@ extension ToolbarView {
             addSubview($0)
             $0.register(ToolbarCell.self, forCellWithReuseIdentifier: ToolbarCell.identifier)
         }
-        
     }
 }

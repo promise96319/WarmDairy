@@ -62,7 +62,7 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 33 images.
+  /// This `R.image` struct is generated, and contains static references to 53 images.
   struct image {
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
@@ -106,6 +106,30 @@ struct R: Rswift.Validatable {
     static let icon_editor_weather = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_weather")
     /// Image `icon_me_premium`.
     static let icon_me_premium = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_premium")
+    /// Image `icon_mood_angry`.
+    static let icon_mood_angry = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_angry")
+    /// Image `icon_mood_confused`.
+    static let icon_mood_confused = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_confused")
+    /// Image `icon_mood_cry`.
+    static let icon_mood_cry = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_cry")
+    /// Image `icon_mood_enrich`.
+    static let icon_mood_enrich = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_enrich")
+    /// Image `icon_mood_fidgety`.
+    static let icon_mood_fidgety = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_fidgety")
+    /// Image `icon_mood_happy`.
+    static let icon_mood_happy = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_happy")
+    /// Image `icon_mood_lonely`.
+    static let icon_mood_lonely = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_lonely")
+    /// Image `icon_mood_proud`.
+    static let icon_mood_proud = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_proud")
+    /// Image `icon_mood_sad`.
+    static let icon_mood_sad = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_sad")
+    /// Image `icon_mood_surprise`.
+    static let icon_mood_surprise = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_surprise")
+    /// Image `icon_mood_surprised`.
+    static let icon_mood_surprised = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_surprised")
+    /// Image `icon_mood_wantcry`.
+    static let icon_mood_wantcry = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_wantcry")
     /// Image `icon_tabbar_category`.
     static let icon_tabbar_category = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_tabbar_category")
     /// Image `icon_tabbar_edit`.
@@ -114,6 +138,22 @@ struct R: Rswift.Validatable {
     static let icon_tabbar_user = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_tabbar_user")
     /// Image `icon_today_back`.
     static let icon_today_back = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_back")
+    /// Image `icon_weather_cloud_sun`.
+    static let icon_weather_cloud_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_cloud_sun")
+    /// Image `icon_weather_cloud`.
+    static let icon_weather_cloud = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_cloud")
+    /// Image `icon_weather_light`.
+    static let icon_weather_light = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_light")
+    /// Image `icon_weather_rain`.
+    static let icon_weather_rain = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_rain")
+    /// Image `icon_weather_rainbow`.
+    static let icon_weather_rainbow = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_rainbow")
+    /// Image `icon_weather_snow`.
+    static let icon_weather_snow = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_snow")
+    /// Image `icon_weather_sun`.
+    static let icon_weather_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_sun")
+    /// Image `icon_weather_wind`.
+    static let icon_weather_wind = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_wind")
     /// Image `image_editor_bg`.
     static let image_editor_bg = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_editor_bg")
     /// Image `image_home_bg_sun`.
@@ -236,6 +276,66 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.icon_me_premium, compatibleWith: traitCollection)
     }
     
+    /// `UIImage(named: "icon_mood_angry", bundle: ..., traitCollection: ...)`
+    static func icon_mood_angry(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_angry, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_confused", bundle: ..., traitCollection: ...)`
+    static func icon_mood_confused(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_confused, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_cry", bundle: ..., traitCollection: ...)`
+    static func icon_mood_cry(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_cry, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_enrich", bundle: ..., traitCollection: ...)`
+    static func icon_mood_enrich(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_enrich, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_fidgety", bundle: ..., traitCollection: ...)`
+    static func icon_mood_fidgety(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_fidgety, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_happy", bundle: ..., traitCollection: ...)`
+    static func icon_mood_happy(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_happy, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_lonely", bundle: ..., traitCollection: ...)`
+    static func icon_mood_lonely(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_lonely, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_proud", bundle: ..., traitCollection: ...)`
+    static func icon_mood_proud(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_proud, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_sad", bundle: ..., traitCollection: ...)`
+    static func icon_mood_sad(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_sad, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_surprise", bundle: ..., traitCollection: ...)`
+    static func icon_mood_surprise(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_surprise, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_surprised", bundle: ..., traitCollection: ...)`
+    static func icon_mood_surprised(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_surprised, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_mood_wantcry", bundle: ..., traitCollection: ...)`
+    static func icon_mood_wantcry(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_mood_wantcry, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "icon_tabbar_category", bundle: ..., traitCollection: ...)`
     static func icon_tabbar_category(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_tabbar_category, compatibleWith: traitCollection)
@@ -254,6 +354,46 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_today_back", bundle: ..., traitCollection: ...)`
     static func icon_today_back(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_today_back, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_cloud", bundle: ..., traitCollection: ...)`
+    static func icon_weather_cloud(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_cloud, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_cloud_sun", bundle: ..., traitCollection: ...)`
+    static func icon_weather_cloud_sun(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_cloud_sun, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_light", bundle: ..., traitCollection: ...)`
+    static func icon_weather_light(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_light, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_rain", bundle: ..., traitCollection: ...)`
+    static func icon_weather_rain(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_rain, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_rainbow", bundle: ..., traitCollection: ...)`
+    static func icon_weather_rainbow(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_rainbow, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_snow", bundle: ..., traitCollection: ...)`
+    static func icon_weather_snow(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_snow, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_sun", bundle: ..., traitCollection: ...)`
+    static func icon_weather_sun(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_sun, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_weather_wind", bundle: ..., traitCollection: ...)`
+    static func icon_weather_wind(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_weather_wind, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "image_editor_bg", bundle: ..., traitCollection: ...)`
