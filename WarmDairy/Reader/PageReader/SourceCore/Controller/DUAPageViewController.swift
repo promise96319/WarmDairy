@@ -25,7 +25,6 @@ class DUAPageViewController: UIViewController {
     var chapterBelong: Int = 1
     var backgroundImage: UIImage?
     
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()

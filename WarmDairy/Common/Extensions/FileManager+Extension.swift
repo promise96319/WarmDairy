@@ -197,7 +197,11 @@ public extension FileManager {
     ///   - filePath: 文件路径
     /// - Returns: 保存结果，true保存成功，false保存失败
     static func save(image: UIImage, toFilePath filePath: String) -> Bool {
-        
+        if !fileExists(atPath: filePath) {
+            if !createFile(atPath: filePath) {
+                return false
+            }
+        }
         do {
             let data = image.pngData()!
             try data.write(to: URL(fileURLWithPath: filePath))

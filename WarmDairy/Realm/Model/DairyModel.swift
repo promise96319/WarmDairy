@@ -17,6 +17,9 @@ class DairyModel: Object {
     /// HTML string 内容
     @objc dynamic var content: String = ""
     
+    /// 创建日期
+    @objc dynamic var createdAt: Date = Date()
+    
     /// 心情
     @objc dynamic var mood: String = ""
     
@@ -27,7 +30,7 @@ class DairyModel: Object {
     @objc dynamic var location: String = ""
     
     /// 日记背景颜色
-    @objc dynamic var bgColor: String = ""
+    @objc dynamic var bgColor: String = "EEDFC8"
     
     /// 是否加入喜爱
     @objc dynamic var isLoved: Bool = false
@@ -35,11 +38,8 @@ class DairyModel: Object {
     /// 是否加锁
     @objc dynamic var isLocked: Bool = false
     
-    /// 创建日期
-    @objc dynamic var createdAt: MottoModel?
-    
-    /// 日记中使用到的图片： [图片名称]
-//    @objc dynamic var images: [String] = [String]()
+    /// 日记中使用到的图片（逗号分隔）： "图片名称,图片名称2"
+    @objc dynamic var images: String = ""
     
     @objc dynamic var isDeleted = false
     

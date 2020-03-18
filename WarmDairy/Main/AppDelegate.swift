@@ -27,6 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         application.registerForRemoteNotifications()
         
+        setUserDefault()
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
@@ -47,4 +49,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // How about fetching changes here?
     }
 }
+
 

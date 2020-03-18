@@ -10,6 +10,11 @@ import UIKit
 import Photos
 import ViewAnimator
 
+extension NSNotification.Name {
+    /// 日记被添加了
+    static let dairyDidAdded = Notification.Name("dairyDidAdded")
+}
+
 class EditorViewController: UIViewController {
     
     lazy var myDairy = DairyModel()
@@ -53,6 +58,10 @@ class EditorViewController: UIViewController {
         setupUI()
     }
     
+    func initData(dairy: DairyModel) {
+        myDairy = dairy
+    }
+    
     deinit {
         
     }
@@ -70,6 +79,15 @@ extension EditorViewController {
         UIView.animate(withDuration: 0.3) {
             self.popMaskView.alpha = 1
         }
+        titleField.resignFirstResponder()
+        editorView.collpaseKeyboard()
+    }
+    
+    func chooseDate(date: Date) {
+        myDairy.createdAt = date
+        let dateStr = "\(date.year)年\(date.month)月\(date.day)日 \(date.weekday.toWeek())"
+        dateButton.setTitle(dateStr, for: .normal)
+        hideDatePicker()
     }
     
     func hideDatePicker() {
@@ -81,7 +99,6 @@ extension EditorViewController {
     
     @objc func showDatePicker() {
         showMask()
-        editorView.collpaseKeyboard()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         datePicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
     }
@@ -94,6 +111,7 @@ extension EditorViewController {
     }
     
     func chooseMood(mood: String) {
+        myDairy.mood = mood
         actionButtons[1].setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
         actionButtons[1].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         hideMoodPicker()
@@ -101,12 +119,12 @@ extension EditorViewController {
     
     @objc func showMoodPicker() {
         showMask()
-        editorView.collpaseKeyboard()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         moodPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
     }
     
     func chooseWeather(weather: String) {
+        myDairy.weather = weather
         actionButtons[0].setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
         actionButtons[0].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         hideWeatherPicker()
@@ -114,13 +132,17 @@ extension EditorViewController {
     
     @objc func showWeatherPicker() {
         showMask()
-        editorView.collpaseKeyboard()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         weatherPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
     }
     
-    func toggleLoveOrNot() {
-        myDairy.isLoved = !myDairy.isLoved
+    /// 切换是否收藏该日记
+    /// - Parameter isToggle: 默认为true，需要切换。为false的时候无需切换
+    func toggleLoveOrNot(isToggle: Bool = true) {
+        if isToggle {
+            myDairy.isLoved = !myDairy.isLoved
+        }
+        
         if myDairy.isLoved {
             actionButtons[3].setImage(R.image.icon_editor_love_selected(), for: .normal)
         } else {
@@ -155,14 +177,15 @@ extension EditorViewController {
     /// 上传HTML前先保存图片，将URL替换成图片唯一的名称
     /// - Parameter html: html 字符串
     /// - Return html 字符串
-    func beforeUploadHTML(html: String) -> String {
+    func beforeUploadHTML(html: String) -> (String, String) {
         //        Optional("<div><img src=\"/private/var/mobile/Containers/Data/Application/C63B2ADA-F9FB-4235-BB34-054F179A8CB6/tmp/editor/images/silence_158427570975781\"><br></div>")
-        let pattern = "src=\\\"\(FileManager.tmpPath + DairyImageAPI.imagePath)/silence_[0-9]{15}\\\""
+        let pattern = "src=\\\"\(FileManager.tmpPath + DairyImageAPI.imagePath)/\(DairyImageAPI.prefix)[0-9]{15}\\\""
         print("测试 ===> pattern的值为: \(pattern)")
         let regex = try! NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
         let res = regex.matches(in: html, options: NSRegularExpression.MatchingOptions.init(rawValue: 0), range: NSMakeRange(0, html.count))
         
         var newHTML = html
+        var ids = [String]()
         for checkingRes in res {
             let res = (html as NSString).substring(with: checkingRes.range)
             // src="/private/var/mobile/Containers/Data/Application/219416EE-2291-4A1C-8AEC-EA4F081D075F/tmp/editor/images/silence_158427716981744"
@@ -170,30 +193,31 @@ extension EditorViewController {
             var path = res.replacingOccurrences(of: "src=\"", with: "")
             path = path.replacingOccurrences(of: "\"", with: "")
             print("测试 ===> path的值为: \(path)")
-            let imageModel = DairyImageModel()
-            imageModel.image = CreamAsset.create(object: imageModel, propName: DairyImageModel.key, url: URL(fileURLWithPath: path))
-            DairyImageAPI.saveImage(path: path) { (fileName) in
-                if let fileName = fileName {
-                    newHTML = newHTML.replacingOccurrences(of: path, with: fileName)
-                }
+            DairyImageAPI.saveImage(path: path) { (id) in
+                guard let id = id else { return }
+                let filename = "\(DairyImageAPI.prefix)\(id)"
+                newHTML = newHTML.replacingOccurrences(of: path, with: filename)
+                ids.append("\(id)")
             }
         }
         
         print("测试 ===> html的值为: \(newHTML)")
-        return newHTML
+        /// todo 删除已有 没有用的image
+        return (newHTML, ids.joined(separator: ","))
     }
     
     @objc func saveDairy() {
-        
+        myDairy.title = titleField.text!
         editorView.getHTML { (html) in
-            print("测试 ===> edi的值为: \(html)")
             if let html = html {
-                let newHTML = self.beforeUploadHTML(html: html)
-                let dairy = DairyModel()
-                dairy.content = newHTML
-                DairyAPI.addDairy(dairy: dairy) { (isAdded) in
+                let res = self.beforeUploadHTML(html: html)
+                self.myDairy.content = res.0
+                self.myDairy.images = res.1
+                
+                DairyAPI.addDairy(dairy: self.myDairy) { (isAdded) in
                     if (isAdded) {
-                        print("测试 ====> 成功")
+                        NotificationCenter.default.post(name: .dairyDidAdded, object: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
             } else {
@@ -298,7 +322,7 @@ extension EditorViewController {
             $0.textColor = UIColor(hexString: "303133")
             $0.contentVerticalAlignment = .center
             $0.returnKeyType = .done
-            //            $0.delegate = self
+            $0.delegate = self
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.top.equalTo(actionBar.snp.bottom)
@@ -349,7 +373,7 @@ extension EditorViewController {
         }
         
         _ = dateButton.then {
-            $0.setTitle("2020年3月2日 星期天", for: .normal)
+            chooseDate(date: myDairy.createdAt)
             $0.setTitleColor(UIColor(hexString: "303133"), for: .normal)
             $0.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             view.addSubview($0)
@@ -390,6 +414,23 @@ extension EditorViewController {
     }
 }
 
+// MARK: - 标题输入 textfield 代理
+extension EditorViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 40
+        let currentString = textField.text! as NSString
+        let newString =
+            currentString.replacingCharacters(in: range, with: string)
+        return newString.count <= maxLength
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        //        editorView.becomeFirstResponder()
+        return true
+    }
+}
+
 // MARK: - 相册上传图片代理
 extension EditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // 上传图片
@@ -397,9 +438,20 @@ extension EditorViewController: UIImagePickerControllerDelegate, UINavigationCon
         let pickedImage = info[.originalImage] as! UIImage
         var imageData = pickedImage.pngData()
         // 控制在2M以内
-        var rate = imageData!.count / 2 * 1024 * 1024
-        rate = rate <= 1 ? 1 : rate
+        var rate =  CGFloat(2 * 1024 * 1024) / CGFloat(imageData!.count)
+        print("测试 ===> rate的值为: \(rate)")
+        rate = rate >= 1 ? 1 : rate
         imageData = pickedImage.jpegData(compressionQuality: CGFloat(rate))
+        
+        print("测试 ===> imagedata的值为: \(imageData!.count / 1024 / 1024)")
+        // 压缩系数
+        var resizeRate: Int = 10
+        // 头像限制大小 <= 100kb
+        while imageData!.count > 2 * 1024 * 1024 && resizeRate > 1 {
+            resizeRate -= 1
+            imageData = pickedImage.jpegData(compressionQuality: CGFloat(resizeRate / 10))
+        }
+        
         if let path = DairyImageAPI.saveImageToTmp(image: UIImage(data: imageData!)!) {
             editorView.insertImage(url: path)
         }
@@ -454,6 +506,7 @@ extension EditorViewController {
 extension EditorViewController: SQTextEditorDelegate {
     func editorDidLoad(_ editor: SQTextEditorView) {
         print("editorDidLoad")
+        editorView.insertHTML(myDairy.content)
     }
     
     func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {

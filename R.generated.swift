@@ -62,7 +62,7 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 53 images.
+  /// This `R.image` struct is generated, and contains static references to 54 images.
   struct image {
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
@@ -104,6 +104,8 @@ struct R: Rswift.Validatable {
     static let icon_editor_undo = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_undo")
     /// Image `icon_editor_weather`.
     static let icon_editor_weather = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_weather")
+    /// Image `icon_home_add`.
+    static let icon_home_add = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_home_add")
     /// Image `icon_me_premium`.
     static let icon_me_premium = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_premium")
     /// Image `icon_mood_angry`.
@@ -269,6 +271,11 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_editor_weather", bundle: ..., traitCollection: ...)`
     static func icon_editor_weather(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_editor_weather, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_home_add", bundle: ..., traitCollection: ...)`
+    static func icon_home_add(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_home_add, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_me_premium", bundle: ..., traitCollection: ...)`

@@ -11,10 +11,11 @@ import SnapKit
 import Then
 import FSPagerView
 import Hero
+import SwiftyUserDefaults
 
 class HomeViewController: UIViewController {
     
-    var mottoData = [MottoModel(), MottoModel(),MottoModel(),]
+    var mottoData = [MottoModel]()
     
     let heroID = "Home_Carousel_ID"
     
@@ -27,7 +28,38 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         setupUI()
-        showEditor()
+        loadData()
+//        showEditor()
+        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
+    }
+    
+    @objc func loadData() {
+        MottoAPI.getMottos { (data) in
+            if Defaults[.todayMottoImage] != "" {
+                print("测试 ===> cunzai的值为: \(1111)")
+                let todayMotto = MottoModel()
+                todayMotto.imageURL = Defaults[.todayMottoImage]
+                todayMotto.motto = Defaults[.todayMotto]
+                todayMotto.author = Defaults[.todayMottoAuthor]
+                self.mottoData = data
+                self.mottoData.append(todayMotto)
+            } else {
+                print("测试 ===> bucunzai的值为: \(2222)")
+                self.mottoData = data
+            }
+            
+            self.carouselPager.reloadData()
+            self.carouselPager.layoutIfNeeded()
+            if (self.mottoData.count > 1) {
+                DispatchQueue.main.async {
+                    self.carouselPager.scrollToItem(at: self.mottoData.count - 1, animated: false)
+                }
+            }
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
     }
 }
 
@@ -47,9 +79,7 @@ extension HomeViewController: FSPagerViewDataSource {
     
     func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
         let cell = pagerView.dequeueReusableCell(withReuseIdentifier: CarouselCell.identifier, at: index) as! CarouselCell
-        cell.initData(mottoData: mottoData[index], index: index)
-//        cell.bgImage.hero.id = "\(heroID)bgImage\(index)"
-//        cell.imageMaskView.hero.id = "\(heroID)mask\(index)"
+        cell.initData(mottoData: mottoData[index])
         return cell
     }
 }
@@ -59,9 +89,7 @@ extension HomeViewController: FSPagerViewDelegate {
     func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
         let vc = TodayDairyViewController()
         vc.modalPresentationStyle = .fullScreen
-        vc.bgImage.image = UIImage(named: "image_home_cr\(index + 1)")
-//        vc.bgImage.hero.id = "\(heroID)bgImage\(index)"
-//        vc.bgMask.hero.id = "\(heroID)mask\(index)"
+        vc.initData(mottoData: mottoData[index])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -74,7 +102,8 @@ extension HomeViewController {
         setupCarousel()
         
         _ = editButton.then {
-            $0.setTitle("+", for: .normal)
+            $0.setImage(R.image.icon_home_add(), for: .normal)
+            $0.imageEdgeInsets = UIEdgeInsets(top: 13, left: 13, bottom: 13, right: 13)
             $0.titleLabel?.font = UIFont.systemFont(ofSize: 32)
             $0.titleLabel?.textAlignment = .center
             $0.layer.cornerRadius = 32
@@ -92,12 +121,7 @@ extension HomeViewController {
     
     func setupCarousel() {
         _ = carouselPager.then {
-//            $0.transformer = FSPagerViewTransformer(type: .ferrisWheel)
-//            $0.transformer = FSPagerViewTransformer(type: .coverFlow)
-            
             $0.transformer = FSPagerViewTransformer(type: .linear)
-            $0.isInfinite = true
-            
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.right.equalToSuperview()

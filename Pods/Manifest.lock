@@ -32,6 +32,7 @@ PODS:
     - Realm (= 3.19.0)
   - RQShineLabel (1.0.0)
   - SnapKit (5.0.1)
+  - SwiftDate (6.1.0)
   - SwiftTheme (0.5.2)
   - SwiftyUserDefaults (3.0.1)
   - Then (2.6.0)
@@ -48,6 +49,7 @@ DEPENDENCIES:
   - RealmSwift
   - RQShineLabel
   - SnapKit (~> 5.0.0)
+  - SwiftDate
   - SwiftTheme
   - SwiftyUserDefaults (~> 3.0.1)
   - Then
@@ -67,6 +69,7 @@ SPEC REPOS:
     - RealmSwift
     - RQShineLabel
     - SnapKit
+    - SwiftDate
     - SwiftTheme
     - SwiftyUserDefaults
     - Then
@@ -85,11 +88,12 @@ SPEC CHECKSUMS:
   RealmSwift: 35f284a537989f2187b413e5917091948cb87a3f
   RQShineLabel: 17457abf7250d1220ddd99bc61323d57563344cd
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
   SwiftTheme: 8b02c479bb4441b2b6790ac126e961b1b6fb0932
   SwiftyUserDefaults: 3d273b1739b68ada3145dc754a70ec775bc5c8be
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
   ViewAnimator: 5af1c6f3b310f012bf081259c43717aa54fbae73
 
-PODFILE CHECKSUM: bfcf7d1e06edba524b2184f077f78960e90778fd
+PODFILE CHECKSUM: 50aaa4cb9df4d32fb1d3cc2602f378df9421dfb4
 
 COCOAPODS: 1.8.4

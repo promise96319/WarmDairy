@@ -20,7 +20,11 @@ import RealmSwift
 //        3. 在iCloud中取（不是该设备的情况），cope到document，cope到tmp 中
 class DairyImageAPI {
     static let imagePath = "editor/images"
-    static let prefix = "silence_"
+    static let prefix = "com.qinguanghui.WarmDairy"
+    enum PathType {
+        case doc
+        case tmp
+    }
     
     static func saveImage(image: UIImage?, callback: @escaping (_ path: String?) -> Void) {
         let dairyImage = DairyImageModel()
@@ -38,7 +42,11 @@ class DairyImageAPI {
         }
     }
     
-    static func saveImage(path: String, callback: @escaping (_ path: String?) -> Void) {
+    /// 保存临时图片到 iCloud + document
+    /// - Parameters:
+    ///   - path: 临时图片路径
+    ///   - callback: 该图片id
+    static func saveImage(path: String, callback: @escaping (_ path: Int?) -> Void) {
         let dairyImage = DairyImageModel()
         dairyImage.image = CreamAsset.create(object: dairyImage, propName: DairyImageModel.key, url: URL(fileURLWithPath: path))
         
@@ -48,18 +56,86 @@ class DairyImageAPI {
             realm.add(dairyImage)
         }
         
-        callback(dairyImage.image?.uniqueFileName)
+        let documentPath = gengeratePath(type: .doc, id: dairyImage.id)
+        // 将图片copy到document当中
+        if copeImage(fromPath: path, dirType: .doc, toPath: documentPath) {
+            callback(dairyImage.id)
+        }
+        callback(nil)
     }
     
-    static func getImage(callback: @escaping(_ data: [DairyImageModel]) -> Void) {
+    static func getImage(id: Int, callback: @escaping(_ data: DairyImageModel?) -> Void) {
         let realm = try! Realm()
-        let res: [DairyImageModel] = realm.objects(DairyImageModel.self).map { $0 }
+        let res: DairyImageModel? = realm.objects(DairyImageModel.self).filter("id = id").first
         callback(res)
     }
 }
 
 extension DairyImageAPI {
+    /// 检验文件是否存在，存在
+    /// - Parameters:
+    ///   - images: 图片唯一id：字符串，"id1,id2,..."
+    ///   - html: 需要被替换的HTML字符串
+    ///   - callback: 新的HTML字符串
+    static func replaceHtmlWithImagePath(images: String, html: String, callback: @escaping (_ result: String?) -> Void) {
+        let imageIds = images.split(separator: ",")
+        var newHtml = html
+        for id in imageIds {
+            // 首先在tmp中查找图片，查找到则返回路径
+            // 根据id找到图片得到图片document 路径
+            // 查看document 是否存在，存在则copy到tmp中
+            // 否则 将 data 写入 document 和 tmp中
+            print("测试 ===> ids的值为: \(id)")
+            guard let id = Int(String(id)) else {
+                print("测试 ===> id不存在")
+                callback(nil)
+                return
+            }
+            
+            let fileId = "\(prefix)\(id)"
+            // 现在 tmp 目录中查找一遍
+            let tmpPath = gengeratePath(type: .tmp, id: id)
+            let docPath = gengeratePath(type: .doc, id: id)
+            if (FileManager.fileExists(atPath: tmpPath)) {
+                newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
+                print("测试 ====> tmp 中存在image")
+            } else if (FileManager.fileExists(atPath: docPath)) {
+                print("测试 ====> document 中存在image")
+                if copeImage(fromPath: docPath, dirType: .tmp, toPath: tmpPath) {
+                    newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
+                    print("测试 ====> newHtml\(newHtml)")
+                } else {
+                    print("测试 ===> copy image 失败")
+                }
+            } else {
+                getImage(id: id) { (asset) in
+                    guard let asset = asset else {
+                        print("测试 ===> image不存在")
+                        callback(nil)
+                        return
+                    }
+                    
+                    guard let data = asset.image?.storedData() else {
+                        print("测试 ====> image stored data 不存在")
+                        callback(nil)
+                        return
+                    }
+                    
+                    let isSaved = FileManager.save(image: UIImage(data: data)!, toFilePath: docPath)
+                    let isTmpSaved = FileManager.save(image: UIImage(data: data)!, toFilePath: tmpPath)
+                    if isSaved && isTmpSaved {
+                        newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
+                    } else {
+                        callback(nil)
+                    }
+                }
+            }
+        }
+        callback(newHtml)
+    }
+    
     // 保存上传的图片到 tmp 目录中
+    // 返回tmp 内文件路径
     static func saveImageToTmp(image: UIImage) -> String? {
         let directory = FileManager.tmpPath + DairyImageAPI.imagePath
         if !FileManager.fileExists(atPath: directory) {
@@ -76,23 +152,31 @@ extension DairyImageAPI {
         return nil
     }
     
-    //    static func saveHTMLToTmp(string: String) -> String? {
-    //        let directory = FileManager.cachePath + "index.html"
-    //        if !FileManager.fileExists(atPath: directory) {
-    //            if !FileManager.createDirectory(atPath: directory) {
-    //                return nil
-    //            }
-    //        }
-    //
-    //        let path = directory
-    //        if FileManager.save(info: string, toFilePath: path) {
-    //            return path
-    //        }
-    //
-    //        return nil
-    //    }
-    //
-    //    static func getHTML() -> String {
-    //        return FileManager.cachePath + "index.html"
-    //    }
+    static func copeImage(fromPath: String, dirType: PathType, toPath: String) -> Bool {
+        let dir = gengerateDir(type: dirType)
+        if !FileManager.fileExists(atPath: dir) {
+            let isCreated = FileManager.createDirectory(atPath: dir)
+            if (!isCreated) { return false }
+        }
+        do {
+            try FileManager.default.copyItem(atPath: fromPath, toPath: toPath)
+            return true
+        } catch (_) {
+            return false
+        }
+    }
+    
+    static func gengeratePath(type: PathType, id: Int) -> String {
+        let dir = gengerateDir(type: type)
+        return dir + "/" + prefix + "\(id)"
+    }
+    
+    static func gengerateDir(type: PathType) -> String {
+        switch type {
+        case .doc:
+            return FileManager.documentPath + "/" + imagePath
+        case .tmp:
+            return FileManager.tmpPath + imagePath
+        }
+    }
 }

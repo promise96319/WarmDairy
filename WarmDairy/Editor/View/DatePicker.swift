@@ -7,18 +7,19 @@
 //
 
 import UIKit
+import SwiftDate
 
 class DatePicker: UIView {
     
     weak var delegate: EditorViewController?
     
-    var currentDate: Date?
+    var currentDate: Date = Date()
     
     lazy var titleLabel = UILabel()
     lazy var datePicker = UIDatePicker()
     lazy var cancelButton = UIButton()
     lazy var confirmButton = UIButton()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -27,16 +28,23 @@ class DatePicker: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(code:) has not been implemented")
     }
+    
+    func initData(date: Date) {
+        currentDate = date
+        titleLabel.text = "日记日期 - \(date.year)年"
+        datePicker.date = currentDate
+    }
 }
 
 extension DatePicker {
     @objc func selectDate(sender: UIDatePicker) {
-        // 2032-03-17 16:19:32 +0000
-        currentDate = sender.date
+        let date = sender.date + 8.hours
+        titleLabel.text = "日记日期 - \(date.year)年"
+        currentDate = date
     }
     
     @objc func confirm() {
-        delegate?.hideDatePicker()
+        delegate?.chooseDate(date: currentDate)
     }
     
     @objc func cancel() {
@@ -54,23 +62,24 @@ extension DatePicker {
         layer.shadowRadius = 16
         
         _ = titleLabel.then {
-                   $0.text = "日记日期"
-                   $0.textColor = UIColor(hexString: "303133")
-                   addSubview($0)
-                   $0.snp.makeConstraints {
-                       $0.centerX.equalToSuperview()
-                       $0.top.equalToSuperview().offset(24)
-                   }
-               }
+            $0.text = "日记日期 - \(currentDate.year)年"
+            $0.textColor = UIColor(hexString: "303133")
+            addSubview($0)
+            $0.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.top.equalToSuperview().offset(24)
+            }
+        }
         
         _ = datePicker.then {
-            $0.datePickerMode = .date
+            $0.datePickerMode = .dateAndTime
             $0.locale = NSLocale(localeIdentifier: "zh_CN") as Locale
+            $0.date = currentDate
             addSubview($0)
             $0.snp.makeConstraints {
                 $0.centerX.equalToSuperview()
                 $0.centerY.equalToSuperview()
-                $0.width.equalTo(DeviceInfo.screenWidth - 96)
+                $0.width.equalTo(DeviceInfo.screenWidth - 72)
             }
             $0.addTarget(self, action: #selector(selectDate), for: .valueChanged)
         }

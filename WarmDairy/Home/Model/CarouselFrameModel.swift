@@ -9,7 +9,7 @@
 import UIKit
 
 class CarouselFrameModel {
-    static let cellWidth: CGFloat = 250 / 375 * DeviceInfo.screenWidth
+    static let cellWidth: CGFloat = 275 / 375 * DeviceInfo.screenWidth
     
     static let cellHeight: CGFloat = CarouselFrameModel.cellWidth * 400 / 275
     

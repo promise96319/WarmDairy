@@ -8,6 +8,8 @@
 
 import UIKit
 import FSPagerView
+import Kingfisher
+import SwiftDate
 
 class CarouselCell: FSPagerViewCell {
     static let identifier = "CarouselCell_ID"
@@ -36,11 +38,18 @@ class CarouselCell: FSPagerViewCell {
         // super.prepareForReuse()
     }
     
-    func initData(mottoData: MottoModel, index: Int) {
+    func initData(mottoData: MottoModel) {
         self.mottoData = mottoData
-        self.bgImage.image = UIImage(named: "image_home_cr\(index + 1)")
+        self.bgImage.kf.setImage(with: URL(string: mottoData.imageURL), options: [
+            .transition(.fade(0.8)),
+        ])
+        self.authorLabel.text = mottoData.author
+        self.mottoLabel.text = mottoData.motto
+        self.dayLabel.text = mottoData.date.day < 10 ? "0\(mottoData.date.day)" : "\(mottoData.date.day)"
+//        self.dateLabel.text = mottoData.date.toFormat("MMM yyyy")
+        self.dateLabel.text = Date().toFormat("MMM yyyy HH:mm:ss")
     }
-}
+}，
 
 extension CarouselCell {
     func setupUI() {
@@ -71,7 +80,8 @@ extension CarouselCell {
         }
         
         _ = dayLabel.then {
-            $0.set(text: "02", size: 32, color: "ffffff")
+            $0.textColor = UIColor(hexString: "ffffff")
+            $0.font = UIFont.systemFont(ofSize: 32)
             container.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalToSuperview().offset(24)
@@ -80,7 +90,8 @@ extension CarouselCell {
         }
         
         _ = dateLabel.then {
-            $0.set(text: "July 2020", size: 10, color: "ffffff")
+            $0.textColor = UIColor(hexString: "ffffff")
+            $0.font = UIFont.systemFont(ofSize: 10)
             container.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalTo(dayLabel)
@@ -89,7 +100,7 @@ extension CarouselCell {
         }
         
         _ = authorLabel.then {
-            $0.set(text: "诗人，海子", size: 12)
+            $0.font = UIFont.systemFont(ofSize: 12)
             $0.textColor = UIColor(hexString: "ffffff", alpha: 0.8)
             container.addSubview($0)
             $0.snp.makeConstraints {
@@ -110,10 +121,12 @@ extension CarouselCell {
         }
         
         _ = mottoLabel.then {
-            $0.set(text: "活在这珍贵的世间，太阳强烈，水波温柔。", color: "FFFFFF")
+            $0.textColor = UIColor(hexString: "ffffff")
+            $0.font = UIFont.systemFont(ofSize: 16)
             $0.setLineSpacing(lineSpacing: 8, lineHeightMultiple: 1)
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
+            $0.preferredMaxLayoutWidth = CarouselFrameModel.cellWidth - 40
             container.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalToSuperview().offset(20)

@@ -11,17 +11,15 @@ import RealmSwift
 
 class MottoModel: Object {
     // id: 用年月日表示即可 一天只有一个motto，所以创建日期独一无二
-    @objc dynamic var id: Int = 20200101
+    @objc dynamic var id: Int = Int(Date().toFormat("yyyyMMdd"))!
     // 日期
-    @objc dynamic var createDate: Date?
+    @objc dynamic var date: Date = Date()
     // 当日图片
     @objc dynamic var imageURL: String = ""
     // 当日格言
     @objc dynamic var motto: String = ""
     // 格言作者
     @objc dynamic var author: String = ""
-    
-    let dairies = LinkingObjects(fromType: DairyModel.self, property: "createdAt")
     
     @objc dynamic var isDeleted: Bool = false
     
