@@ -174,6 +174,14 @@ function setFontFamily(t) {
   editor.setFontFamily(t)
 }
 
+function undo() {
+  editor.undo()
+}
+
+function redo() {
+  editor.redo()
+}
+
 function postEditorContentHeight(t) {
   window.webkit.messageHandlers.contentHeight.postMessage(t)
 }

@@ -71,6 +71,10 @@ class ToolbarCell: UICollectionViewCell {
         } else {
             imageView.tintColor = normalColor
         }
+        
+        if tool == .fontcolor {
+            imageView.tintColor = attribute.textInfo.color
+        }
     }
 }
 

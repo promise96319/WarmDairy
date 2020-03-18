@@ -12,6 +12,8 @@ import ViewAnimator
 
 class EditorViewController: UIViewController {
     
+    lazy var myDairy = DairyModel()
+    
     lazy var editorView = SQTextEditorView()
     lazy var toolbar = ToolbarView()
     
@@ -33,10 +35,11 @@ class EditorViewController: UIViewController {
         case love = "love"
         static let all: [ActionBarOptions] = [.weather, .mood, .location, .love]
     }
-    lazy var actoinButtons = [UIButton]()
+    lazy var actionButtons = [UIButton]()
     
     lazy var weatherPicker = WeatherPicker()
     lazy var moodPicker = MoodPicker()
+    lazy var datePicker = DatePicker()
     lazy var popMaskView = UIView()
     
     override func viewDidLoad() {
@@ -60,12 +63,27 @@ extension EditorViewController {
     @objc func hideMask() {
         hideWeatherPicker()
         hideMoodPicker()
+        hideDatePicker()
     }
     
     func showMask() {
         UIView.animate(withDuration: 0.3) {
             self.popMaskView.alpha = 1
         }
+    }
+    
+    func hideDatePicker() {
+        UIView.animate(withDuration: 0.5) {
+            self.datePicker.alpha = 0
+            self.popMaskView.alpha = 0
+        }
+    }
+    
+    @objc func showDatePicker() {
+        showMask()
+        editorView.collpaseKeyboard()
+        let animation = AnimationType.from(direction: .top, offset: 200.0)
+        datePicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
     }
     
     func hideMoodPicker() {
@@ -76,8 +94,8 @@ extension EditorViewController {
     }
     
     func chooseMood(mood: String) {
-        actoinButtons[1].setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
-        actoinButtons[1].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        actionButtons[1].setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
+        actionButtons[1].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         hideMoodPicker()
     }
     
@@ -89,8 +107,8 @@ extension EditorViewController {
     }
     
     func chooseWeather(weather: String) {
-        actoinButtons[0].setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
-        actoinButtons[0].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        actionButtons[0].setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
+        actionButtons[0].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         hideWeatherPicker()
     }
     
@@ -99,6 +117,15 @@ extension EditorViewController {
         editorView.collpaseKeyboard()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         weatherPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
+    }
+    
+    func toggleLoveOrNot() {
+        myDairy.isLoved = !myDairy.isLoved
+        if myDairy.isLoved {
+            actionButtons[3].setImage(R.image.icon_editor_love_selected(), for: .normal)
+        } else {
+            actionButtons[3].setImage(R.image.icon_editor_love(), for: .normal)
+        }
     }
     
     func hideWeatherPicker() {
@@ -115,6 +142,10 @@ extension EditorViewController {
         case 1:
             showMoodPicker()
         case 2:
+            
+            break
+        case 3:
+            toggleLoveOrNot()
             break
         default:
             break
@@ -218,13 +249,24 @@ extension EditorViewController {
                 $0.height.equalTo(MoodFrameModel.totalHeight)
             }
         }
+        
+        _ = datePicker.then {
+            $0.alpha = 0
+            $0.delegate = self
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.center.equalToSuperview()
+                $0.width.equalTo(DeviceInfo.screenWidth - 48)
+                $0.height.equalTo(320)
+            }
+        }
     }
     
     func setupEditorHeader() {
         _ = actionBar.then {
             view.addSubview($0)
             $0.snp.makeConstraints {
-                $0.centerX.equalToSuperview()
+                $0.right.equalToSuperview().offset(-24)
                 $0.width.equalTo(ActionBarOptions.all.count * 44)
                 $0.top.equalTo(lineView.snp.bottom)
                 $0.height.equalTo(44)
@@ -233,7 +275,7 @@ extension EditorViewController {
         
         for (index, item) in ActionBarOptions.all.enumerated() {
             _ = UIButton().then {
-                actoinButtons.append($0)
+                actionButtons.append($0)
                 $0.setImage(UIImage(named: "icon_editor_\(item.rawValue)"), for: .normal)
                 $0.imageView?.contentMode = .scaleAspectFill
                 actionBar.addSubview($0)
@@ -315,6 +357,7 @@ extension EditorViewController {
                 $0.centerX.equalToSuperview()
                 $0.centerY.equalTo(saveButton)
             }
+            $0.addTarget(self, action: #selector(showDatePicker), for: .touchUpInside)
         }
         
         _ = lineView.then {

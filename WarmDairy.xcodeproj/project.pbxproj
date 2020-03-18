@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		894C3201F9E43BFE006268CA /* Pods_WarmDairy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 103890749CFA55E140750473 /* Pods_WarmDairy.framework */; };
+		B1297F6D242129C70015DFDA /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1297F6C242129C70015DFDA /* DatePicker.swift */; };
 		B1335A5724193C22006F1785 /* squire-raw.js in Resources */ = {isa = PBXBuildFile; fileRef = B1335A4F24193C22006F1785 /* squire-raw.js */; };
 		B1335A5824193C22006F1785 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = B1335A5024193C22006F1785 /* index.html */; };
 		B1335A5924193C22006F1785 /* editor.css in Resources */ = {isa = PBXBuildFile; fileRef = B1335A5124193C22006F1785 /* editor.css */; };
@@ -59,10 +60,8 @@
 		B1A0D2DA241E831100BCC8C0 /* CarouselFrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2D9241E831100BCC8C0 /* CarouselFrameModel.swift */; };
 		B1A0D2DC241F1AB900BCC8C0 /* TodayDairyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2DB241F1AB900BCC8C0 /* TodayDairyViewController.swift */; };
 		B1A0D2E2241F2DB700BCC8C0 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E1241F2DB700BCC8C0 /* CategoryViewController.swift */; };
-		B1A0D2E4242093A700BCC8C0 /* FontSizePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E3242093A700BCC8C0 /* FontSizePicker.swift */; };
 		B1A0D2E6242093B600BCC8C0 /* WeatherPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E5242093B600BCC8C0 /* WeatherPicker.swift */; };
 		B1A0D2E8242093E900BCC8C0 /* MoodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E7242093E900BCC8C0 /* MoodPicker.swift */; };
-		B1A0D2EA2420940F00BCC8C0 /* FontColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E92420940F00BCC8C0 /* FontColorPicker.swift */; };
 		B1F5C0E4241CBF5F00F2D21E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */; };
 		B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0E7241CC32200F2D21E /* DairyModel.swift */; };
 		B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */; };
@@ -89,6 +88,7 @@
 /* Begin PBXFileReference section */
 		103890749CFA55E140750473 /* Pods_WarmDairy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WarmDairy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48502487EE9789126C4ACC36 /* Pods-WarmDairy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WarmDairy.release.xcconfig"; path = "Target Support Files/Pods-WarmDairy/Pods-WarmDairy.release.xcconfig"; sourceTree = "<group>"; };
+		B1297F6C242129C70015DFDA /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		B1335A4F24193C22006F1785 /* squire-raw.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "squire-raw.js"; sourceTree = "<group>"; };
 		B1335A5024193C22006F1785 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		B1335A5124193C22006F1785 /* editor.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = editor.css; sourceTree = "<group>"; };
@@ -143,10 +143,8 @@
 		B1A0D2D9241E831100BCC8C0 /* CarouselFrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselFrameModel.swift; sourceTree = "<group>"; };
 		B1A0D2DB241F1AB900BCC8C0 /* TodayDairyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayDairyViewController.swift; sourceTree = "<group>"; };
 		B1A0D2E1241F2DB700BCC8C0 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
-		B1A0D2E3242093A700BCC8C0 /* FontSizePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSizePicker.swift; sourceTree = "<group>"; };
 		B1A0D2E5242093B600BCC8C0 /* WeatherPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherPicker.swift; sourceTree = "<group>"; };
 		B1A0D2E7242093E900BCC8C0 /* MoodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodPicker.swift; sourceTree = "<group>"; };
-		B1A0D2E92420940F00BCC8C0 /* FontColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontColorPicker.swift; sourceTree = "<group>"; };
 		B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		B1F5C0E7241CC32200F2D21E /* DairyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyModel.swift; sourceTree = "<group>"; };
 		B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyAPI.swift; sourceTree = "<group>"; };
@@ -256,10 +254,9 @@
 			children = (
 				B1335A5E241A63F4006F1785 /* ToolbarView.swift */,
 				B1335A6B241A8823006F1785 /* ToolbarCell.swift */,
-				B1A0D2E3242093A700BCC8C0 /* FontSizePicker.swift */,
 				B1A0D2E5242093B600BCC8C0 /* WeatherPicker.swift */,
 				B1A0D2E7242093E900BCC8C0 /* MoodPicker.swift */,
-				B1A0D2E92420940F00BCC8C0 /* FontColorPicker.swift */,
+				B1297F6C242129C70015DFDA /* DatePicker.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -804,8 +801,8 @@
 				B1A0D2E2241F2DB700BCC8C0 /* CategoryViewController.swift in Sources */,
 				B1F5C102241DD94900F2D21E /* PublicDatabaseManager.swift in Sources */,
 				B1551BB724112E0500A7782B /* ViewController.swift in Sources */,
-				B1A0D2EA2420940F00BCC8C0 /* FontColorPicker.swift in Sources */,
 				B1551BB324112E0500A7782B /* AppDelegate.swift in Sources */,
+				B1297F6D242129C70015DFDA /* DatePicker.swift in Sources */,
 				B1335A5B24193C22006F1785 /* SQTextAttribute.swift in Sources */,
 				B18302EE241E065A00A8E527 /* DairyImageModel.swift in Sources */,
 				B1335A71241BD2A4006F1785 /* ImageManager.swift in Sources */,
@@ -818,7 +815,6 @@
 				B1A0D2D4241E6D1500BCC8C0 /* UserInfo.swift in Sources */,
 				B1335A91241BE755006F1785 /* UIView+subScript.swift in Sources */,
 				B1F5C107241DD94900F2D21E /* CKRecordRecoverable.swift in Sources */,
-				B1A0D2E4242093A700BCC8C0 /* FontSizePicker.swift in Sources */,
 				B1335A9B241BE755006F1785 /* DUAPageModel.swift in Sources */,
 				B1F5C10A241DD94900F2D21E /* CreamAsset.swift in Sources */,
 				B1335A93241BE755006F1785 /* DUAReader.swift in Sources */,

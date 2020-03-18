@@ -61,9 +61,15 @@ public class SQTextEditorView: UIView {
         
         case setPlaceholder(text: String)
         case setText(alignment: String)
+        case undo
+        case redo
         
         var name: String {
             switch self {
+            case .undo:
+                return "undo()"
+            case .redo:
+                return "redo()"
             case .setText(let alignment):
                 return "setTextAlignment('\(alignment)')"
             case .setPlaceholder(let text):
@@ -154,6 +160,7 @@ public class SQTextEditorView: UIView {
         _webView.translatesAutoresizingMaskIntoConstraints = false
         _webView.navigationDelegate = self
         _webView.allowsLinkPreview = false
+        _webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         _webView.isOpaque = false
         _webView.backgroundColor = .clear
@@ -226,6 +233,18 @@ public class SQTextEditorView: UIView {
     }
     
     //MARK: - Public Methods
+    public func redo(completion: @escaping (_ error: Error?) -> ()) {
+        
+        webView.evaluateJavaScript(JSFunctionType.redo.name, completionHandler: { (_ ,error) in
+               completion(error)
+           })
+    }
+    
+    public func undo(completion: @escaping (_ error: Error?) -> ()) {
+        webView.evaluateJavaScript(JSFunctionType.undo.name, completionHandler: { (_ ,error) in
+            completion(error)
+        })
+    }
     
     // 设置对齐： left | center | right
     public func setTextAlignment(alignment: String, completion: @escaping (_ error: Error?) -> ()) {

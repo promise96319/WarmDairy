@@ -28,4 +28,5 @@ target 'WarmDairy' do
   pod 'Kingfisher'   # 图片加载
   pod 'FSPagerView'  # 轮播图
   pod 'RQShineLabel' # shine label
+  pod 'SwiftDate'    # date 格式化
 end
