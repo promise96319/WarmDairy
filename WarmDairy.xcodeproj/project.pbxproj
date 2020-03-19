@@ -66,6 +66,8 @@
 		B1C6576C2421D6F700D6F56A /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6576B2421D6F700D6F56A /* UserDefaults.swift */; };
 		B1C6576E2421DABA00D6F56A /* AppDelegate+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6576D2421DABA00D6F56A /* AppDelegate+Extension.swift */; };
 		B1C657702421E02F00D6F56A /* MottoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6576F2421E02F00D6F56A /* MottoAPI.swift */; };
+		B1C657722423198F00D6F56A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B1C657712423198F00D6F56A /* README.md */; };
+		B1C6577424236C2D00D6F56A /* DairyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577324236C2C00D6F56A /* DairyCell.swift */; };
 		B1F5C0E4241CBF5F00F2D21E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */; };
 		B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0E7241CC32200F2D21E /* DairyModel.swift */; };
 		B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */; };
@@ -153,6 +155,8 @@
 		B1C6576B2421D6F700D6F56A /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		B1C6576D2421DABA00D6F56A /* AppDelegate+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Extension.swift"; sourceTree = "<group>"; };
 		B1C6576F2421E02F00D6F56A /* MottoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MottoAPI.swift; sourceTree = "<group>"; };
+		B1C657712423198F00D6F56A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B1C6577324236C2C00D6F56A /* DairyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyCell.swift; sourceTree = "<group>"; };
 		B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		B1F5C0E7241CC32200F2D21E /* DairyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyModel.swift; sourceTree = "<group>"; };
 		B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyAPI.swift; sourceTree = "<group>"; };
@@ -430,6 +434,7 @@
 				B1551BBD24112E0600A7782B /* LaunchScreen.storyboard */,
 				B1551BC024112E0600A7782B /* Info.plist */,
 				B1551BE324121FB900A7782B /* Books.bundle */,
+				B1C657712423198F00D6F56A /* README.md */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -468,6 +473,7 @@
 			isa = PBXGroup;
 			children = (
 				B1A0D2D7241E7FA000BCC8C0 /* CarouselCell.swift */,
+				B1C6577324236C2C00D6F56A /* DairyCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -735,6 +741,7 @@
 				B1335A5824193C22006F1785 /* index.html in Resources */,
 				B1335AAA241BE779006F1785 /* bottomMenu.xib in Resources */,
 				B1551BE424121FB900A7782B /* Books.bundle in Resources */,
+				B1C657722423198F00D6F56A /* README.md in Resources */,
 				B1551BBA24112E0500A7782B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -839,6 +846,7 @@
 				B1335AA0241BE755006F1785 /* DUAStatusBar.swift in Sources */,
 				B1335A9F241BE755006F1785 /* DUATableViewCell.swift in Sources */,
 				B1335A99241BE755006F1785 /* DUATextDataParser.swift in Sources */,
+				B1C6577424236C2D00D6F56A /* DairyCell.swift in Sources */,
 				B1F5C110241DE8BF00F2D21E /* CustomTabBarView.swift in Sources */,
 				B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */,
 				B1335A98241BE755006F1785 /* DUAEpubDataParser.swift in Sources */,

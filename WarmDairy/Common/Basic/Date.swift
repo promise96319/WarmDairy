@@ -7,15 +7,16 @@
 //
 
 import Foundation
+import SwiftDate
 
-extension Int {
-    func toWeek() -> String {
-        /// 常量 星期的数组，数组 index==0 空出来
-        let WEEKS = ["", "星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
-        if (self > 0 && self < 8) {
-             return WEEKS[self]
-        }
-        return "\(self)"
+/// 1. 在数据库中存储的是UTC格式
+/// 2. 进行比较的时候均使用UTC格式
+/// 3. 展示的时候转化成 当前时区
+extension Date {
+    /// 将date转化成当前时区：保证格式化后显示正确
+    /// 数据库均需存储 UTC 格式 Date
+    func toRegion() -> DateInRegion {
+       return self.in(region: .current)
     }
 }
 

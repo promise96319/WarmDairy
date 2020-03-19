@@ -16,10 +16,12 @@ struct R: Rswift.Validatable {
     try intern.validate()
   }
   
-  /// This `R.file` struct is generated, and contains static references to 5 files.
+  /// This `R.file` struct is generated, and contains static references to 6 files.
   struct file {
     /// Resource file `Books.bundle`.
     static let booksBundle = Rswift.FileResource(bundle: R.hostingBundle, name: "Books", pathExtension: "bundle")
+    /// Resource file `README.md`.
+    static let readmeMd = Rswift.FileResource(bundle: R.hostingBundle, name: "README", pathExtension: "md")
     /// Resource file `editor.css`.
     static let editorCss = Rswift.FileResource(bundle: R.hostingBundle, name: "editor", pathExtension: "css")
     /// Resource file `editor.js`.
@@ -32,6 +34,12 @@ struct R: Rswift.Validatable {
     /// `bundle.url(forResource: "Books", withExtension: "bundle")`
     static func booksBundle(_: Void = ()) -> Foundation.URL? {
       let fileResource = R.file.booksBundle
+      return fileResource.bundle.url(forResource: fileResource)
+    }
+    
+    /// `bundle.url(forResource: "README", withExtension: "md")`
+    static func readmeMd(_: Void = ()) -> Foundation.URL? {
+      let fileResource = R.file.readmeMd
       return fileResource.bundle.url(forResource: fileResource)
     }
     
@@ -62,7 +70,7 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 54 images.
+  /// This `R.image` struct is generated, and contains static references to 56 images.
   struct image {
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
@@ -140,6 +148,10 @@ struct R: Rswift.Validatable {
     static let icon_tabbar_user = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_tabbar_user")
     /// Image `icon_today_back`.
     static let icon_today_back = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_back")
+    /// Image `icon_today_edit`.
+    static let icon_today_edit = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_edit")
+    /// Image `icon_today_love`.
+    static let icon_today_love = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_love")
     /// Image `icon_weather_cloud_sun`.
     static let icon_weather_cloud_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_cloud_sun")
     /// Image `icon_weather_cloud`.
@@ -361,6 +373,16 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_today_back", bundle: ..., traitCollection: ...)`
     static func icon_today_back(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_today_back, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_today_edit", bundle: ..., traitCollection: ...)`
+    static func icon_today_edit(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_today_edit, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_today_love", bundle: ..., traitCollection: ...)`
+    static func icon_today_love(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_today_love, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_weather_cloud", bundle: ..., traitCollection: ...)`

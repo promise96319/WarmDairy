@@ -14,8 +14,7 @@ extension DefaultsKeys {
     /// 是否VIP
     static let isVIP = DefaultsKey<Bool>("isVIP")
     
-    /// "2020-02-03" 最后一次启动app 的日期，如果不是今天，则创建格言model
-    static let lastActiveDate = DefaultsKey<String>("lastActiveDate")
+    /// 存留今天创建的motto
     static let todayMottoImage = DefaultsKey<String>("todayMottoImage")
     static let todayMotto = DefaultsKey<String>("todayMotto")
     static let todayMottoAuthor = DefaultsKey<String>("todayMottoAuthor")

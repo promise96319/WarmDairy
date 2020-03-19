@@ -18,11 +18,11 @@ class DairyAPI {
     
     static func getDairy(date: Date, callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
-        let res: [DairyModel] = realm.objects(DairyModel.self).sorted(byKeyPath: "id").map { $0 }
+        let res: [DairyModel] = realm.objects(DairyModel.self).map { $0 }
         let filterRes = res.filter {
             return $0.createdAt.compare(toDate: date, granularity: .day) == .orderedSame
         }
-        let replaceHtml = filterRes.map { (dairy) -> DairyModel in
+        var replaceHtml = filterRes.map { (dairy) -> DairyModel in
             let newDairy = DairyModel()
             newDairy.id = dairy.id
             newDairy.createdAt = dairy.createdAt
@@ -42,8 +42,10 @@ class DairyAPI {
                     newDairy.content = newHtml
                 }
             }
+
             return newDairy
         }
+        replaceHtml.sort { $0.createdAt > $1.createdAt }
         callback(replaceHtml)
     }
     

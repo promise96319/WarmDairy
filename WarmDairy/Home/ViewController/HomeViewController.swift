@@ -35,16 +35,27 @@ class HomeViewController: UIViewController {
     
     @objc func loadData() {
         MottoAPI.getMottos { (data) in
-            if Defaults[.todayMottoImage] != "" {
-                print("测试 ===> cunzai的值为: \(1111)")
+            // 如果没有数据，或者有数据时最后一天不是今天，创建一个新的空数据
+            if data.count == 0 || (data.count > 0 && !data[data.count - 1].date.compare(.isToday)) {
+                // 如果今天没有手动创建，则手动创建，有则复用今天的
+                if (Defaults[.todayMottoImage] == "") {
+                    let motto = MottoAPI.generateRandomMotto()
+                    Defaults[.todayMottoImage] = motto.0
+                    Defaults[.todayMotto] = motto.1
+                    Defaults[.todayMottoAuthor] = motto.2
+                }
+                
                 let todayMotto = MottoModel()
                 todayMotto.imageURL = Defaults[.todayMottoImage]
                 todayMotto.motto = Defaults[.todayMotto]
                 todayMotto.author = Defaults[.todayMottoAuthor]
+                // 记一个标识符，看是否为今天创建
+                todayMotto.isDeleted = true
                 self.mottoData = data
                 self.mottoData.append(todayMotto)
+                print("测试 ===> 今天存在格言")
             } else {
-                print("测试 ===> bucunzai的值为: \(2222)")
+                print("测试 ===> 不存在格言")
                 self.mottoData = data
             }
             
@@ -63,10 +74,12 @@ class HomeViewController: UIViewController {
     }
 }
 
+// MARK: - 事件
 extension HomeViewController {
     @objc func showEditor() {
         let vc = EditorViewController()
         vc.modalPresentationStyle = .fullScreen
+        vc.initBg(image: mottoData[mottoData.count - 1].imageURL)
         present(vc, animated: true, completion: nil)
     }
 }
@@ -87,6 +100,15 @@ extension HomeViewController: FSPagerViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension HomeViewController: FSPagerViewDelegate {
     func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
+        // 如果isDeleted为 true, 说明是手动创建的今天motto，此时是没有数据的
+        if mottoData[index].isDeleted {
+            let vc = EditorViewController()
+            vc.modalPresentationStyle = .fullScreen
+            vc.initBg(image: mottoData[index].imageURL)
+            present(vc, animated: true, completion: nil)
+            return
+        }
+        
         let vc = TodayDairyViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.initData(mottoData: mottoData[index])
@@ -107,7 +129,10 @@ extension HomeViewController {
             $0.titleLabel?.font = UIFont.systemFont(ofSize: 32)
             $0.titleLabel?.textAlignment = .center
             $0.layer.cornerRadius = 32
-            $0.clipsToBounds = true
+            $0.layer.shadowColor = UIColor(hexString: "000000")?.cgColor
+            $0.layer.shadowOpacity = 0.2
+            $0.layer.shadowOffset = CGSize(width: 2, height: 4)
+            $0.layer.shadowRadius = 10
             $0.backgroundColor = UIColor(hexString: "0cc4c4")
             view.addSubview($0)
             $0.snp.makeConstraints {

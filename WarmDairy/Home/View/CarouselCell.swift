@@ -45,11 +45,10 @@ class CarouselCell: FSPagerViewCell {
         ])
         self.authorLabel.text = mottoData.author
         self.mottoLabel.text = mottoData.motto
-        self.dayLabel.text = mottoData.date.day < 10 ? "0\(mottoData.date.day)" : "\(mottoData.date.day)"
-//        self.dateLabel.text = mottoData.date.toFormat("MMM yyyy")
-        self.dateLabel.text = Date().toFormat("MMM yyyy HH:mm:ss")
+        self.dayLabel.text = mottoData.date.toRegion().toFormat("dd")
+        self.dateLabel.text = mottoData.date.toRegion().toFormat("MMM yyyy")
     }
-}，
+}
 
 extension CarouselCell {
     func setupUI() {

@@ -47,6 +47,7 @@ img {
   height: auto;
   width: 80%;
   margin: 8px 10%;
+  border-radius: 8px;
 }
 
 h1 {

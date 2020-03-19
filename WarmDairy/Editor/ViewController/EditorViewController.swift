@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 import ViewAnimator
+import SwiftDate
 
 extension NSNotification.Name {
     /// 日记被添加了
@@ -49,17 +50,20 @@ class EditorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //                DairyAPI.getDairy { (data) in
-        //                    print("测试 ===> data的值为: \(data)")
-        //                }
-        //        DairyImageAPI.getImage {(data) in
-        //            print("测试 ===> data的值为: \(data)")
-        //        }
         setupUI()
     }
     
     func initData(dairy: DairyModel) {
         myDairy = dairy
+        chooseDate(date: dairy.createdAt)
+        chooseMood(mood: dairy.mood)
+        chooseWeather(weather: dairy.weather)
+        toggleLoveOrNot(isToggle: false)
+        titleField.text = dairy.title
+    }
+    
+    func initBg(image: String) {
+        bgImageView.kf.setImage(with: URL(string: image))
     }
     
     deinit {
@@ -85,8 +89,9 @@ extension EditorViewController {
     
     func chooseDate(date: Date) {
         myDairy.createdAt = date
-        let dateStr = "\(date.year)年\(date.month)月\(date.day)日 \(date.weekday.toWeek())"
-        dateButton.setTitle(dateStr, for: .normal)
+        let day = date.toRegion().toFormat("yyyy年MM月dd日")
+        let week = date.toRegion().weekdayName(.default, locale: Locales.chineseSimplified)
+        dateButton.setTitle("\(day) \(week)", for: .normal)
         hideDatePicker()
     }
     
@@ -206,6 +211,14 @@ extension EditorViewController {
         return (newHTML, ids.joined(separator: ","))
     }
     
+    /// 保存日记
+    /// 判断日记images是否为空，
+    ///     - 如果为空，不管是更新还是新增均无影响
+    ///      - 如果不为空，说明一定是新增
+    ///
+    /// 获取 html
+    ///   - 如果是新增，替换HTML中的img链接，更改images
+    ///   - 如果是更新，找出HTML中的
     @objc func saveDairy() {
         myDairy.title = titleField.text!
         editorView.getHTML { (html) in
@@ -334,7 +347,6 @@ extension EditorViewController {
     
     func setupBg() {
         _ = bgImageView.then {
-            $0.image = R.image.image_editor_bg()
             $0.contentMode = .scaleAspectFill
             view.addSubview($0)
             $0.snp.makeConstraints {
@@ -459,6 +471,7 @@ extension EditorViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
 }
 
+// MARK: - 插入图片
 extension EditorViewController {
     func insertImage() {
         let photosStatus = PHPhotoLibrary.authorizationStatus()
@@ -510,7 +523,7 @@ extension EditorViewController: SQTextEditorDelegate {
     }
     
     func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {
-        print("测试 ===> change的值为: \(222)")
+        print("text info changed")
         toolbar.toolbarCollectionView.reloadData()
     }
     

@@ -31,15 +31,15 @@ class DatePicker: UIView {
     
     func initData(date: Date) {
         currentDate = date
-        titleLabel.text = "日记日期 - \(date.year)年"
+        titleLabel.text = "日记日期 - \(date.toRegion().year)年"
         datePicker.date = currentDate
     }
 }
 
 extension DatePicker {
     @objc func selectDate(sender: UIDatePicker) {
-        let date = sender.date + 8.hours
-        titleLabel.text = "日记日期 - \(date.year)年"
+        let date = sender.date
+        titleLabel.text = "日记日期 - \(date.toRegion().year)年"
         currentDate = date
     }
     
@@ -62,7 +62,7 @@ extension DatePicker {
         layer.shadowRadius = 16
         
         _ = titleLabel.then {
-            $0.text = "日记日期 - \(currentDate.year)年"
+            $0.text = "日记日期 - \(currentDate.toRegion().year)年"
             $0.textColor = UIColor(hexString: "303133")
             addSubview($0)
             $0.snp.makeConstraints {
@@ -74,6 +74,7 @@ extension DatePicker {
         _ = datePicker.then {
             $0.datePickerMode = .dateAndTime
             $0.locale = NSLocale(localeIdentifier: "zh_CN") as Locale
+            $0.maximumDate = Date()
             $0.date = currentDate
             addSubview($0)
             $0.snp.makeConstraints {

@@ -9,11 +9,13 @@
 import UIKit
 import RQShineLabel
 import DTCoreText
+import SwiftDate
+import WebKit
 
 class TodayDairyViewController: UIViewController {
     
     lazy var mottoData = MottoModel()
-    lazy var dariesData = [DairyModel]()
+    lazy var dairesData = [DairyModel]()
     
     lazy var scrollView = UIScrollView()
     lazy var contentView = UIView()
@@ -30,6 +32,9 @@ class TodayDairyViewController: UIViewController {
     lazy var lineView = UIView()
     
     lazy var dairyContainers = [UIView]()
+    lazy var dairyCells = [DairyCell]()
+    
+    lazy var editButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,16 +52,16 @@ class TodayDairyViewController: UIViewController {
         mottoLabel.text = mottoData.motto
         authorLabel.text = mottoData.author
         mottoLabel.text = mottoData.motto
-        dayLabel.text = mottoData.date.day < 10 ? "0\(mottoData.date.day)" : "\(mottoData.date.day)"
-        dateLabel.text = mottoData.date.toFormat("MMM yyyy")
-        weekLabel.text = mottoData.date.weekday.toWeek()
+        dayLabel.text = mottoData.date.toRegion().toFormat("dd")
+        dateLabel.text = mottoData.date.toRegion().toFormat("MMM yyyy")
+        weekLabel.text = mottoData.date.toRegion().weekdayName(.default, locale: Locales.chineseSimplified)
         loadData()
     }
     
     @objc func loadData() {
         DairyAPI.getDairy(date: mottoData.date) { (dairies) in
             print("测试 ===> dairies的值为: \(dairies)")
-            self.dariesData = dairies
+            self.dairesData = dairies
             self.setupDairyView()
         }
     }
@@ -65,16 +70,30 @@ class TodayDairyViewController: UIViewController {
 // MARK: - 事件处理
 extension TodayDairyViewController {
     @objc func goBack() {
-        print("测试 ===> click的值为: \(2222)")
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func editDairy(sender: UIButton) {
-        let tag = sender.tag
+    @objc func showEditor() {
         let vc = EditorViewController()
-        vc.initData(dairy: dariesData[tag])
+        vc.modalPresentationStyle = .fullScreen
+        vc.initBg(image: mottoData.imageURL)
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func editDairy(dairy: DairyModel) {
+        let vc = EditorViewController()
+        vc.initData(dairy: dairy)
+        vc.initBg(image: mottoData.imageURL)
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true, completion: nil)
+    }
+    
+    @objc func updateDairyCell(at index: Int, webViewHeight: Int) {
+        dairyCells[index].snp.updateConstraints {
+            let otherHeight = DairyCellFrame.headerHeight + DairyCellFrame.titleHeight + DairyCellFrame.bottomSpacing
+            $0.height.equalTo(otherHeight + webViewHeight + 16)
+        }
+        dairyCells[index].layoutIfNeeded()
     }
 }
 
@@ -85,76 +104,53 @@ extension TodayDairyViewController {
         setupBack()
         setupDate()
         setupMotto()
+        
+        _ = editButton.then {
+            $0.setImage(R.image.icon_home_add(), for: .normal)
+            $0.imageEdgeInsets = UIEdgeInsets(top: 13, left: 13, bottom: 13, right: 13)
+            $0.titleLabel?.font = UIFont.systemFont(ofSize: 32)
+            $0.titleLabel?.textAlignment = .center
+            $0.layer.cornerRadius = 32
+            $0.layer.shadowColor = UIColor(hexString: "000000")?.cgColor
+            $0.layer.shadowOpacity = 0.2
+            $0.layer.shadowOffset = CGSize(width: 2, height: 4)
+            $0.layer.shadowRadius = 10
+            $0.backgroundColor = UIColor(hexString: "0cc4c4")
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.right.equalToSuperview().offset(-24)
+                $0.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-24)
+                $0.width.height.equalTo(64)
+            }
+            $0.addTarget(self, action: #selector(showEditor), for: .touchUpInside)
+        }
     }
     
     func setupDairyView() {
-        for (index, dairy) in dariesData.enumerated() {
-            let container = UIView().then {
-                $0.backgroundColor = UIColor(hexString: dairy.bgColor, alpha: 0.9)
-                $0.layer.cornerRadius = 12
-                $0.layer.shadowColor = UIColor(hexString: "000000")?.cgColor
-                $0.layer.shadowOpacity = 0.2
-                $0.layer.shadowOffset = CGSize(width: 2, height: 4)
-                $0.layer.shadowRadius = 10
-                dairyContainers.append($0)
-                contentView.addSubview($0)
-            }
-            
-            _ = UIButton().then {
-                $0.setTitle("看看谁什么样", for: .normal)
-                $0.backgroundColor = .systemPink
-                container.addSubview($0)
-                $0.snp.makeConstraints {
-                    $0.left.right.top.equalToSuperview()
-                    $0.height.equalTo(100)
-                }
+        for (index, dairy) in dairesData.enumerated() {
+            let dairyCell = DairyCell().then {
+                $0.initData(dairy: dairy)
+                $0.delegate = self
                 $0.tag = index
-                $0.addTarget(self, action: #selector(editDairy), for: .touchUpInside)
-            }
-            
-            let str = "<!DOCTYPE html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><meta charset=\"UTF-8\"></head>"
-            
-            guard let htmlData = (str + dairy.content).data(using: .utf8) else {return}
-            
-            if let attributedString = try? NSAttributedString(data: htmlData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil) {
-                print("测试 ===> attr的值为: \(attributedString)")
-                _ = UITextView().then {
-                    $0.attributedText = attributedString
-//                    $0.numberOfLines = 0
-//                    $0.lineBreakMode = .byWordWrapping
-                    container.addSubview($0)
-                    $0.snp.makeConstraints {
-                        $0.left.top.equalToSuperview().offset(24)
-                        $0.bottom.right.equalToSuperview().offset(-24)
+                contentView.addSubview($0)
+                $0.snp.makeConstraints {
+                    $0.left.equalToSuperview().offset(12)
+                    $0.right.equalToSuperview().offset(-12)
+                    if index == 0 {
+                        $0.top.equalToSuperview().offset(240)
+                    } else {
+                        $0.top.equalTo(dairyCells[dairyCells.count - 1].snp.bottom).offset(44)
                     }
-                }
-//                _ = DTAttributedLabel().then {
-//                    $0.attributedString = attributedString
-//                    container.addSubview($0)
-//                    $0.snp.makeConstraints {
-//                        $0.left.top.equalToSuperview().offset(24)
-//                        $0.bottom.right.equalToSuperview().offset(-24)
-//                    }
-//                }
-            }
-            
-            container.snp.makeConstraints {
-                $0.left.equalToSuperview().offset(24)
-                $0.right.equalToSuperview().offset(-24)
-                $0.height.equalTo(800)
-                if index == 0 {
-                    $0.top.equalToSuperview().offset(240)
-                } else {
-                    $0.top.equalTo(dairyContainers[index-1].snp.bottom).offset(24)
+                    $0.height.equalTo(DairyCellFrame.headerHeight + DairyCellFrame.titleHeight + DairyCellFrame.bottomSpacing)
                 }
             }
+            dairyCells.append(dairyCell)
             
-            if index == dariesData.count - 1 {
+            if index == dairesData.count - 1 {
                 contentView.snp.makeConstraints {
-                    $0.bottom.equalTo(container.snp.bottom).offset(64)
+                    $0.bottom.equalTo(dairyCell.snp.bottom).offset(64)
                 }
             }
-            
         }
     }
     
@@ -162,6 +158,7 @@ extension TodayDairyViewController {
         
         _ = mottoLabel.then {
             $0.setLineSpacing(lineSpacing: 10, lineHeightMultiple: 1)
+            $0.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
             contentView.addSubview($0)
