@@ -38,6 +38,7 @@ class TodayDairyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
         setupUI()
     }
     
@@ -52,9 +53,9 @@ class TodayDairyViewController: UIViewController {
         mottoLabel.text = mottoData.motto
         authorLabel.text = mottoData.author
         mottoLabel.text = mottoData.motto
-        dayLabel.text = mottoData.date.toRegion().toFormat("dd")
-        dateLabel.text = mottoData.date.toRegion().toFormat("MMM yyyy")
-        weekLabel.text = mottoData.date.toRegion().weekdayName(.default, locale: Locales.chineseSimplified)
+        dayLabel.text = mottoData.date.toFormat("dd")
+        dateLabel.text = mottoData.date.toFormat("MMM yyyy")
+        weekLabel.text = mottoData.date.weekdayName(.default, locale: Locales.chineseSimplified)
         loadData()
     }
     
@@ -64,6 +65,10 @@ class TodayDairyViewController: UIViewController {
             self.dairesData = dairies
             self.setupDairyView()
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
     }
 }
 
@@ -127,6 +132,14 @@ extension TodayDairyViewController {
     }
     
     func setupDairyView() {
+        // 先重置view
+        if dairyCells.count > 0 {
+            for dairyCell in dairyCells {
+                dairyCell.removeFromSuperview()
+            }
+            dairyCells = [DairyCell]()
+        }
+        
         for (index, dairy) in dairesData.enumerated() {
             let dairyCell = DairyCell().then {
                 $0.initData(dairy: dairy)

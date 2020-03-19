@@ -34,14 +34,10 @@ class EditorViewController: UIViewController {
     
     lazy var titleField = UITextField()
     lazy var actionBar = UIView()
-    enum ActionBarOptions: String {
-        case weather = "weather"
-        case mood = "mood"
-        case location = "location"
-        case love = "love"
-        static let all: [ActionBarOptions] = [.weather, .mood, .location, .love]
-    }
-    lazy var actionButtons = [UIButton]()
+
+    lazy var weatherButton = UIButton()
+    lazy var moodButton = UIButton()
+    lazy var loveButton = UIButton()
     
     lazy var weatherPicker = WeatherPicker()
     lazy var moodPicker = MoodPicker()
@@ -58,7 +54,7 @@ class EditorViewController: UIViewController {
         chooseDate(date: dairy.createdAt)
         chooseMood(mood: dairy.mood)
         chooseWeather(weather: dairy.weather)
-        toggleLoveOrNot(isToggle: false)
+        setLoveImage()
         titleField.text = dairy.title
     }
     
@@ -89,8 +85,8 @@ extension EditorViewController {
     
     func chooseDate(date: Date) {
         myDairy.createdAt = date
-        let day = date.toRegion().toFormat("yyyy年MM月dd日")
-        let week = date.toRegion().weekdayName(.default, locale: Locales.chineseSimplified)
+        let day = date.toFormat("yyyy年MM月dd日")
+        let week = date.weekdayName(.default, locale: Locales.chineseSimplified)
         dateButton.setTitle("\(day) \(week)", for: .normal)
         hideDatePicker()
     }
@@ -103,6 +99,8 @@ extension EditorViewController {
     }
     
     @objc func showDatePicker() {
+        // TODO：如果是更新日记，暂且不允许改date
+        if myDairy.images != "" { return }
         showMask()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         datePicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
@@ -117,8 +115,8 @@ extension EditorViewController {
     
     func chooseMood(mood: String) {
         myDairy.mood = mood
-        actionButtons[1].setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
-        actionButtons[1].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        moodButton.setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
+        moodButton.imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         hideMoodPicker()
     }
     
@@ -130,8 +128,8 @@ extension EditorViewController {
     
     func chooseWeather(weather: String) {
         myDairy.weather = weather
-        actionButtons[0].setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
-        actionButtons[0].imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        weatherButton.setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
+        weatherButton.imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         hideWeatherPicker()
     }
     
@@ -143,15 +141,16 @@ extension EditorViewController {
     
     /// 切换是否收藏该日记
     /// - Parameter isToggle: 默认为true，需要切换。为false的时候无需切换
-    func toggleLoveOrNot(isToggle: Bool = true) {
-        if isToggle {
-            myDairy.isLoved = !myDairy.isLoved
-        }
-        
+    @objc func toggleLove() {
+        myDairy.isLoved = !myDairy.isLoved
+        setLoveImage()
+    }
+    
+    func setLoveImage() {
         if myDairy.isLoved {
-            actionButtons[3].setImage(R.image.icon_editor_love_selected(), for: .normal)
+            loveButton.setImage(R.image.icon_editor_love_selected(), for: .normal)
         } else {
-            actionButtons[3].setImage(R.image.icon_editor_love(), for: .normal)
+            loveButton.setImage(R.image.icon_editor_love(), for: .normal)
         }
     }
     
@@ -162,35 +161,24 @@ extension EditorViewController {
         }
     }
     
-    @objc func clickPicker(sender: UIButton) {
-        switch sender.tag {
-        case 0:
-            showWeatherPicker()
-        case 1:
-            showMoodPicker()
-        case 2:
-            
-            break
-        case 3:
-            toggleLoveOrNot()
-            break
-        default:
-            break
-        }
-    }
-    
     /// 上传HTML前先保存图片，将URL替换成图片唯一的名称
     /// - Parameter html: html 字符串
     /// - Return html 字符串
-    func beforeUploadHTML(html: String) -> (String, String) {
+    func beforeUploadHTML(html: String, imagesStr: String) -> (String, String) {
         //        Optional("<div><img src=\"/private/var/mobile/Containers/Data/Application/C63B2ADA-F9FB-4235-BB34-054F179A8CB6/tmp/editor/images/silence_158427570975781\"><br></div>")
         let pattern = "src=\\\"\(FileManager.tmpPath + DairyImageAPI.imagePath)/\(DairyImageAPI.prefix)[0-9]{15}\\\""
         print("测试 ===> pattern的值为: \(pattern)")
         let regex = try! NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
         let res = regex.matches(in: html, options: NSRegularExpression.MatchingOptions.init(rawValue: 0), range: NSMakeRange(0, html.count))
         
+        /// 新的HTML
         var newHTML = html
-        var ids = [String]()
+        /// images id 数组：如果是更新，包含 已有id 和新增id
+        var oldIds = [String]()
+        var newIds = [String]()
+        /// 已有的图片id
+        var imageIds = [Substring]()
+        
         for checkingRes in res {
             let res = (html as NSString).substring(with: checkingRes.range)
             // src="/private/var/mobile/Containers/Data/Application/219416EE-2291-4A1C-8AEC-EA4F081D075F/tmp/editor/images/silence_158427716981744"
@@ -198,38 +186,80 @@ extension EditorViewController {
             var path = res.replacingOccurrences(of: "src=\"", with: "")
             path = path.replacingOccurrences(of: "\"", with: "")
             print("测试 ===> path的值为: \(path)")
-            DairyImageAPI.saveImage(path: path) { (id) in
-                guard let id = id else { return }
-                let filename = "\(DairyImageAPI.prefix)\(id)"
-                newHTML = newHTML.replacingOccurrences(of: path, with: filename)
-                ids.append("\(id)")
+            
+            ///  如果更新，需要将imgid进行对比
+            if imagesStr != "" {
+                imageIds = imagesStr.split(separator: ",")
+                let idPattern = "[0-9]{15}"
+                let idRegex = try! NSRegularExpression(pattern: idPattern, options: NSRegularExpression.Options.caseInsensitive)
+                let idRes = idRegex.matches(in: path, options: NSRegularExpression.MatchingOptions.init(rawValue: 0), range: NSMakeRange(0, path.count))
+                if idRes.count > 0 {
+                    /// html 中的图片id
+                    let id = (path as NSString).substring(with: idRes[0].range)
+                    if imageIds.contains(Substring(id)) {
+                        // 说明已存在图片
+                        let filename = "\(DairyImageAPI.prefix)\(id)"
+                        newHTML = newHTML.replacingOccurrences(of: path, with: filename)
+                        oldIds.append(id)
+                    } else {
+                        // 说明没有图片，保存图片
+                        DairyImageAPI.saveImage(path: path) { (id) in
+                            guard let id = id else { return }
+                            let filename = "\(DairyImageAPI.prefix)\(id)"
+                            newHTML = newHTML.replacingOccurrences(of: path, with: filename)
+                            newIds.append("\(id)")
+                        }
+                    }
+                } else {
+                    /// 如果结果不存在，说明tmp 文件有问题
+                    print("测试 ====> image tmp 文件路径有问题")
+                }
+            } else {
+                // 说明是新增，直接将path替换
+                DairyImageAPI.saveImage(path: path) { (id) in
+                    guard let id = id else { return }
+                    let filename = "\(DairyImageAPI.prefix)\(id)"
+                    newHTML = newHTML.replacingOccurrences(of: path, with: filename)
+                    newIds.append("\(id)")
+                }
             }
+            
+            /// html 替换完毕，将没用的image 删除
+            for imageId in imageIds {
+                if !oldIds.contains(String(imageId)) {
+                    if let id = Int(String(imageId)) {
+                        DairyImageAPI.deleteImage(id: id)
+                    }
+                }
+            }
+            
         }
         
         print("测试 ===> html的值为: \(newHTML)")
-        /// todo 删除已有 没有用的image
-        return (newHTML, ids.joined(separator: ","))
+        return (newHTML, (oldIds + newIds).joined(separator: ","))
     }
     
     /// 保存日记
     /// 判断日记images是否为空，
-    ///     - 如果为空，不管是更新还是新增均无影响
-    ///      - 如果不为空，说明一定是新增
-    ///
+    ///      - 如果为空，不管是更新还是新增均无影响
+    ///      - 如果不为空，说明一定是新增(只有新增过才会有images)
     /// 获取 html
-    ///   - 如果是新增，替换HTML中的img链接，更改images
-    ///   - 如果是更新，找出HTML中的
+    ///   - 如果是新增，替换HTML中的img链接，保存image，返回id存入到images中
+    ///   - 如果是更新，找出HTML中的img（通过 prefix + id 形式），与images里的id对照
+    ///         - img 中不包含images的，则删除这些images
+    ///           - images中不包含img的，新增img
+    /// 最终返回HTML
+    /// 保存日记（查询判断是新增还是更新）
     @objc func saveDairy() {
         myDairy.title = titleField.text!
         editorView.getHTML { (html) in
             if let html = html {
-                let res = self.beforeUploadHTML(html: html)
+                let res = self.beforeUploadHTML(html: html, imagesStr: self.myDairy.images)
                 self.myDairy.content = res.0
                 self.myDairy.images = res.1
                 
                 DairyAPI.addDairy(dairy: self.myDairy) { (isAdded) in
                     if (isAdded) {
-                        NotificationCenter.default.post(name: .dairyDidAdded, object: nil)
                         self.dismiss(animated: true, completion: nil)
                     }
                 }
@@ -304,30 +334,42 @@ extension EditorViewController {
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.right.equalToSuperview().offset(-24)
-                $0.width.equalTo(ActionBarOptions.all.count * 44)
+                $0.left.equalToSuperview().offset(24)
                 $0.top.equalTo(lineView.snp.bottom)
                 $0.height.equalTo(44)
             }
         }
         
-        for (index, item) in ActionBarOptions.all.enumerated() {
-            _ = UIButton().then {
-                actionButtons.append($0)
-                $0.setImage(UIImage(named: "icon_editor_\(item.rawValue)"), for: .normal)
-                $0.imageView?.contentMode = .scaleAspectFill
-                actionBar.addSubview($0)
-                $0.snp.makeConstraints {
-                    $0.left.equalToSuperview().offset((index * 44))
-                    $0.centerY.equalToSuperview()
-                    $0.width.height.equalTo(44)
-                }
-                $0.tag = index
-                $0.addTarget(self, action: #selector(clickPicker), for: .touchUpInside)
+        loveButton.tag = 0
+        loveButton.addTarget(self, action: #selector(toggleLove), for: .touchUpInside)
+        moodButton.tag = 1
+        moodButton.addTarget(self, action: #selector(showMoodPicker), for: .touchUpInside)
+        weatherButton.tag = 2
+        weatherButton.addTarget(self, action: #selector(showWeatherPicker), for: .touchUpInside)
+        [loveButton, moodButton, weatherButton].forEach {            $0.imageView?.contentMode = .scaleAspectFill
+            actionBar.addSubview($0)
+            let index = $0.tag
+            $0.snp.makeConstraints {
+                $0.right.equalToSuperview().offset((-index * 44))
+                $0.centerY.equalToSuperview()
+                $0.width.height.equalTo(44)
             }
         }
         
+        if myDairy.weather == "" {
+            weatherButton.setImage(UIImage(named: "icon_editor_weather"), for: .normal)
+            weatherButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+        
+        if myDairy.mood == "" {
+            moodButton.setImage(UIImage(named: "icon_editor_mood"), for: .normal)
+            moodButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+        
+        setLoveImage()
+        
         _ = titleField.then {
-            $0.text = ""
+            $0.text = myDairy.title
             $0.placeholder = "标题"
             $0.backgroundColor = .clear
             $0.borderStyle = .none

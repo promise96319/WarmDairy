@@ -47,7 +47,7 @@ class DairyCell: UIView {
         
         layer.borderColor = UIColor(hexString: dairy.bgColor, alpha: 0.8)?.cgColor
         mainView.backgroundColor = UIColor(hexString: dairy.bgColor, alpha: 0.8)
-        timeLabel.text = dairy.createdAt.toRegion().toFormat("a hh:mm", locale: Locales.chineseSimplified)
+        timeLabel.text = dairy.createdAt.toFormat("a hh:mm", locale: Locales.chineseSimplified)
         titleLabel.text = dairy.title == "" ? "标题" : dairy.title
         
         if dairy.isLoved {
@@ -203,6 +203,7 @@ extension DairyCell {
                 $0.right.equalToSuperview().offset(-12)
                 $0.width.height.equalTo(DairyCellFrame.headerHeight)
             }
+            $0.addTarget(self, action: #selector(showEdit), for: .touchUpInside)
         }
         
         _ = loveButton.then {

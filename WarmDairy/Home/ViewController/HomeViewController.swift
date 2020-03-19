@@ -34,7 +34,11 @@ class HomeViewController: UIViewController {
     }
     
     @objc func loadData() {
+       
         MottoAPI.getMottos { (data) in
+            print("测试 ===> da的值为: \(data)")
+            print("测试 ===> data[data.count - 1].date的值为: \(data[data.count - 1].date)")
+             print("测试 ===> d的值为: \(data[data.count - 1].date.compare(.isToday))")
             // 如果没有数据，或者有数据时最后一天不是今天，创建一个新的空数据
             if data.count == 0 || (data.count > 0 && !data[data.count - 1].date.compare(.isToday)) {
                 // 如果今天没有手动创建，则手动创建，有则复用今天的

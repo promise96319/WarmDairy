@@ -30,8 +30,8 @@
             filePath = "WarmDairy/Home/ViewController/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "177"
-            endingLineNumber = "177"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
             landmarkName = "setupWelcome()"
             landmarkType = "7">
          </BreakpointContent>

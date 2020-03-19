@@ -57,9 +57,9 @@ class DairyAPI {
                 let realm = try! Realm()
                 
                 try! realm.write {
-                    realm.add(dairy)
+                    realm.add(dairy, update: .modified)
                 }
-                
+                NotificationCenter.default.post(name: .dairyDidAdded, object: nil)
                 callback(true)
             } else {
                 callback(false)

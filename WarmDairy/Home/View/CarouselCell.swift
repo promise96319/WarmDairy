@@ -45,8 +45,8 @@ class CarouselCell: FSPagerViewCell {
         ])
         self.authorLabel.text = mottoData.author
         self.mottoLabel.text = mottoData.motto
-        self.dayLabel.text = mottoData.date.toRegion().toFormat("dd")
-        self.dateLabel.text = mottoData.date.toRegion().toFormat("MMM yyyy")
+        self.dayLabel.text = mottoData.date.toFormat("dd")
+        self.dateLabel.text = mottoData.date.toFormat("MMM yyyy")
     }
 }
 

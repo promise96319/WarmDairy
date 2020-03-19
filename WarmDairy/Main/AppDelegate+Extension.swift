@@ -13,5 +13,6 @@ import SwiftDate
 extension AppDelegate {
     func setUserDefault() {
         // TODO: - 默认值
+        SwiftDate.defaultRegion = .current
     }
 }

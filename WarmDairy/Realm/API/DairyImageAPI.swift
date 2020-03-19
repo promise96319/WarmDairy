@@ -69,6 +69,20 @@ class DairyImageAPI {
         let res: DairyImageModel? = realm.objects(DairyImageModel.self).filter("id = id").first
         callback(res)
     }
+    
+    /// 删除 图片
+    /// - Parameter id: 图片id
+    static func deleteImage(id: Int) {
+        let realm = try! Realm()
+        let res = realm.objects(DairyImageModel.self).filter("id = \(id)")
+        if res.count > 0 {
+            /// 说明有数据，那么更新
+            try! realm.write {
+                realm.create(DairyImageModel.self, value: ["id": id, "isDeleted": true], update: .modified)
+                print("测试 ====> 删除图片完毕")
+            }
+        }
+    }
 }
 
 extension DairyImageAPI {
