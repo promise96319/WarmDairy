@@ -145,7 +145,7 @@ extension MeViewController {
             
         }
         
-        stackView.addArrangedSubview(generateItemStack(label: allDairyLabel, text: "所有笔记"))
+        stackView.addArrangedSubview(generateItemStack(label: allDairyLabel, text: "所有日记"))
         stackView.addArrangedSubview(generateItemStack(label: recordTimeLabel, text: "记录时长"))
         stackView.addArrangedSubview(generateItemStack(label: continousCreateLabel, text: "连续创作"))
         

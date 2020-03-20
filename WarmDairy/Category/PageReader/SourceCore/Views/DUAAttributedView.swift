@@ -32,8 +32,6 @@ class DUAAttributedView: DTAttributedLabel, UIGestureRecognizerDelegate {
     
     var convexView: DUAConVexLensView?
     
-    
-    
     override init(frame: CGRect) {
         // 属性赋值
         self.longPressGes = UILongPressGestureRecognizer()
@@ -44,9 +42,9 @@ class DUAAttributedView: DTAttributedLabel, UIGestureRecognizerDelegate {
         // 父类初始化
         super.init(frame: frame)
         
-        self.longPressGes = UILongPressGestureRecognizer.init(target: self, action: #selector(handleLongPressGesture(gesture:)))
+//        self.longPressGes = UILongPressGestureRecognizer.init(target: self, action: #selector(handleLongPressGesture(gesture:)))
 
-        self.addGestureRecognizer(self.longPressGes)
+//        self.addGestureRecognizer(self.longPressGes)
         
         self.panGes = UIPanGestureRecognizer.init(target: self, action: #selector(handlePanGesture(gesture:)))
         self.addGestureRecognizer(self.panGes)

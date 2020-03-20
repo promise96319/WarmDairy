@@ -8,7 +8,6 @@
 
 import UIKit
 import RQShineLabel
-import DTCoreText
 import SwiftDate
 import WebKit
 
@@ -152,7 +151,7 @@ extension TodayDairyViewController {
                     if index == 0 {
                         $0.top.equalToSuperview().offset(240)
                     } else {
-                        $0.top.equalTo(dairyCells[dairyCells.count - 1].snp.bottom).offset(44)
+                        $0.top.equalTo(dairyCells[dairyCells.count - 1].snp.bottom).offset(32)
                     }
                     $0.height.equalTo(DairyCellFrame.headerHeight + DairyCellFrame.titleHeight + DairyCellFrame.bottomSpacing)
                 }

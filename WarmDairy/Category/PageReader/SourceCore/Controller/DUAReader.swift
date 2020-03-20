@@ -65,25 +65,31 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     /// 是否成功切换到某章节，成功为0，不成功则记录未成功切换的章节index，当指定跳至某章节时使用
     var successSwitchChapter = 0
     
-    
-    
+    /// 新增 UI
+    lazy var chapterTitles = [String]()
+    lazy var topBar = UIView()
+    lazy var bottomBar = UIView()
+    lazy var sideMask = UIView()
+    lazy var sideBar = UIView()
+    lazy var collectionView = UICollectionView()
+    var tapGesture: UITapGestureRecognizer?
     
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
     // MARK:--对外接口
-    public func readWith(filePath: String, pageIndex: Int) -> Void {
+    public func readWith(dairies: [DairyModel], pageIndex: Int) -> Void {
         
         self.postReaderStateNotification(state: .busy)
-        self.dataParser.parseChapterFromBook(path: filePath, completeHandler: {(titles, models) -> Void in
+        self.dataParser.parseChapterFromBook(dairies: dairies, completeHandler: {(titles, models) -> Void in
             if self.delegate?.reader(reader: chapterTitles: ) != nil {
                 self.delegate?.reader(reader: self, chapterTitles: titles)
+                self.chapterTitles = titles
             }
             self.totalChapterModels = models
             self.readWith(chapter: models.first!, pageIndex: pageIndex)
         })
-        
     }
     
     public func readChapterBy(index: Int, pageIndex: Int) -> Void {
@@ -145,8 +151,10 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     
     private func processPageArray(pages: [DUAPageModel], chapter: DUAChapterModel, pageIndex: Int) -> Void {
         
+        print("测试 ===> pageIndex的值为: \(pageIndex)")
         self.postReaderStateNotification(state: .ready)
         if pageHunger {
+            print("测试 ===> pageHunger的值为: \(pageHunger)")
             pageHunger = false
             if pageVC != nil {
                 self.loadPage(pageIndex: currentPageIndex)
@@ -162,6 +170,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         
         if firstIntoReader {
+            print("测试 ===> firstIntoReader的值为: \(firstIntoReader)")
             firstIntoReader = false
             currentPageIndex = pageIndex <= 0 ? 0 : (pageIndex - 1)
             updateChapterIndex(index: chapter.chapterIndex)
@@ -172,6 +181,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         
         if isReCutPage {
+            print("测试 ===> isReCutPage的值为: \(isReCutPage)")
             isReCutPage = false
             var newIndex = 1
             for (index, item) in pages.enumerated() {
@@ -204,13 +214,16 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     ///
     /// - Parameter ges: 单击手势
     @objc private func pagingTap(ges: UITapGestureRecognizer) -> Void {
-        let tapPoint = ges.location(in: self.view)
-        let width = UIScreen.main.bounds.size.width
-        let rect = CGRect(x: width/3, y: 0, width: width/3, height: UIScreen.main.bounds.size.height)
-        if rect.contains(tapPoint) {
-            if self.delegate?.readerDidClickSettingFrame(reader:) != nil {
-                self.delegate?.readerDidClickSettingFrame(reader: self)
-            }
+//        let tapPoint = ges.location(in: self.view)
+//        let width = UIScreen.main.bounds.size.width
+//        let rect = CGRect(x: width/3, y: 0, width: width/3, height: UIScreen.main.bounds.size.height)
+//        if rect.contains(tapPoint) {
+//            if self.delegate?.readerDidClickSettingFrame(reader:) != nil {
+//                self.delegate?.readerDidClickSettingFrame(reader: self)
+//            }
+//        }
+        if self.delegate?.readerDidClickSettingFrame(reader:) != nil {
+            self.delegate?.readerDidClickSettingFrame(reader: self)
         }
     }
     
@@ -218,15 +231,21 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        if self.config.bookType == DUAReaderBookType.epub {
-            self.dataParser = DUAEpubDataParser()
-        }else {
-            self.dataParser = DUATextDataParser()
-        }
-        let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(pagingTap(ges:)))
-        self.view.addGestureRecognizer(tapGesture)
+        self.dataParser = DUAEpubDataParser()
         self.addObserverForConfiguration()
+        addGesture()
         self.loadReaderView()
+    }
+    
+    func addGesture() {
+        tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(pagingTap(ges:)))
+        self.view.addGestureRecognizer(tapGesture!)
+    }
+    
+    func removeGesture() {
+        if let tapGesture = tapGesture {
+            self.view.removeGestureRecognizer(tapGesture)
+        }
     }
     
     private func loadReaderView() -> Void {
@@ -336,6 +355,16 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
             
         }
     }
+
+    public func changeColor(color: ReaderBg) -> Void {
+        var curPage: DUAPageViewController? = nil
+        if config.scrollType == .curl {
+            curPage = pageVC?.viewControllers?.first as? DUAPageViewController
+            if let curPage = curPage {
+                curPage.backgroundMask.backgroundColor = UIColor(hexString: color.rawValue, alpha: 0.9)
+            }
+        }
+    }
     
     private func loadBackgroundImage() -> Void {
         var curPage: DUAPageViewController? = nil
@@ -364,7 +393,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     }
     
     private func addStatusBarTo(view: UIView, totalCounts: Int, curPage: Int) -> Void {
-        let safeAreaBottomHeight: CGFloat = UIScreen.main.bounds.size.height == 812.0 ? 34 : 0
+        let safeAreaBottomHeight: CGFloat = UIScreen.main.bounds.size.height == 812.0 || UIScreen.main.bounds.size.height == 896.0 ? 34 : 0
         let rect = CGRect(x: config.contentFrame.origin.x, y: UIScreen.main.bounds.size.height - 30 - safeAreaBottomHeight, width: config.contentFrame.width, height: 20)
         let statusBar = DUAStatusBar.init(frame: rect)
         view.addSubview(statusBar)
@@ -656,6 +685,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         let nextIndex: Int
         let pageArray = self.pageArrayFromCache(chapterIndex: currentChapterIndex)
+        print("测试 ===> pageArray的值为: \(pageArray)")
         if viewController is DUAPageViewController {
             let page = viewController as! DUAPageViewController
             nextIndex = page.index + 1
@@ -788,28 +818,31 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if tableView!.isReloading {
+        guard let tableView = tableView else {
+            return
+        }
+        if tableView.isReloading {
             return
         }
         if scrollView.contentOffset.y <= 0 {
             scrollView.contentOffset.y = 0
             // cell index = 0 需要请求上一章
-            if tableView?.arrivedZeroOffset == false {
+            if tableView.arrivedZeroOffset == false {
                 self.requestLastChapterForTableView()
             }
-            tableView?.arrivedZeroOffset = true
+            tableView.arrivedZeroOffset = true
         }else {
-            tableView?.arrivedZeroOffset = false
+            tableView.arrivedZeroOffset = false
         }
         
         let basePoint = CGPoint(x: config.contentFrame.width/2.0, y: scrollView.contentOffset.y + config.contentFrame.height/2.0)
-        let majorIndexPath = tableView?.indexPathForRow(at: basePoint)
+        let majorIndexPath = tableView.indexPathForRow(at: basePoint)
         
-        if majorIndexPath!.row > tableView!.cellIndex { // 向后翻页
+        if majorIndexPath!.row > tableView.cellIndex { // 向后翻页
             
             prePageStartLocation = -1
-            tableView?.cellIndex = majorIndexPath!.row
-            currentPageIndex = (self.tableView?.dataArray[tableView!.cellIndex].pageIndex)!
+            tableView.cellIndex = majorIndexPath!.row
+            currentPageIndex = self.tableView!.dataArray[tableView.cellIndex].pageIndex
             print("进入下一页 页码 \(currentPageIndex)")
             
             if currentPageIndex == 0 {
@@ -820,20 +853,20 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
             self.statusBarForTableView?.curPageIndex = currentPageIndex
             
             // 到达本章节最后一页，请求下一章
-            if tableView?.cellIndex == (self.tableView?.dataArray.count)! - 1 {
+            if tableView.cellIndex == self.tableView!.dataArray.count - 1 {
                 self.requestNextChapterForTableView()
             }
             
             if self.delegate?.reader(reader: readerProgressUpdated: curPage: totalPages: ) != nil {
                 self.delegate?.reader(reader: self, readerProgressUpdated: currentChapterIndex, curPage: currentPageIndex + 1, totalPages: self.pageArrayFromCache(chapterIndex: currentChapterIndex).count)
             }
-        }else if majorIndexPath!.row < tableView!.cellIndex {     //向前翻页
+        }else if majorIndexPath!.row < tableView.cellIndex {     //向前翻页
             prePageStartLocation = -1
-            tableView?.cellIndex = majorIndexPath!.row
-            currentPageIndex = (self.tableView?.dataArray[tableView!.cellIndex].pageIndex)!
+            tableView.cellIndex = majorIndexPath!.row
+            currentPageIndex = (self.tableView?.dataArray[tableView.cellIndex].pageIndex)!
             print("进入上一页 页码 \(currentPageIndex)")
             
-            let previousPageIndex = self.tableView!.dataArray[tableView!.cellIndex + 1].pageIndex
+            let previousPageIndex = self.tableView!.dataArray[tableView.cellIndex + 1].pageIndex
             if currentChapterIndex - 1 > 0 && currentPageIndex == self.pageArrayFromCache(chapterIndex: currentChapterIndex - 1).count - 1 && previousPageIndex == 0 {
                 print("跳入上一章，从 \(currentChapterIndex) 到 \(currentChapterIndex - 1)")
                 updateChapterIndex(index: currentChapterIndex - 1)

@@ -32,7 +32,6 @@
 		B1335A96241BE755006F1785 /* DUAConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A82241BE755006F1785 /* DUAConfiguration.swift */; };
 		B1335A97241BE755006F1785 /* DUADataParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A84241BE755006F1785 /* DUADataParser.swift */; };
 		B1335A98241BE755006F1785 /* DUAEpubDataParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A85241BE755006F1785 /* DUAEpubDataParser.swift */; };
-		B1335A99241BE755006F1785 /* DUATextDataParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A86241BE755006F1785 /* DUATextDataParser.swift */; };
 		B1335A9A241BE755006F1785 /* DUAChapterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A88241BE755006F1785 /* DUAChapterModel.swift */; };
 		B1335A9B241BE755006F1785 /* DUAPageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A89241BE755006F1785 /* DUAPageModel.swift */; };
 		B1335A9C241BE755006F1785 /* DUAAttributedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A8B241BE755006F1785 /* DUAAttributedView.swift */; };
@@ -40,8 +39,6 @@
 		B1335A9E241BE755006F1785 /* DUAConVexLensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A8D241BE755006F1785 /* DUAConVexLensView.swift */; };
 		B1335A9F241BE755006F1785 /* DUATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A8E241BE755006F1785 /* DUATableViewCell.swift */; };
 		B1335AA0241BE755006F1785 /* DUAStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1335A8F241BE755006F1785 /* DUAStatusBar.swift */; };
-		B1335AAA241BE779006F1785 /* bottomMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1335AA5241BE779006F1785 /* bottomMenu.xib */; };
-		B1335AAB241BE779006F1785 /* topMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1335AA6241BE779006F1785 /* topMenu.xib */; };
 		B1551BB324112E0500A7782B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BB224112E0500A7782B /* AppDelegate.swift */; };
 		B1551BB724112E0500A7782B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BB624112E0500A7782B /* ViewController.swift */; };
 		B1551BBA24112E0500A7782B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1551BB824112E0500A7782B /* Main.storyboard */; };
@@ -49,7 +46,6 @@
 		B1551BBF24112E0600A7782B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1551BBD24112E0600A7782B /* LaunchScreen.storyboard */; };
 		B1551BCB2411508900A7782B /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BCA2411508900A7782B /* R.generated.swift */; };
 		B1551BD12411ECE100A7782B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BD02411ECE100A7782B /* HomeViewController.swift */; };
-		B1551BE224121F8500A7782B /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BE124121F8500A7782B /* ReaderViewController.swift */; };
 		B1551BE424121FB900A7782B /* Books.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B1551BE324121FB900A7782B /* Books.bundle */; };
 		B1551BE82412207500A7782B /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BE72412207500A7782B /* UIColor+Extension.swift */; };
 		B18302EE241E065A00A8E527 /* DairyImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18302ED241E065A00A8E527 /* DairyImageModel.swift */; };
@@ -68,6 +64,12 @@
 		B1C657702421E02F00D6F56A /* MottoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6576F2421E02F00D6F56A /* MottoAPI.swift */; };
 		B1C657722423198F00D6F56A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B1C657712423198F00D6F56A /* README.md */; };
 		B1C6577424236C2D00D6F56A /* DairyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577324236C2C00D6F56A /* DairyCell.swift */; };
+		B1C657762424A5CB00D6F56A /* CategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C657752424A5CB00D6F56A /* CategoryModel.swift */; };
+		B1C657782424A9EE00D6F56A /* CategorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C657772424A9EE00D6F56A /* CategorySection.swift */; };
+		B1C6577C2424BBF100D6F56A /* SystemCategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577B2424BBF100D6F56A /* SystemCategoryModel.swift */; };
+		B1C6577E2424BF1700D6F56A /* CategorySectionFrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577D2424BF1700D6F56A /* CategorySectionFrameModel.swift */; };
+		B1C657802424C7C800D6F56A /* CategorySectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577F2424C7C800D6F56A /* CategorySectionCell.swift */; };
+		B1C657822424F6F900D6F56A /* Extension+DUAReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C657812424F6F900D6F56A /* Extension+DUAReader.swift */; };
 		B1F5C0E4241CBF5F00F2D21E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */; };
 		B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0E7241CC32200F2D21E /* DairyModel.swift */; };
 		B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */; };
@@ -118,7 +120,6 @@
 		B1335A82241BE755006F1785 /* DUAConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAConfiguration.swift; sourceTree = "<group>"; };
 		B1335A84241BE755006F1785 /* DUADataParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUADataParser.swift; sourceTree = "<group>"; };
 		B1335A85241BE755006F1785 /* DUAEpubDataParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAEpubDataParser.swift; sourceTree = "<group>"; };
-		B1335A86241BE755006F1785 /* DUATextDataParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUATextDataParser.swift; sourceTree = "<group>"; };
 		B1335A88241BE755006F1785 /* DUAChapterModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAChapterModel.swift; sourceTree = "<group>"; };
 		B1335A89241BE755006F1785 /* DUAPageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAPageModel.swift; sourceTree = "<group>"; };
 		B1335A8B241BE755006F1785 /* DUAAttributedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAAttributedView.swift; sourceTree = "<group>"; };
@@ -126,8 +127,6 @@
 		B1335A8D241BE755006F1785 /* DUAConVexLensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAConVexLensView.swift; sourceTree = "<group>"; };
 		B1335A8E241BE755006F1785 /* DUATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUATableViewCell.swift; sourceTree = "<group>"; };
 		B1335A8F241BE755006F1785 /* DUAStatusBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DUAStatusBar.swift; sourceTree = "<group>"; };
-		B1335AA5241BE779006F1785 /* bottomMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = bottomMenu.xib; sourceTree = "<group>"; };
-		B1335AA6241BE779006F1785 /* topMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = topMenu.xib; sourceTree = "<group>"; };
 		B1335AB5241CAD17006F1785 /* WarmDairy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WarmDairy.entitlements; sourceTree = "<group>"; };
 		B1551BAF24112E0500A7782B /* WarmDairy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WarmDairy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1551BB224112E0500A7782B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -138,7 +137,6 @@
 		B1551BC024112E0600A7782B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1551BCA2411508900A7782B /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = SOURCE_ROOT; };
 		B1551BD02411ECE100A7782B /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		B1551BE124121F8500A7782B /* ReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewController.swift; sourceTree = "<group>"; };
 		B1551BE324121FB900A7782B /* Books.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Books.bundle; sourceTree = "<group>"; };
 		B1551BE72412207500A7782B /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		B18302ED241E065A00A8E527 /* DairyImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyImageModel.swift; sourceTree = "<group>"; };
@@ -157,6 +155,12 @@
 		B1C6576F2421E02F00D6F56A /* MottoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MottoAPI.swift; sourceTree = "<group>"; };
 		B1C657712423198F00D6F56A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B1C6577324236C2C00D6F56A /* DairyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyCell.swift; sourceTree = "<group>"; };
+		B1C657752424A5CB00D6F56A /* CategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModel.swift; sourceTree = "<group>"; };
+		B1C657772424A9EE00D6F56A /* CategorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySection.swift; sourceTree = "<group>"; };
+		B1C6577B2424BBF100D6F56A /* SystemCategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCategoryModel.swift; sourceTree = "<group>"; };
+		B1C6577D2424BF1700D6F56A /* CategorySectionFrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySectionFrameModel.swift; sourceTree = "<group>"; };
+		B1C6577F2424C7C800D6F56A /* CategorySectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySectionCell.swift; sourceTree = "<group>"; };
+		B1C657812424F6F900D6F56A /* Extension+DUAReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+DUAReader.swift"; sourceTree = "<group>"; };
 		B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		B1F5C0E7241CC32200F2D21E /* DairyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyModel.swift; sourceTree = "<group>"; };
 		B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyAPI.swift; sourceTree = "<group>"; };
@@ -302,8 +306,6 @@
 		B1335A76241BE744006F1785 /* PageReader */ = {
 			isa = PBXGroup;
 			children = (
-				B1335AA5241BE779006F1785 /* bottomMenu.xib */,
-				B1335AA6241BE779006F1785 /* topMenu.xib */,
 				B1335A77241BE755006F1785 /* SourceCore */,
 			);
 			path = PageReader;
@@ -335,6 +337,7 @@
 				B1335A7D241BE755006F1785 /* DUAReader.swift */,
 				B1335A7E241BE755006F1785 /* DUABackViewController.swift */,
 				B1335A7F241BE755006F1785 /* DUAtranslationController.swift */,
+				B1C657812424F6F900D6F56A /* Extension+DUAReader.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -362,7 +365,6 @@
 			children = (
 				B1335A84241BE755006F1785 /* DUADataParser.swift */,
 				B1335A85241BE755006F1785 /* DUAEpubDataParser.swift */,
-				B1335A86241BE755006F1785 /* DUATextDataParser.swift */,
 			);
 			path = parser;
 			sourceTree = "<group>";
@@ -413,7 +415,6 @@
 				B1F5C111241DFC2A00F2D21E /* Me */,
 				B1335AB5241CAD17006F1785 /* WarmDairy.entitlements */,
 				B1335A60241A6494006F1785 /* Editor */,
-				B1551BDD24121F5A00A7782B /* Reader */,
 				B1551BCC2411ECB400A7782B /* Home */,
 				B1551BC724112E8800A7782B /* Main */,
 				B1F5C0E5241CC2FA00F2D21E /* Realm */,
@@ -486,39 +487,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		B1551BDD24121F5A00A7782B /* Reader */ = {
-			isa = PBXGroup;
-			children = (
-				B1335A76241BE744006F1785 /* PageReader */,
-				B1551BE024121F7300A7782B /* Model */,
-				B1551BDF24121F6D00A7782B /* View */,
-				B1551BDE24121F6300A7782B /* ViewController */,
-			);
-			path = Reader;
-			sourceTree = "<group>";
-		};
-		B1551BDE24121F6300A7782B /* ViewController */ = {
-			isa = PBXGroup;
-			children = (
-				B1551BE124121F8500A7782B /* ReaderViewController.swift */,
-			);
-			path = ViewController;
-			sourceTree = "<group>";
-		};
-		B1551BDF24121F6D00A7782B /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		B1551BE024121F7300A7782B /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		B1551BE52412203A00A7782B /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -542,6 +510,7 @@
 		B1A0D2DD241F2C4300BCC8C0 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				B1335A76241BE744006F1785 /* PageReader */,
 				B1A0D2E0241F2C5B00BCC8C0 /* Model */,
 				B1A0D2DF241F2C5500BCC8C0 /* View */,
 				B1A0D2DE241F2C4B00BCC8C0 /* ViewController */,
@@ -560,6 +529,8 @@
 		B1A0D2DF241F2C5500BCC8C0 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				B1C657772424A9EE00D6F56A /* CategorySection.swift */,
+				B1C6577F2424C7C800D6F56A /* CategorySectionCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -567,6 +538,8 @@
 		B1A0D2E0241F2C5B00BCC8C0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B1C6577B2424BBF100D6F56A /* SystemCategoryModel.swift */,
+				B1C6577D2424BF1700D6F56A /* CategorySectionFrameModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -588,6 +561,7 @@
 				B18302ED241E065A00A8E527 /* DairyImageModel.swift */,
 				B1A0D2D1241E6B9900BCC8C0 /* MottoModel.swift */,
 				B1A0D2D3241E6D1500BCC8C0 /* UserInfo.swift */,
+				B1C657752424A5CB00D6F56A /* CategoryModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -734,12 +708,10 @@
 			files = (
 				B1551BBF24112E0600A7782B /* LaunchScreen.storyboard in Resources */,
 				B1335A5924193C22006F1785 /* editor.css in Resources */,
-				B1335AAB241BE779006F1785 /* topMenu.xib in Resources */,
 				B1335A5724193C22006F1785 /* squire-raw.js in Resources */,
 				B1335A5A24193C22006F1785 /* editor.js in Resources */,
 				B1551BBC24112E0600A7782B /* Assets.xcassets in Resources */,
 				B1335A5824193C22006F1785 /* index.html in Resources */,
-				B1335AAA241BE779006F1785 /* bottomMenu.xib in Resources */,
 				B1551BE424121FB900A7782B /* Books.bundle in Resources */,
 				B1C657722423198F00D6F56A /* README.md in Resources */,
 				B1551BBA24112E0500A7782B /* Main.storyboard in Resources */,
@@ -815,7 +787,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1335A6A241A866E006F1785 /* ToolbarModel.swift in Sources */,
-				B1551BE224121F8500A7782B /* ReaderViewController.swift in Sources */,
+				B1C6577E2424BF1700D6F56A /* CategorySectionFrameModel.swift in Sources */,
 				B1A0D2DC241F1AB900BCC8C0 /* TodayDairyViewController.swift in Sources */,
 				B1A0D2E2241F2DB700BCC8C0 /* CategoryViewController.swift in Sources */,
 				B1F5C102241DD94900F2D21E /* PublicDatabaseManager.swift in Sources */,
@@ -841,11 +813,11 @@
 				B1F5C10A241DD94900F2D21E /* CreamAsset.swift in Sources */,
 				B1335A93241BE755006F1785 /* DUAReader.swift in Sources */,
 				B1335A65241A64DC006F1785 /* EditorViewController.swift in Sources */,
+				B1C657822424F6F900D6F56A /* Extension+DUAReader.swift in Sources */,
 				B1A0D2E8242093E900BCC8C0 /* MoodPicker.swift in Sources */,
 				B1335A9C241BE755006F1785 /* DUAAttributedView.swift in Sources */,
 				B1335AA0241BE755006F1785 /* DUAStatusBar.swift in Sources */,
 				B1335A9F241BE755006F1785 /* DUATableViewCell.swift in Sources */,
-				B1335A99241BE755006F1785 /* DUATextDataParser.swift in Sources */,
 				B1C6577424236C2D00D6F56A /* DairyCell.swift in Sources */,
 				B1F5C110241DE8BF00F2D21E /* CustomTabBarView.swift in Sources */,
 				B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */,
@@ -865,12 +837,15 @@
 				B1551BCB2411508900A7782B /* R.generated.swift in Sources */,
 				B1335A68241A67C0006F1785 /* DeviceInfo.swift in Sources */,
 				B1335A5F241A63F5006F1785 /* ToolbarView.swift in Sources */,
+				B1C657782424A9EE00D6F56A /* CategorySection.swift in Sources */,
 				B1A0D2D2241E6B9900BCC8C0 /* MottoModel.swift in Sources */,
 				B1F5C104241DD94900F2D21E /* PrivateDatabaseManager.swift in Sources */,
+				B1C657762424A5CB00D6F56A /* CategoryModel.swift in Sources */,
 				B1335A6E241BD15B006F1785 /* FileManager+Extension.swift in Sources */,
 				B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */,
 				B1335A9E241BE755006F1785 /* DUAConVexLensView.swift in Sources */,
 				B1F5C10E241DE89200F2D21E /* TabBarViewController.swift in Sources */,
+				B1C657802424C7C800D6F56A /* CategorySectionCell.swift in Sources */,
 				B1335A94241BE755006F1785 /* DUABackViewController.swift in Sources */,
 				B1F5C106241DD94900F2D21E /* Manifest.swift in Sources */,
 				B1F5C109241DD94900F2D21E /* Notification+Name.swift in Sources */,
@@ -882,6 +857,7 @@
 				B1F5C0F1241D310800F2D21E /* TestViewController.swift in Sources */,
 				B1F5C100241DD94900F2D21E /* CKRecordConvertible.swift in Sources */,
 				B1335A5C24193C22006F1785 /* Helper.swift in Sources */,
+				B1C6577C2424BBF100D6F56A /* SystemCategoryModel.swift in Sources */,
 				B1F5C108241DD94900F2D21E /* Syncable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

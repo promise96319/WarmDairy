@@ -10,7 +10,11 @@ import UIKit
 
 class DUAChapterModel: NSObject {
 
-    var title: String?
-    var path: String?
+    var date: Date = Date()
+    var weather: String = ""
+    var mood: String = ""
+    
+    var title: String = ""
+    var content: String = ""
     var chapterIndex: Int = 1
 }

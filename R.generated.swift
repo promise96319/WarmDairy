@@ -70,7 +70,7 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 56 images.
+  /// This `R.image` struct is generated, and contains static references to 59 images.
   struct image {
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
@@ -140,6 +140,12 @@ struct R: Rswift.Validatable {
     static let icon_mood_surprised = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_surprised")
     /// Image `icon_mood_wantcry`.
     static let icon_mood_wantcry = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_wantcry")
+    /// Image `icon_reader_download`.
+    static let icon_reader_download = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_reader_download")
+    /// Image `icon_reader_menu`.
+    static let icon_reader_menu = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_reader_menu")
+    /// Image `icon_reader_share`.
+    static let icon_reader_share = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_reader_share")
     /// Image `icon_tabbar_category`.
     static let icon_tabbar_category = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_tabbar_category")
     /// Image `icon_tabbar_edit`.
@@ -355,6 +361,21 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.icon_mood_wantcry, compatibleWith: traitCollection)
     }
     
+    /// `UIImage(named: "icon_reader_download", bundle: ..., traitCollection: ...)`
+    static func icon_reader_download(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_reader_download, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_reader_menu", bundle: ..., traitCollection: ...)`
+    static func icon_reader_menu(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_reader_menu, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_reader_share", bundle: ..., traitCollection: ...)`
+    static func icon_reader_share(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_reader_share, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "icon_tabbar_category", bundle: ..., traitCollection: ...)`
     static func icon_tabbar_category(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_tabbar_category, compatibleWith: traitCollection)
@@ -468,36 +489,6 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.nib` struct is generated, and contains static references to 2 nibs.
-  struct nib {
-    /// Nib `bottomMenu`.
-    static let bottomMenu = _R.nib._bottomMenu()
-    /// Nib `topMenu`.
-    static let topMenu = _R.nib._topMenu()
-    
-    /// `UINib(name: "bottomMenu", in: bundle)`
-    @available(*, deprecated, message: "Use UINib(resource: R.nib.bottomMenu) instead")
-    static func bottomMenu(_: Void = ()) -> UIKit.UINib {
-      return UIKit.UINib(resource: R.nib.bottomMenu)
-    }
-    
-    /// `UINib(name: "topMenu", in: bundle)`
-    @available(*, deprecated, message: "Use UINib(resource: R.nib.topMenu) instead")
-    static func topMenu(_: Void = ()) -> UIKit.UINib {
-      return UIKit.UINib(resource: R.nib.topMenu)
-    }
-    
-    static func bottomMenu(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> UIKit.UIView? {
-      return R.nib.bottomMenu.instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? UIKit.UIView
-    }
-    
-    static func topMenu(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> UIKit.UIView? {
-      return R.nib.topMenu.instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? UIKit.UIView
-    }
-    
-    fileprivate init() {}
-  }
-  
   /// This `R.storyboard` struct is generated, and contains static references to 2 storyboards.
   struct storyboard {
     /// Storyboard `LaunchScreen`.
@@ -534,53 +525,6 @@ struct R: Rswift.Validatable {
 struct _R: Rswift.Validatable {
   static func validate() throws {
     try storyboard.validate()
-    try nib.validate()
-  }
-  
-  struct nib: Rswift.Validatable {
-    static func validate() throws {
-      try _bottomMenu.validate()
-      try _topMenu.validate()
-    }
-    
-    struct _bottomMenu: Rswift.NibResourceType, Rswift.Validatable {
-      let bundle = R.hostingBundle
-      let name = "bottomMenu"
-      
-      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> UIKit.UIView? {
-        return instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? UIKit.UIView
-      }
-      
-      static func validate() throws {
-        if UIKit.UIImage(named: "A+", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'A+' is used in nib 'bottomMenu', but couldn't be loaded.") }
-        if UIKit.UIImage(named: "A-", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'A-' is used in nib 'bottomMenu', but couldn't be loaded.") }
-        if UIKit.UIImage(named: "bookDir", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'bookDir' is used in nib 'bottomMenu', but couldn't be loaded.") }
-        if #available(iOS 11.0, *) {
-        }
-      }
-      
-      fileprivate init() {}
-    }
-    
-    struct _topMenu: Rswift.NibResourceType, Rswift.Validatable {
-      let bundle = R.hostingBundle
-      let name = "topMenu"
-      
-      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> UIKit.UIView? {
-        return instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? UIKit.UIView
-      }
-      
-      static func validate() throws {
-        if UIKit.UIImage(named: "bookMark", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'bookMark' is used in nib 'topMenu', but couldn't be loaded.") }
-        if UIKit.UIImage(named: "mback", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'mback' is used in nib 'topMenu', but couldn't be loaded.") }
-        if #available(iOS 11.0, *) {
-        }
-      }
-      
-      fileprivate init() {}
-    }
-    
-    fileprivate init() {}
   }
   
   struct storyboard: Rswift.Validatable {

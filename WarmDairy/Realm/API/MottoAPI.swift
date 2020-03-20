@@ -62,6 +62,7 @@ class MottoAPI {
         }
     }
     
+    /// 生成随机motto （image, motto, author）
     static func generateRandomMotto() -> (String, String, String) {
         let randomIndex = Int.random(in: 0..<mottos.count)
         return mottos[randomIndex]

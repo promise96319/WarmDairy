@@ -562,6 +562,7 @@ extension EditorViewController: SQTextEditorDelegate {
     func editorDidLoad(_ editor: SQTextEditorView) {
         print("editorDidLoad")
         editorView.insertHTML(myDairy.content)
+        editorView.setText(color: UIColor(hexString: "303133")!)
     }
     
     func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {

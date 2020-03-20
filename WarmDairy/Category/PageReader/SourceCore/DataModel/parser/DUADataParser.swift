@@ -11,7 +11,7 @@ import DTCoreText
 
 class DUADataParser: NSObject {
 
-    func parseChapterFromBook(path: String, completeHandler: @escaping (Array<String>, Array<DUAChapterModel>) -> Void) {
+    func parseChapterFromBook(dairies: [DairyModel], completeHandler: @escaping (Array<String>, Array<DUAChapterModel>) -> Void) {
     }
     
     func attributedStringFromChapterModel(chapter: DUAChapterModel, config: DUAConfiguration) -> NSAttributedString? {
