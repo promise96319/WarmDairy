@@ -21,6 +21,9 @@ PODS:
   - Kingfisher (5.8.3):
     - Kingfisher/Core (= 5.8.3)
   - Kingfisher/Core (5.8.3)
+  - NVActivityIndicatorView (4.8.0):
+    - NVActivityIndicatorView/Presenter (= 4.8.0)
+  - NVActivityIndicatorView/Presenter (4.8.0)
   - Qiniu (7.3.2)
   - R.swift (5.0.3):
     - R.swift.Library (~> 5.0.0)
@@ -33,6 +36,9 @@ PODS:
   - RQShineLabel (1.0.0)
   - SnapKit (5.0.1)
   - SwiftDate (6.1.0)
+  - SwiftMessages (7.0.1):
+    - SwiftMessages/App (= 7.0.1)
+  - SwiftMessages/App (7.0.1)
   - SwiftTheme (0.5.2)
   - SwiftyUserDefaults (3.0.1)
   - Then (2.6.0)
@@ -43,6 +49,7 @@ DEPENDENCIES:
   - FSPagerView
   - Hero
   - Kingfisher
+  - NVActivityIndicatorView
   - Qiniu (~> 7.3)
   - R.swift
   - Realm
@@ -50,6 +57,7 @@ DEPENDENCIES:
   - RQShineLabel
   - SnapKit (~> 5.0.0)
   - SwiftDate
+  - SwiftMessages
   - SwiftTheme
   - SwiftyUserDefaults (~> 3.0.1)
   - Then
@@ -62,6 +70,7 @@ SPEC REPOS:
     - FSPagerView
     - Hero
     - Kingfisher
+    - NVActivityIndicatorView
     - Qiniu
     - R.swift
     - R.swift.Library
@@ -70,6 +79,7 @@ SPEC REPOS:
     - RQShineLabel
     - SnapKit
     - SwiftDate
+    - SwiftMessages
     - SwiftTheme
     - SwiftyUserDefaults
     - Then
@@ -81,6 +91,7 @@ SPEC CHECKSUMS:
   FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
   Hero: bac92350d7201a1a940003e0767c7b52ce7c99a1
   Kingfisher: b7e4cb65ff24c264bd2a1284b75b974d907afd94
+  NVActivityIndicatorView: d24b7ebcf80af5dcd994adb650e2b6c93379270f
   Qiniu: a248627a07bb8a39c6a11ae8059b7161c363539b
   R.swift: f5a87643b91ea569d23d6afb3eee9c743edde239
   R.swift.Library: cfe85d569d9bae6cb262922db130e7c3a7a5fad1
@@ -89,11 +100,12 @@ SPEC CHECKSUMS:
   RQShineLabel: 17457abf7250d1220ddd99bc61323d57563344cd
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
+  SwiftMessages: b577dc7043be8b299857ab35bb663dbff6483bd0
   SwiftTheme: 8b02c479bb4441b2b6790ac126e961b1b6fb0932
   SwiftyUserDefaults: 3d273b1739b68ada3145dc754a70ec775bc5c8be
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
   ViewAnimator: 5af1c6f3b310f012bf081259c43717aa54fbae73
 
-PODFILE CHECKSUM: 50aaa4cb9df4d32fb1d3cc2602f378df9421dfb4
+PODFILE CHECKSUM: ef84490e98465041348848bef6cc14c99d02e774
 
 COCOAPODS: 1.8.4

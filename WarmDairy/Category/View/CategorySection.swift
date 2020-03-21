@@ -12,9 +12,14 @@ class CategorySection: UIView {
     
     weak var delegate: CategoryViewController?
     
+    /// 是否是第一行，属于用于自定义的
+    var isFavorite = false
+    
     lazy var monthData = [CategoryMonthModel]()
+    lazy var favoriteData = [CustomCategoryModel]()
     
     lazy var titleLabel = UILabel()
+    lazy var titleButton = UIButton()
     lazy var totalCountLabel = UILabel()
     lazy var collectionView = UICollectionView()
     
@@ -28,7 +33,7 @@ class CategorySection: UIView {
     }
     
     func initData(year: Int, monthData: [CategoryMonthModel]) {
-        self.monthData = monthData.sorted(by: { $0.month < $1.month })
+        self.isFavorite = false
         
         titleLabel.text = "\(year)年"
         var totalCount = 0
@@ -36,14 +41,40 @@ class CategorySection: UIView {
             totalCount += $0.dairies.count
         }
         totalCountLabel.text = "\(totalCount)个故事"
+        titleButton.isHidden = true
+        
+        self.monthData = monthData.sorted(by: { $0.month < $1.month })
+        
         collectionView.reloadData()
+    }
+    
+    func initFavoriteData(data: [CustomCategoryModel]) {
+        self.isFavorite = true
+        titleLabel.text = "我的收藏"
+        totalCountLabel.isHidden = true
+        self.favoriteData = data
+        collectionView.reloadData()
+    }
+}
+
+// MARK: - 事件处理
+extension CategorySection {
+    @objc func showCategoryDetail() {
+        let vc = CategoryEditViewController()
+        vc.delegate = delegate
+        vc.initData(categories: favoriteData)
+        delegate?.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
 // MARK: - UICollectionViewDataSource
 extension CategorySection: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return monthData.count
+        if isFavorite {
+            return favoriteData.count
+        } else {
+            return monthData.count
+        }
     }
 }
 
@@ -51,12 +82,20 @@ extension CategorySection: UICollectionViewDataSource {
 extension CategorySection: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategorySectionCell.identifier, for: indexPath) as! CategorySectionCell
-        cell.initData(monthData: monthData[indexPath.row])
+        if isFavorite {
+            cell.initFavoriteData(data: favoriteData[indexPath.row])
+        } else {
+            cell.initData(monthData: monthData[indexPath.row])
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.setupReader(dairies: monthData[indexPath.row].dairies)
+        if isFavorite {
+             delegate?.setupReader(dairies: favoriteData[indexPath.row].dairies)
+        } else {
+             delegate?.setupReader(dairies: monthData[indexPath.row].dairies)
+        }
     }
 }
 
@@ -90,7 +129,7 @@ extension CategorySection {
             }
             $0.register(CategorySectionCell.self, forCellWithReuseIdentifier: CategorySectionCell.identifier)
         }
-
+        
     }
     
     func setupHeader() {
@@ -102,6 +141,18 @@ extension CategorySection {
                 $0.left.equalToSuperview().offset(24)
                 $0.top.equalToSuperview()
             }
+        }
+        
+        _ = titleButton.then {
+            $0.setTitle("更多...", for: .normal)
+            $0.setTitleColor(UIColor(hexString: "606266"), for: .normal)
+            $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+            addSubview($0)
+            $0.snp.makeConstraints {
+                $0.right.equalToSuperview().offset(-24)
+                $0.centerY.equalTo(titleLabel)
+            }
+            $0.addTarget(self, action: #selector(showCategoryDetail), for: .touchUpInside)
         }
         
         _ = totalCountLabel.then {

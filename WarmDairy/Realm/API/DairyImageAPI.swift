@@ -20,7 +20,7 @@ import RealmSwift
 //        3. 在iCloud中取（不是该设备的情况），cope到document，cope到tmp 中
 class DairyImageAPI {
     static let imagePath = "editor/images"
-    static let prefix = "com.qinguanghui.WarmDairy"
+    static let prefix = "QinGuanghuiWarmDairy"
     enum PathType {
         case doc
         case tmp
@@ -99,17 +99,18 @@ extension DairyImageAPI {
             // 根据id找到图片得到图片document 路径
             // 查看document 是否存在，存在则copy到tmp中
             // 否则 将 data 写入 document 和 tmp中
-            print("测试 ===> ids的值为: \(id)")
+            CLog("Int(String(id))的值为: \(Int(String(id)))")
             guard let id = Int(String(id)) else {
-                print("测试 ===> id不存在")
+                CLog("测试 ===> id不存在")
                 callback(nil)
                 return
             }
-            
+            CLog("id存在的值为: \(id)")
             let fileId = "\(prefix)\(id)"
             // 现在 tmp 目录中查找一遍
             let tmpPath = gengeratePath(type: .tmp, id: id)
             let docPath = gengeratePath(type: .doc, id: id)
+            CLog("tmpPath: \(tmpPath)")
             if (FileManager.fileExists(atPath: tmpPath)) {
                 newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
                 print("测试 ====> tmp 中存在image")
@@ -122,6 +123,7 @@ extension DairyImageAPI {
                     print("测试 ===> copy image 失败")
                 }
             } else {
+                print("测试 ===> doc,tmp均不存在图片")
                 getImage(id: id) { (asset) in
                     guard let asset = asset else {
                         print("测试 ===> image不存在")
@@ -136,10 +138,14 @@ extension DairyImageAPI {
                     }
                     
                     let isSaved = FileManager.save(image: UIImage(data: data)!, toFilePath: docPath)
+                    print("测试 ===> isSaved的值为: \(isSaved)")
                     let isTmpSaved = FileManager.save(image: UIImage(data: data)!, toFilePath: tmpPath)
+                    print("测试 ===> isTmpSaved的值为: \(isTmpSaved)")
                     if isSaved && isTmpSaved {
+                        print("测试 ===> icloud copy 到本地了")
                         newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
                     } else {
+                        print("测试 ====> iclcoud copy 失败")
                         callback(nil)
                     }
                 }
@@ -182,6 +188,12 @@ extension DairyImageAPI {
     
     static func gengeratePath(type: PathType, id: Int) -> String {
         let dir = gengerateDir(type: type)
+        if !FileManager.fileExists(atPath: dir) {
+            let isCreated = FileManager.createDirectory(atPath: dir)
+            if !isCreated {
+                CLog("创建目录失败")
+            }
+        }
         return dir + "/" + prefix + "\(id)"
     }
     

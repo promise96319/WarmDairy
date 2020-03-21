@@ -50,7 +50,7 @@ class DairyCell: UIView {
         timeLabel.text = dairy.createdAt.toFormat("a hh:mm", locale: Locales.chineseSimplified)
         titleLabel.text = dairy.title == "" ? "标题" : dairy.title
         
-        if dairy.isLoved {
+        if dairy.cateIds != "" {
             loveButton.setImage(R.image.icon_editor_love_selected(), for: .normal)
         } else {
             loveButton.setImage(R.image.icon_today_love(), for: .normal)
@@ -64,7 +64,7 @@ class DairyCell: UIView {
                 $0.snp.makeConstraints {
                     $0.width.height.equalTo(DairyCellFrame.headerHeight)
                     $0.centerY.equalToSuperview()
-                    $0.right.equalTo(loveButton.snp.left)
+                    $0.right.equalTo(editButton.snp.left)
                 }
             }
         }
@@ -78,7 +78,7 @@ class DairyCell: UIView {
                     $0.width.height.equalTo(DairyCellFrame.headerHeight)
                     $0.centerY.equalToSuperview()
                     if dairy.mood == "" {
-                        $0.right.equalTo(loveButton.snp.left)
+                        $0.right.equalTo(editButton.snp.left)
                     } else {
                         $0.right.equalTo(moodView.snp.left)
                     }
@@ -105,6 +105,12 @@ extension DairyCell {
     @objc func showEdit() {
         delegate?.editDairy(dairy: dairy)
     }
+    
+//    @objc func showCate() {
+//        let vc = CategoryChooserViewController()
+//        vc.initData(cateIds: dairy.cateIds)
+//        delegate?.present(vc, animated: true, completion: nil)
+//    }
 }
 
 // MARK: - webview delegate 用于检测高度，更新相关UI
@@ -206,13 +212,14 @@ extension DairyCell {
             $0.addTarget(self, action: #selector(showEdit), for: .touchUpInside)
         }
         
-        _ = loveButton.then {
-            headerView.addSubview($0)
-            $0.snp.makeConstraints {
-                $0.right.equalTo(editButton.snp.left)
-                $0.centerY.equalToSuperview()
-                $0.width.height.equalTo(DairyCellFrame.headerHeight)
-            }
-        }
+//        _ = loveButton.then {
+//            headerView.addSubview($0)
+//            $0.snp.makeConstraints {
+//                $0.right.equalTo(editButton.snp.left)
+//                $0.centerY.equalToSuperview()
+//                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+//            }
+//            $0.addTarget(self, action: #selector(showCate), for: .touchUpInside)
+//        }
     }
 }

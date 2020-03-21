@@ -17,7 +17,7 @@ class MoodPicker: UIView {
     
     weak var delegate: EditorViewController?
     
-    var allMoods = [
+    static let allMoods = [
         [("happy", "开心"), ("proud", "得意"), ("enrich", "充实"), ("surprise", "惊喜")],
         [("surprised", "惊讶"), ("confused", "迷茫"), ("lonely", "孤独"), ("sad", "难过")],
         [("wantcry", "委屈"), ("fidgety", "烦躁"), ("cry", "大哭"), ("angry", "生气")],
@@ -42,7 +42,7 @@ extension MoodPicker {
         let tag = sender.view!.tag
         let col = tag % 10
         let row = Int(tag / 10) - 1
-        delegate?.chooseMood(mood: allMoods[row][col].0)
+        delegate?.chooseMood(mood: MoodPicker.allMoods[row][col].0)
     }
 }
 
@@ -65,7 +65,7 @@ extension MoodPicker {
             }
         }
         
-        for (row, moods) in allMoods.enumerated() {
+        for (row, moods) in MoodPicker.allMoods.enumerated() {
             let stackView = UIStackView().then {
                 $0.axis = .horizontal
                 $0.distribution = .fillEqually

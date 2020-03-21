@@ -38,6 +38,7 @@ class TodayDairyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
         setupUI()
     }
     
@@ -60,7 +61,7 @@ class TodayDairyViewController: UIViewController {
     
     @objc func loadData() {
         DairyAPI.getDairy(date: mottoData.date) { (dairies) in
-            print("测试 ===> dairies的值为: \(dairies)")
+            print("测试 ===> today dairies的值为: \(dairies)")
             self.dairesData = dairies
             self.setupDairyView()
         }
@@ -68,6 +69,7 @@ class TodayDairyViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
     }
 }
 

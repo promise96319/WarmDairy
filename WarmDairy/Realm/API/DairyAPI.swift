@@ -16,6 +16,12 @@ class DairyAPI {
         callback(res)
     }
     
+    static func getDairy(cateId: Int, callback: @escaping(_ data: [DairyModel]) -> Void) {
+        let realm = try! Realm()
+        let res: [DairyModel] = realm.objects(DairyModel.self).filter("cateIds CONTAINS %@", "\(cateId)").map { $0 }
+        callback(res)
+    }
+    
     static func getDairy(date: Date, callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
         let res: [DairyModel] = realm.objects(DairyModel.self).map { $0 }

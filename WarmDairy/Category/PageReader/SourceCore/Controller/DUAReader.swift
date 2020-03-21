@@ -263,6 +263,9 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         if self.config.backgroundImage != nil {
             self.loadBackgroundImage()
         }
+        if self.config.backgroundColor != nil {
+            self.changeColor()
+        }
     }
     
     private func loadPageViewController() -> Void {
@@ -356,12 +359,13 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
     }
 
-    public func changeColor(color: ReaderBg) -> Void {
+    public func changeColor() -> Void {
         var curPage: DUAPageViewController? = nil
         if config.scrollType == .curl {
             curPage = pageVC?.viewControllers?.first as? DUAPageViewController
             if let curPage = curPage {
-                curPage.backgroundMask.backgroundColor = UIColor(hexString: color.rawValue, alpha: 0.9)
+                let bgMask = curPage.view.subviews[1] as! UIView
+                bgMask.backgroundColor = UIColor(hexString: self.config.backgroundColor.rawValue, alpha: 0.9)
             }
         }
     }
@@ -435,6 +439,9 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         page.chapterBelong = chapterIndex
         if self.config.backgroundImage != nil {
             page.backgroundImage = self.config.backgroundImage
+        }
+        if self.config.backgroundColor != nil {
+            page.backgroundColor = self.config.backgroundColor.rawValue
         }
         let dtLabel = DUAAttributedView.init(frame: CGRect(x: 0, y: config.contentFrame.origin.y, width: self.view.width, height: config.contentFrame.height))
         dtLabel.edgeInsets = UIEdgeInsets.init(top: 0, left: config.contentFrame.origin.x, bottom: 0, right: config.contentFrame.origin.x)
@@ -620,6 +627,9 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         self.config.didBackgroundImageChanged = {[weak self] (UIImage) in
             self?.loadBackgroundImage()
+        }
+        self.config.didBackgroundColorChanged = { [weak self] (ReaderBg) in
+            self?.changeColor()
         }
         self.config.didScrollTypeChanged = {[weak self] (DUAReaderScrollType) in
             self?.loadReaderView()

@@ -9,8 +9,8 @@
 import UIKit
 import ViewAnimator
 
-extension DUAReader {
-    func animateHideView(view: UIView, direction: Direction, reverseDirection: Direction, offset: CGFloat) {
+class CustonAnimation {
+    static func animateHideView(view: UIView, direction: Direction, reverseDirection: Direction, offset: CGFloat) {
         let animation = AnimationType.from(direction: direction, offset: offset)
         UIView.animate(views: [view], animations: [animation], reversed: true, initialAlpha: 1, finalAlpha: 0, delay: 0, duration: 0.4, options: .curveEaseInOut)  {
             view.alpha = 0
@@ -19,7 +19,7 @@ extension DUAReader {
             }
     }
     
-    func animateShowView(view: UIView, direction: Direction, offset: CGFloat) {
+    static func animateShowView(view: UIView, direction: Direction, offset: CGFloat) {
         let animation = AnimationType.from(direction: direction, offset: offset)
         UIView.animate(views: [view], animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.4, options: .curveEaseInOut)
     }
@@ -28,27 +28,27 @@ extension DUAReader {
 extension DUAReader {
     @objc func hideSideBar() {
         addGesture()
-        animateHideView(view: sideMask, direction: .left, reverseDirection: .right, offset: DeviceInfo.screenWidth * 0.7)
+        CustonAnimation.animateHideView(view: sideMask, direction: .left, reverseDirection: .right, offset: DeviceInfo.screenWidth * 0.7)
     }
     
     @objc func showSideBar() {
         removeGesture()
-        animateShowView(view: sideMask, direction: .left, offset: DeviceInfo.screenWidth * 0.7)
+        CustonAnimation.animateShowView(view: sideMask, direction: .left, offset: DeviceInfo.screenWidth * 0.7)
     }
     
     func showBar() {
-        animateShowView(view: bottomBar, direction: .bottom, offset: 100)
-        animateShowView(view: topBar, direction: .top, offset: 100)
+        CustonAnimation.animateShowView(view: bottomBar, direction: .bottom, offset: 100)
+        CustonAnimation.animateShowView(view: topBar, direction: .top, offset: 100)
     }
     
     func hideBar() {
-        animateHideView(view: bottomBar, direction: .bottom, reverseDirection: .top, offset: 100)
-        animateHideView(view: topBar, direction: .top, reverseDirection: .bottom, offset: 100)
+        CustonAnimation.animateHideView(view: bottomBar, direction: .bottom, reverseDirection: .top, offset: 100)
+        CustonAnimation.animateHideView(view: topBar, direction: .top, reverseDirection: .bottom, offset: 100)
     }
     
     @objc func toggleBgColor(sender: UIButton) {
         let tag = sender.tag - 100
-        changeColor(color: ReaderBg.all[tag])
+        config.backgroundColor = ReaderBg.all[tag]
     }
     
     @objc func share() {

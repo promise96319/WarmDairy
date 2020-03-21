@@ -17,17 +17,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        configRealm()
+        
         // 同步 iCloud
         syncEngine = SyncEngine(objects: [
             SyncObject<MottoModel>(),
             SyncObject<DairyModel>(),
             SyncObject<DairyImageModel>(),
             SyncObject<UserInfo>(),
+            SyncObject<CategoryModel>(),
         ], databaseScope: .private, container: CKContainer(identifier: "iCloud.com.GuanghuiQin.WarmDairy"))
         
         application.registerForRemoteNotifications()
         
-        setUserDefault()
+        configDefaultRegion()
+        configUserDefault()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()

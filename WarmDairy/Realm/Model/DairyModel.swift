@@ -35,6 +35,9 @@ class DairyModel: Object {
     /// 是否加入喜爱
     @objc dynamic var isLoved: Bool = false
     
+    /// id 组成的字符串，用于判断日记属于那些分类
+    @objc dynamic var cateIds: String = ""
+    
     /// 是否加锁
     @objc dynamic var isLocked: Bool = false
     

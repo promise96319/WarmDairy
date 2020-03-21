@@ -4,6 +4,7 @@ ${BUILT_PRODUCTS_DIR}/DTFoundation/DTFoundation.framework
 ${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework
 ${BUILT_PRODUCTS_DIR}/Hero/Hero.framework
 ${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework
+${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework
 ${BUILT_PRODUCTS_DIR}/Qiniu/Qiniu.framework
 ${BUILT_PRODUCTS_DIR}/R.swift.Library/Rswift.framework
 ${BUILT_PRODUCTS_DIR}/RQShineLabel/RQShineLabel.framework
@@ -11,6 +12,7 @@ ${BUILT_PRODUCTS_DIR}/Realm/Realm.framework
 ${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
 ${BUILT_PRODUCTS_DIR}/SwiftDate/SwiftDate.framework
+${BUILT_PRODUCTS_DIR}/SwiftMessages/SwiftMessages.framework
 ${BUILT_PRODUCTS_DIR}/SwiftTheme/SwiftTheme.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyUserDefaults/SwiftyUserDefaults.framework
 ${BUILT_PRODUCTS_DIR}/Then/Then.framework

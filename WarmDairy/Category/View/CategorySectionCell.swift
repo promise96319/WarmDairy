@@ -11,8 +11,6 @@ import UIKit
 class CategorySectionCell: UICollectionViewCell {
     static let identifier = "CategorySectionCell_ID"
     
-    lazy var monthData = CategoryMonthModel()
-    
     lazy var bgImage = UIImageView()
     lazy var titleLabel = UILabel()
     lazy var countLabel = UILabel()
@@ -31,11 +29,17 @@ class CategorySectionCell: UICollectionViewCell {
     }
     
     func initData(monthData: CategoryMonthModel) {
-        self.monthData = monthData
         bgImage.kf.setImage(with: URL(string: monthData.image))
-        let months = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二",]
-        titleLabel.text = months[monthData.month] + "月"
+        let monthsName = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二",]
+        titleLabel.text = "\(monthsName[monthData.month])月"
         countLabel.text = "\(monthData.dairies.count)个故事"
+    }
+    
+    func initFavoriteData(data: CustomCategoryModel) {
+        titleLabel.text = data.name
+        titleLabel.font = UIFont.systemFont(ofSize: 22)
+        countLabel.text = "\(data.dairies.count)个故事"
+        bgImage.kf.setImage(with: URL(string: data.image))
     }
 }
 
@@ -54,9 +58,13 @@ extension CategorySectionCell {
         _ = titleLabel.then {
             $0.textColor = UIColor(hexString: "ffffff")
             $0.font = UIFont.systemFont(ofSize: 28)
+            $0.numberOfLines = 0
+            $0.lineBreakMode = .byWordWrapping
+            $0.textAlignment = .center
             addSubview($0)
             $0.snp.makeConstraints {
-                $0.centerX.equalToSuperview()
+                $0.left.equalToSuperview().offset(8)
+                $0.right.equalToSuperview().offset(-8)
                 $0.centerY.equalToSuperview().offset(-16)
             }
         }
@@ -73,16 +81,16 @@ extension CategorySectionCell {
     }
     
     func setupBackground() {
-//        let mask = UIView().then {
-//            $0.backgroundColor = .clear
-//            $0.layer.cornerRadius = 12
-//            $0.clipsToBounds = true
-//            addSubview($0)
-//            $0.snp.makeConstraints {
-//                $0.edges.equalToSuperview()
-//            }
-//        }
-//
+        //        let mask = UIView().then {
+        //            $0.backgroundColor = .clear
+        //            $0.layer.cornerRadius = 12
+        //            $0.clipsToBounds = true
+        //            addSubview($0)
+        //            $0.snp.makeConstraints {
+        //                $0.edges.equalToSuperview()
+        //            }
+        //        }
+        //
         _ = bgImage.then {
             $0.contentMode = .scaleAspectFill
             $0.layer.cornerRadius = 12

@@ -70,6 +70,17 @@
 		B1C6577E2424BF1700D6F56A /* CategorySectionFrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577D2424BF1700D6F56A /* CategorySectionFrameModel.swift */; };
 		B1C657802424C7C800D6F56A /* CategorySectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6577F2424C7C800D6F56A /* CategorySectionCell.swift */; };
 		B1C657822424F6F900D6F56A /* Extension+DUAReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C657812424F6F900D6F56A /* Extension+DUAReader.swift */; };
+		B1C657842425CA1900D6F56A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C657832425CA1900D6F56A /* Log.swift */; };
+		B1C657862425F8E800D6F56A /* CategoryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C657852425F8E800D6F56A /* CategoryAPI.swift */; };
+		B1C9BB00242609A300ED55B3 /* CategoryEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BAFF242609A300ED55B3 /* CategoryEditViewController.swift */; };
+		B1C9BB0224260B2500ED55B3 /* CustomCategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB0124260B2500ED55B3 /* CustomCategoryModel.swift */; };
+		B1C9BB04242618EC00ED55B3 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB03242618EC00ED55B3 /* AddCategoryView.swift */; };
+		B1C9BB06242619A900ED55B3 /* UIVIew+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB05242619A900ED55B3 /* UIVIew+Extension.swift */; };
+		B1C9BB082426215B00ED55B3 /* AnimationTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB072426215B00ED55B3 /* AnimationTool.swift */; };
+		B1C9BB0A24262CE500ED55B3 /* NotificationName+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB0924262CE500ED55B3 /* NotificationName+Extension.swift */; };
+		B1C9BB0E24263B2100ED55B3 /* CategoryChooserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB0D24263B2100ED55B3 /* CategoryChooserViewController.swift */; };
+		B1C9BB1024265D1600ED55B3 /* SearchDairyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB0F24265D1600ED55B3 /* SearchDairyViewController.swift */; };
+		B1C9BB1224266C8F00ED55B3 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C9BB1124266C8F00ED55B3 /* SearchResultCell.swift */; };
 		B1F5C0E4241CBF5F00F2D21E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */; };
 		B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0E7241CC32200F2D21E /* DairyModel.swift */; };
 		B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */; };
@@ -161,6 +172,17 @@
 		B1C6577D2424BF1700D6F56A /* CategorySectionFrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySectionFrameModel.swift; sourceTree = "<group>"; };
 		B1C6577F2424C7C800D6F56A /* CategorySectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySectionCell.swift; sourceTree = "<group>"; };
 		B1C657812424F6F900D6F56A /* Extension+DUAReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+DUAReader.swift"; sourceTree = "<group>"; };
+		B1C657832425CA1900D6F56A /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		B1C657852425F8E800D6F56A /* CategoryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryAPI.swift; sourceTree = "<group>"; };
+		B1C9BAFF242609A300ED55B3 /* CategoryEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEditViewController.swift; sourceTree = "<group>"; };
+		B1C9BB0124260B2500ED55B3 /* CustomCategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCategoryModel.swift; sourceTree = "<group>"; };
+		B1C9BB03242618EC00ED55B3 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
+		B1C9BB05242619A900ED55B3 /* UIVIew+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIVIew+Extension.swift"; sourceTree = "<group>"; };
+		B1C9BB072426215B00ED55B3 /* AnimationTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationTool.swift; sourceTree = "<group>"; };
+		B1C9BB0924262CE500ED55B3 /* NotificationName+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+Extension.swift"; sourceTree = "<group>"; };
+		B1C9BB0D24263B2100ED55B3 /* CategoryChooserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChooserViewController.swift; sourceTree = "<group>"; };
+		B1C9BB0F24265D1600ED55B3 /* SearchDairyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDairyViewController.swift; sourceTree = "<group>"; };
+		B1C9BB1124266C8F00ED55B3 /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		B1F5C0E3241CBF5F00F2D21E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		B1F5C0E7241CC32200F2D21E /* DairyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyModel.swift; sourceTree = "<group>"; };
 		B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyAPI.swift; sourceTree = "<group>"; };
@@ -503,6 +525,7 @@
 				B1551BE72412207500A7782B /* UIColor+Extension.swift */,
 				B1335A6D241BD15B006F1785 /* FileManager+Extension.swift */,
 				B1A0D2D5241E79FC00BCC8C0 /* UILabel+Extension.swift */,
+				B1C9BB05242619A900ED55B3 /* UIVIew+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -522,6 +545,9 @@
 			isa = PBXGroup;
 			children = (
 				B1A0D2E1241F2DB700BCC8C0 /* CategoryViewController.swift */,
+				B1C9BAFF242609A300ED55B3 /* CategoryEditViewController.swift */,
+				B1C9BB0D24263B2100ED55B3 /* CategoryChooserViewController.swift */,
+				B1C9BB0F24265D1600ED55B3 /* SearchDairyViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -531,6 +557,8 @@
 			children = (
 				B1C657772424A9EE00D6F56A /* CategorySection.swift */,
 				B1C6577F2424C7C800D6F56A /* CategorySectionCell.swift */,
+				B1C9BB03242618EC00ED55B3 /* AddCategoryView.swift */,
+				B1C9BB1124266C8F00ED55B3 /* SearchResultCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -540,6 +568,7 @@
 			children = (
 				B1C6577B2424BBF100D6F56A /* SystemCategoryModel.swift */,
 				B1C6577D2424BF1700D6F56A /* CategorySectionFrameModel.swift */,
+				B1C9BB0124260B2500ED55B3 /* CustomCategoryModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -550,6 +579,7 @@
 				B1F5C0F2241DD92100F2D21E /* CloudSync */,
 				B1F5C0EA241CD26500F2D21E /* API */,
 				B1F5C0E6241CC31000F2D21E /* Model */,
+				B1C9BB0924262CE500ED55B3 /* NotificationName+Extension.swift */,
 			);
 			path = Realm;
 			sourceTree = "<group>";
@@ -572,6 +602,7 @@
 				B1F5C0EB241CD28600F2D21E /* DairyAPI.swift */,
 				B18302EF241E091400A8E527 /* DairyImageAPI.swift */,
 				B1C6576F2421E02F00D6F56A /* MottoAPI.swift */,
+				B1C657852425F8E800D6F56A /* CategoryAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -580,6 +611,8 @@
 			isa = PBXGroup;
 			children = (
 				B1F5C0EE241CDBF200F2D21E /* IDTool.swift */,
+				B1C657832425CA1900D6F56A /* Log.swift */,
+				B1C9BB072426215B00ED55B3 /* AnimationTool.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -786,6 +819,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1C657842425CA1900D6F56A /* Log.swift in Sources */,
+				B1C9BB06242619A900ED55B3 /* UIVIew+Extension.swift in Sources */,
 				B1335A6A241A866E006F1785 /* ToolbarModel.swift in Sources */,
 				B1C6577E2424BF1700D6F56A /* CategorySectionFrameModel.swift in Sources */,
 				B1A0D2DC241F1AB900BCC8C0 /* TodayDairyViewController.swift in Sources */,
@@ -798,10 +833,12 @@
 				B18302EE241E065A00A8E527 /* DairyImageModel.swift in Sources */,
 				B1297F6F2421C7DC0015DFDA /* Date.swift in Sources */,
 				B1335A71241BD2A4006F1785 /* ImageManager.swift in Sources */,
+				B1C9BB0224260B2500ED55B3 /* CustomCategoryModel.swift in Sources */,
 				B1A0D2D6241E79FC00BCC8C0 /* UILabel+Extension.swift in Sources */,
 				B1335A96241BE755006F1785 /* DUAConfiguration.swift in Sources */,
 				B1C6576E2421DABA00D6F56A /* AppDelegate+Extension.swift in Sources */,
 				B1C6576C2421D6F700D6F56A /* UserDefaults.swift in Sources */,
+				B1C9BB04242618EC00ED55B3 /* AddCategoryView.swift in Sources */,
 				B1F5C10C241DD94900F2D21E /* SyncObject.swift in Sources */,
 				B1F5C105241DD94900F2D21E /* SyncEngine.swift in Sources */,
 				B1A0D2DA241E831100BCC8C0 /* CarouselFrameModel.swift in Sources */,
@@ -812,6 +849,7 @@
 				B1335A9B241BE755006F1785 /* DUAPageModel.swift in Sources */,
 				B1F5C10A241DD94900F2D21E /* CreamAsset.swift in Sources */,
 				B1335A93241BE755006F1785 /* DUAReader.swift in Sources */,
+				B1C657862425F8E800D6F56A /* CategoryAPI.swift in Sources */,
 				B1335A65241A64DC006F1785 /* EditorViewController.swift in Sources */,
 				B1C657822424F6F900D6F56A /* Extension+DUAReader.swift in Sources */,
 				B1A0D2E8242093E900BCC8C0 /* MoodPicker.swift in Sources */,
@@ -826,11 +864,13 @@
 				B1551BE82412207500A7782B /* UIColor+Extension.swift in Sources */,
 				B1A0D2D8241E7FA000BCC8C0 /* CarouselCell.swift in Sources */,
 				B1F5C116241DFC5600F2D21E /* MeViewController.swift in Sources */,
+				B1C9BB1024265D1600ED55B3 /* SearchDairyViewController.swift in Sources */,
 				B18302F0241E091400A8E527 /* DairyImageAPI.swift in Sources */,
 				B1335A9A241BE755006F1785 /* DUAChapterModel.swift in Sources */,
 				B1335A9D241BE755006F1785 /* DUATableView.swift in Sources */,
 				B1F5C10B241DD94900F2D21E /* DatabaseManagerProtocol.swift in Sources */,
 				B1F5C101241DD94900F2D21E /* ErrorHandler.swift in Sources */,
+				B1C9BB0E24263B2100ED55B3 /* CategoryChooserViewController.swift in Sources */,
 				B1335A6C241A8823006F1785 /* ToolbarCell.swift in Sources */,
 				B1C657702421E02F00D6F56A /* MottoAPI.swift in Sources */,
 				B1335A92241BE755006F1785 /* DUAPageViewController.swift in Sources */,
@@ -840,6 +880,7 @@
 				B1C657782424A9EE00D6F56A /* CategorySection.swift in Sources */,
 				B1A0D2D2241E6B9900BCC8C0 /* MottoModel.swift in Sources */,
 				B1F5C104241DD94900F2D21E /* PrivateDatabaseManager.swift in Sources */,
+				B1C9BB0A24262CE500ED55B3 /* NotificationName+Extension.swift in Sources */,
 				B1C657762424A5CB00D6F56A /* CategoryModel.swift in Sources */,
 				B1335A6E241BD15B006F1785 /* FileManager+Extension.swift in Sources */,
 				B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */,
@@ -848,6 +889,8 @@
 				B1C657802424C7C800D6F56A /* CategorySectionCell.swift in Sources */,
 				B1335A94241BE755006F1785 /* DUABackViewController.swift in Sources */,
 				B1F5C106241DD94900F2D21E /* Manifest.swift in Sources */,
+				B1C9BB1224266C8F00ED55B3 /* SearchResultCell.swift in Sources */,
+				B1C9BB00242609A300ED55B3 /* CategoryEditViewController.swift in Sources */,
 				B1F5C109241DD94900F2D21E /* Notification+Name.swift in Sources */,
 				B1A0D2E6242093B600BCC8C0 /* WeatherPicker.swift in Sources */,
 				B1335A95241BE755006F1785 /* DUAtranslationController.swift in Sources */,
@@ -856,6 +899,7 @@
 				B1335A5D24193C22006F1785 /* SQTextEditorView.swift in Sources */,
 				B1F5C0F1241D310800F2D21E /* TestViewController.swift in Sources */,
 				B1F5C100241DD94900F2D21E /* CKRecordConvertible.swift in Sources */,
+				B1C9BB082426215B00ED55B3 /* AnimationTool.swift in Sources */,
 				B1335A5C24193C22006F1785 /* Helper.swift in Sources */,
 				B1C6577C2424BBF100D6F56A /* SystemCategoryModel.swift in Sources */,
 				B1F5C108241DD94900F2D21E /* Syncable.swift in Sources */,

@@ -68,7 +68,7 @@ class EditorViewController: UIViewController {
 }
 
 // MARK: - 事件处理
-extension EditorViewController {
+extension EditorViewController: CategoryChooserDelegate {
     @objc func hideMask() {
         hideWeatherPicker()
         hideMoodPicker()
@@ -141,13 +141,24 @@ extension EditorViewController {
     
     /// 切换是否收藏该日记
     /// - Parameter isToggle: 默认为true，需要切换。为false的时候无需切换
-    @objc func toggleLove() {
-        myDairy.isLoved = !myDairy.isLoved
+//    @objc func toggleLove() {
+//        myDairy.isLoved = !myDairy.isLoved
+//        setLoveImage()
+//    }
+    @objc func showCategories() {
+        let vc = CategoryChooserViewController()
+        vc.delegate = self
+        vc.initData(cateIds: myDairy.cateIds)
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func moveToCate(cateIds: String) {
+        myDairy.cateIds = cateIds
         setLoveImage()
     }
     
     func setLoveImage() {
-        if myDairy.isLoved {
+        if myDairy.cateIds != "" {
             loveButton.setImage(R.image.icon_editor_love_selected(), for: .normal)
         } else {
             loveButton.setImage(R.image.icon_editor_love(), for: .normal)
@@ -341,7 +352,7 @@ extension EditorViewController {
         }
         
         loveButton.tag = 0
-        loveButton.addTarget(self, action: #selector(toggleLove), for: .touchUpInside)
+        loveButton.addTarget(self, action: #selector(showCategories), for: .touchUpInside)
         moodButton.tag = 1
         moodButton.addTarget(self, action: #selector(showMoodPicker), for: .touchUpInside)
         weatherButton.tag = 2
