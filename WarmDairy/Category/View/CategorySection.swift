@@ -92,7 +92,12 @@ extension CategorySection: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if isFavorite {
-             delegate?.setupReader(dairies: favoriteData[indexPath.row].dairies)
+            let dairies = favoriteData[indexPath.row].dairies
+            if dairies.count == 0 {
+                MessageTool.shared.showMessage(theme: .warning, title: "暂无日记", body: "请添加日记到该分类中再尝试查看")
+            } else {
+                delegate?.setupReader(dairies: dairies)
+            }
         } else {
              delegate?.setupReader(dairies: monthData[indexPath.row].dairies)
         }

@@ -1,4 +1,5 @@
 ${PODS_ROOT}/Target Support Files/Pods-WarmDairy/Pods-WarmDairy-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Charts/Charts.framework
 ${BUILT_PRODUCTS_DIR}/DTCoreText/DTCoreText.framework
 ${BUILT_PRODUCTS_DIR}/DTFoundation/DTFoundation.framework
 ${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework

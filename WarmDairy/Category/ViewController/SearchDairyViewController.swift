@@ -7,22 +7,34 @@
 //
 
 import UIKit
+import ViewAnimator
 
 class SearchDairyViewController: UIViewController {
     lazy var dairies = [DairyModel]()
     
+    let animations = [AnimationType.from(direction: .bottom, offset: 30.0)]
     var collectionView: UICollectionView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupUI()
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
     func initData(dairies: [DairyModel]) {
         self.dairies = dairies
         CLog("dairies的值为: \(dairies)")
         collectionView.reloadData()
+        collectionView?.performBatchUpdates({
+            UIView.animate(views: self.collectionView!.orderedVisibleCells,
+                           animations: self.animations, completion: {
+                
+                })
+        }, completion: nil)
     }
 }
 
@@ -42,11 +54,14 @@ extension SearchDairyViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: - 点击事件
-//        let vc = TodayDairyViewController()
-//        vc.modalPresentationStyle = .fullScreen
-//        vc.initData(mottoData: mottoData[index])
-//        present(vc, animated: true, completion: nil)
+        let date = dairies[indexPath.row].createdAt
+        MottoAPI.getMotto(mottoId: Int(date.toFormat("yyyyMMdd"))!) { (motto) in
+            guard let motto = motto else { return }
+            let vc = TodayDairyViewController()
+            vc.modalPresentationStyle = .fullScreen
+            vc.initData(mottoData: motto)
+            self.present(vc, animated: true, completion: nil)
+        }
     }
 }
 

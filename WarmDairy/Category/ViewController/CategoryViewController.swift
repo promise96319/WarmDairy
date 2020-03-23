@@ -9,6 +9,7 @@
 import UIKit
 import DTCoreText
 import SwiftDate
+import ViewAnimator
 
 class CategoryViewController: UIViewController {
     lazy var totleDairies = [DairyModel]()
@@ -34,6 +35,25 @@ class CategoryViewController: UIViewController {
         setupUI()
         loadFavoriteData()
         loadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let fromAnimation = AnimationType.from(direction: .bottom, offset: 120.0)
+        view.animate(animations: [fromAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 1, usingSpringWithDamping: 0.9, initialSpringVelocity: 1)
+        
+        let cellFromAnimation = AnimationType.from(direction: .right, offset: 100.0)
+        UIView.animate(views: myFavoriteSection.collectionView.orderedVisibleCells,
+                       animations: [cellFromAnimation],
+                       delay: 0.2,
+                       duration: 1)
+        for (index, section) in categorySections.enumerated() {
+            UIView.animate(views: section.collectionView.orderedVisibleCells,
+            animations: [cellFromAnimation],
+            delay: 0.2 * Double(index + 2),
+            duration: 1)
+        }
     }
     
     @objc func loadFavoriteData() {
@@ -275,7 +295,7 @@ extension CategoryViewController {
         let configuration = DUAConfiguration()
         configuration.backgroundImage = R.image.image_editor_bg()
         configuration.bookType = .epub
-        configuration.backgroundColor = .green
+        configuration.backgroundColor = .yellow
         mreader?.config = configuration
         mreader?.delegate = self
         mreader?.modalPresentationStyle = .fullScreen

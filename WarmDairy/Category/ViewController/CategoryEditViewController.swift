@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import ViewAnimator
 
 class CategoryEditViewController: UIViewController {
     weak var delegate: CategoryViewController?
     
+    let animations = [AnimationType.from(direction: .bottom, offset: 80.0)]
     lazy var categories = [CustomCategoryModel]()
     
     lazy var titleLabel = UILabel()
@@ -23,8 +25,17 @@ class CategoryEditViewController: UIViewController {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .categoryDidChanged, object: nil)
         (navigationController?.tabBarController as? TabBarViewController)?.hideTabbar()
+        navigationController?.navigationBar.isHidden = true
 
         setupUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView?.performBatchUpdates({
+            UIView.animate(views: self.collectionView!.orderedVisibleCells,
+                           animations: self.animations, duration: 1)
+        }, completion: nil)
     }
     
     func initData(categories: [CustomCategoryModel]) {
@@ -46,6 +57,7 @@ class CategoryEditViewController: UIViewController {
 extension CategoryEditViewController {
     @objc func goBack() {
         navigationController?.popViewController(animated: true)
+        navigationController?.navigationBar.isHidden = false
         (navigationController?.tabBarController as? TabBarViewController)?.showTabbar()
     }
     
@@ -95,6 +107,10 @@ extension CategoryEditViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if categories[indexPath.row].dairies.count == 0 {
+            MessageTool.shared.showMessage(theme: .warning, title: "暂无日记", body: "请添加日记到该分类中再尝试查看")
+            return
+        }
         delegate?.setupReader(dairies: categories[indexPath.row].dairies)
     }
 }

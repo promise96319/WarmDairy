@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configUserDefault()
         
         window = UIWindow(frame: UIScreen.main.bounds)
+        window?.backgroundColor = UIColor(hexString: "F1F6FA")
         window?.makeKeyAndVisible()
         
         window?.rootViewController = TabBarViewController()

@@ -30,8 +30,8 @@ class CategorySectionCell: UICollectionViewCell {
     
     func initData(monthData: CategoryMonthModel) {
         bgImage.kf.setImage(with: URL(string: monthData.image))
-        let monthsName = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二",]
-        titleLabel.text = "\(monthsName[monthData.month])月"
+        let monthsName = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"]
+        titleLabel.text = "\(monthsName[monthData.month - 1])月"
         countLabel.text = "\(monthData.dairies.count)个故事"
     }
     

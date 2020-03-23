@@ -17,6 +17,12 @@ class MottoAPI {
         callback(res)
     }
     
+    static func getMotto(mottoId: Int, callback: @escaping(_ data: MottoModel?) -> Void) {
+        let realm = try! Realm()
+        let res: MottoModel? = realm.objects(MottoModel.self).filter("id = \(mottoId)").first
+        callback(res)
+    }
+    
     /// 添加motto
     /// - Parameters:
     ///   - date: motto的日期

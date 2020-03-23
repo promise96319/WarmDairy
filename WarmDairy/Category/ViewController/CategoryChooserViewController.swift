@@ -113,6 +113,7 @@ extension CategoryChooserViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - UI 界面
 extension CategoryChooserViewController {
     func setupUI() {
         view.backgroundColor = UIColor(hexString: "F1F6FA")
@@ -192,6 +193,7 @@ extension CategoryChooserViewController {
     }
 }
 
+// MARK: - 分类cell
 class CategoryChooserCell: UICollectionViewCell {
     static let identifier = "CategoryChooserCell_ID"
     lazy var cateLabel = UILabel()

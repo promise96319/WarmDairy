@@ -11,4 +11,6 @@ import Foundation
 extension NSNotification.Name {
     /// 日记被添加了
     static let categoryDidChanged = Notification.Name("categoryDidChanged")
+    
+    static let userInfoDidChanged = Notification.Name("userInfoDidChanged")
 }

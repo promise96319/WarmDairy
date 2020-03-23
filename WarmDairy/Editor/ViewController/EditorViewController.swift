@@ -44,8 +44,11 @@ class EditorViewController: UIViewController {
     lazy var datePicker = DatePicker()
     lazy var popMaskView = UIView()
     
+    lazy var recordManager = RecordTimeManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        recordManager.startRecordTimer()
         setupUI()
     }
     
@@ -63,7 +66,7 @@ class EditorViewController: UIViewController {
     }
     
     deinit {
-        
+        recordManager.stopRecordTimer()
     }
 }
 
@@ -100,7 +103,10 @@ extension EditorViewController: CategoryChooserDelegate {
     
     @objc func showDatePicker() {
         // TODO：如果是更新日记，暂且不允许改date
-        if myDairy.images != "" { return }
+        if myDairy.images != "" {
+            MessageTool.shared.showMessage(theme: .info, title: "暂不支持更改日记日期，敬请谅解~")
+            return
+        }
         showMask()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         datePicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
@@ -271,17 +277,29 @@ extension EditorViewController: CategoryChooserDelegate {
                 
                 DairyAPI.addDairy(dairy: self.myDairy) { (isAdded) in
                     if (isAdded) {
-                        self.dismiss(animated: true, completion: nil)
+                        MessageTool.shared.showMessage(title: "保存成功！")
+                    } else {
+                        MessageTool.shared.showMessage(title: "保存失败，请稍后重试")
                     }
                 }
             } else {
-                print("测试 ===>的值为: \("保存失败")")
+                MessageTool.shared.showMessage(theme: .error, title: "保存失败，请稍后重试")
             }
         }
     }
     
     @objc func goBack() {
-        dismiss(animated: true, completion: nil)
+        let alert = UIAlertController(title: "温馨提示", message: "退出编辑界面将会导致未保存的内容丢失，您是否要退出？", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        let ok = UIAlertAction(title: "退出", style: .default, handler: {
+            ACTION in
+            self.recordManager.stopRecordTimer()
+            self.dismiss(animated: true, completion: nil)
+        })
+        
+        alert.addAction(cancel)
+        alert.addAction(ok)
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -504,11 +522,11 @@ extension EditorViewController: UIImagePickerControllerDelegate, UINavigationCon
         var imageData = pickedImage.pngData()
         // 控制在2M以内
         var rate =  CGFloat(2 * 1024 * 1024) / CGFloat(imageData!.count)
-        print("测试 ===> rate的值为: \(rate)")
+        CLog("测试 ===> rate的值为: \(rate)")
         rate = rate >= 1 ? 1 : rate
         imageData = pickedImage.jpegData(compressionQuality: CGFloat(rate))
         
-        print("测试 ===> imagedata的值为: \(imageData!.count / 1024 / 1024)")
+        CLog("测试 ===> imagedata的值为: \(imageData!.count / 1024 / 1024)")
         // 压缩系数
         var resizeRate: Int = 10
         // 头像限制大小 <= 100kb
@@ -517,10 +535,11 @@ extension EditorViewController: UIImagePickerControllerDelegate, UINavigationCon
             imageData = pickedImage.jpegData(compressionQuality: CGFloat(resizeRate / 10))
         }
         
+        picker.dismiss(animated: true, completion: nil)
+        
         if let path = DairyImageAPI.saveImageToTmp(image: UIImage(data: imageData!)!) {
             editorView.insertImage(url: path)
         }
-        picker.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -556,14 +575,28 @@ extension EditorViewController {
                     }
                 }
             }
-        case .denied:
-            break
-        //            MessageManager.share.showMessage(theme: .warning, title: "Pemisseion denied", body: "Please authorize in the 'Settings'.")
-        case .restricted:
-            break
-        //            MessageManager.share.showMessage(theme: .warning, title: "Pemisseion denied", body: "Please authorize in the 'Settings'.")
-        @unknown default:
-            fatalError()
+        default:
+            let alert = UIAlertController(title: "温馨提示", message: "您还未开启相册权限，无法选择照片", preferredStyle: .alert)
+            let cancel = UIAlertAction(title: "拒绝", style: .cancel, handler: nil)
+            let confirm = UIAlertAction(title: "前往设置", style: .default, handler: {
+                ACTION in
+                DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                    if #available(iOS 10, *) {
+                        UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: [:],
+                                                  completionHandler: {
+                                                    (success) in
+                                  CLog("开启设置")
+                        })
+                    } else {
+                        UIApplication.shared.openURL(URL.init(string: UIApplication.openSettingsURLString)!)
+                        
+                    }
+                })
+            })
+            
+            alert.addAction(cancel)
+            alert.addAction(confirm)
+            self.present(alert, animated: true, completion: nil)
         }
     }
 }
@@ -571,17 +604,17 @@ extension EditorViewController {
 // MARK: - editor delegate
 extension EditorViewController: SQTextEditorDelegate {
     func editorDidLoad(_ editor: SQTextEditorView) {
-        print("editorDidLoad")
+        CLog("editorDidLoad")
         editorView.insertHTML(myDairy.content)
         editorView.setText(color: UIColor(hexString: "303133")!)
     }
     
     func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {
-        print("text info changed")
+        CLog("text info changed")
         toolbar.toolbarCollectionView.reloadData()
     }
     
     func editor(_ editor: SQTextEditorView, contentHeightDidChange height: Int) {
-        print("contentHeightDidChange = \(height)")
+        CLog("contentHeightDidChange = \(height)")
     }
 }

@@ -18,9 +18,6 @@ import UIKit
  
  */
 class ImageManager {
-    
-    
- 
     static func removeImage(url: URL) -> Bool {
         return true
     }

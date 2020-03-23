@@ -70,7 +70,7 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 59 images.
+  /// This `R.image` struct is generated, and contains static references to 63 images.
   struct image {
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
@@ -114,8 +114,16 @@ struct R: Rswift.Validatable {
     static let icon_editor_weather = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_weather")
     /// Image `icon_home_add`.
     static let icon_home_add = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_home_add")
+    /// Image `icon_me_arrow_left`.
+    static let icon_me_arrow_left = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_arrow_left")
+    /// Image `icon_me_arrow_right`.
+    static let icon_me_arrow_right = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_arrow_right")
+    /// Image `icon_me_camera`.
+    static let icon_me_camera = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_camera")
     /// Image `icon_me_premium`.
     static let icon_me_premium = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_premium")
+    /// Image `icon_me_setting`.
+    static let icon_me_setting = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_setting")
     /// Image `icon_mood_angry`.
     static let icon_mood_angry = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_mood_angry")
     /// Image `icon_mood_confused`.
@@ -174,10 +182,10 @@ struct R: Rswift.Validatable {
     static let icon_weather_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_sun")
     /// Image `icon_weather_wind`.
     static let icon_weather_wind = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_weather_wind")
+    /// Image `image_bg_sun`.
+    static let image_bg_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_bg_sun")
     /// Image `image_editor_bg`.
     static let image_editor_bg = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_editor_bg")
-    /// Image `image_home_bg_sun`.
-    static let image_home_bg_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_home_bg_sun")
     /// Image `image_home_cr1`.
     static let image_home_cr1 = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_home_cr1")
     /// Image `image_home_cr2`.
@@ -296,9 +304,29 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.icon_home_add, compatibleWith: traitCollection)
     }
     
+    /// `UIImage(named: "icon_me_arrow_left", bundle: ..., traitCollection: ...)`
+    static func icon_me_arrow_left(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_me_arrow_left, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_me_arrow_right", bundle: ..., traitCollection: ...)`
+    static func icon_me_arrow_right(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_me_arrow_right, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_me_camera", bundle: ..., traitCollection: ...)`
+    static func icon_me_camera(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_me_camera, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "icon_me_premium", bundle: ..., traitCollection: ...)`
     static func icon_me_premium(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_me_premium, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_me_setting", bundle: ..., traitCollection: ...)`
+    static func icon_me_setting(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_me_setting, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_mood_angry", bundle: ..., traitCollection: ...)`
@@ -446,14 +474,14 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.icon_weather_wind, compatibleWith: traitCollection)
     }
     
+    /// `UIImage(named: "image_bg_sun", bundle: ..., traitCollection: ...)`
+    static func image_bg_sun(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.image_bg_sun, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "image_editor_bg", bundle: ..., traitCollection: ...)`
     static func image_editor_bg(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.image_editor_bg, compatibleWith: traitCollection)
-    }
-    
-    /// `UIImage(named: "image_home_bg_sun", bundle: ..., traitCollection: ...)`
-    static func image_home_bg_sun(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
-      return UIKit.UIImage(resource: R.image.image_home_bg_sun, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "image_home_cr1", bundle: ..., traitCollection: ...)`

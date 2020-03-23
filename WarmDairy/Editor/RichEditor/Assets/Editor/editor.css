@@ -15,6 +15,7 @@ body {
   padding: 0 24px;
   height: 100%;
   line-height: 28px;
+  font-size: 16px;
 }
 
 #outer-container {

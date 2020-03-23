@@ -6,4 +6,10 @@
 //  Copyright © 2020 qinguanghui. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class SettingCellModel {
+    static let sectionSpacing: CGFloat = 24
+    static let spacing: CGFloat = 10
+    static let cellHeight: CGFloat = 64
+}

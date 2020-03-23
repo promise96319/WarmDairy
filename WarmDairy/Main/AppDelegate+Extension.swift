@@ -15,13 +15,21 @@ extension AppDelegate {
     /// Realm 数据库配置 - 数据库迁移
     func configRealm() {
         let config = Realm.Configuration(
-            // 默认版本为 0
-            schemaVersion: 1,
+            // 当前版本号， 默认版本为 0，每次迁移的时候需更新
+            schemaVersion: 2,
             migrationBlock: { migration, oldSchemaVersion in
                 // 数据迁移
+                CLog("迁移1的值为: \(oldSchemaVersion)")
                 if (oldSchemaVersion < 1) {
                     migration.enumerateObjects(ofType: DairyModel.className()) { (oldObject, newObject) in
                         newObject!["cateIds"] = ""
+                    }
+                }
+                CLog("迁移2的值为: \(oldSchemaVersion)")
+                if (oldSchemaVersion < 2) {
+                    migration.enumerateObjects(ofType: UserInfo.className()) { (oldObject, newObject) in
+                        newObject!["recordTime"] = 0
+                        newObject!["continuousCreation"] = 0
                     }
                 }
         })
@@ -36,6 +44,7 @@ extension AppDelegate {
     
     /// 默认数据配置
     func configUserDefault() {
-        // TODO: - 默认值
+        UserInfoAPI.recordActiveDay()
+        Defaults[.isVIP] = false
     }
 }

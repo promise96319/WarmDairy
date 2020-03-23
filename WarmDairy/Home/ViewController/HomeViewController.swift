@@ -10,33 +10,65 @@ import UIKit
 import SnapKit
 import Then
 import FSPagerView
-import Hero
 import SwiftyUserDefaults
+import ViewAnimator
+import RQShineLabel
 
 class HomeViewController: UIViewController {
     
     var mottoData = [MottoModel]()
+    lazy var userInfo = UserInfo()
     
     let heroID = "Home_Carousel_ID"
     
     lazy var welcomeLabel = UILabel()
-    lazy var welcomeMotto = UILabel()
+    lazy var welcomeMotto = RQShineLabel()
     lazy var bgImage = UIImageView()
     lazy var editButton = UIButton()
-    
     lazy var carouselPager = FSPagerView()
     
     override func viewDidLoad() {
+        view.alpha = 0
+        editButton.alpha = 0
+        welcomeLabel.alpha = 0
+        welcomeMotto.alpha = 0
+        editButton.alpha = 0
+        
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadInfo), name: .userInfoDidChanged, object: nil)
+        
         setupUI()
+        loadInfo()
         loadData()
+        
+        let animation = CABasicAnimation(keyPath: "transform.rotation.z")
+        animation.repeatCount = MAXFLOAT
+        animation.duration = 16
+        animation.fromValue = 0
+        animation.toValue = Double.pi
+        animation.isRemovedOnCompletion = false
+        bgImage.layer.add(animation, forKey: "transform.rotation.z")
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        welcomeLabel.text = "\(caculateTime())，\(userInfo.name)"
+        setupAnimations()
+        welcomeMotto.shine()
+    }
+    
+    @objc func loadInfo() {
+        UserInfoAPI.getUser { (userInfo) in
+            self.userInfo = userInfo
+            self.welcomeLabel.text = "\(self.caculateTime())，\(userInfo.name)"
+            self.welcomeMotto.text = userInfo.motto
+        }
     }
     
     @objc func loadData() {
-       
+        
         MottoAPI.getMottos { (data) in
-            print("测试 ===> motto data的值为: \(data)")
+            CLog("测试 ===> motto data的值为: \(data)")
             // 如果没有数据，或者有数据时最后一天不是今天，创建一个新的空数据
             if data.count == 0 || (data.count > 0 && !data[data.count - 1].date.compare(.isToday)) {
                 // 如果今天没有手动创建，则手动创建，有则复用今天的
@@ -55,9 +87,9 @@ class HomeViewController: UIViewController {
                 todayMotto.isDeleted = true
                 self.mottoData = data
                 self.mottoData.append(todayMotto)
-                print("测试 ===> 今天存在格言")
+                CLog("测试 ===> 今天存在格言")
             } else {
-                print("测试 ===> 不存在格言")
+                CLog("测试 ===> 不存在格言")
                 self.mottoData = data
             }
             
@@ -71,9 +103,24 @@ class HomeViewController: UIViewController {
         }
     }
     
+    func caculateTime() -> String {
+        let date = Date()
+        if date.compare(.isMorning) {
+            return "早上好"
+        }
+        if date.compare(.isAfternoon) {
+            return "下午好"
+        }
+        if date.compare(.isEvening) {
+            return "晚上好"
+        }
+        return "晚安"
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
         NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .userInfoDidChanged, object: nil)
     }
 }
 
@@ -113,8 +160,8 @@ extension HomeViewController: FSPagerViewDelegate {
         }
         
         let vc = TodayDairyViewController()
-        vc.modalPresentationStyle = .fullScreen
         vc.initData(mottoData: mottoData[index])
+        vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true, completion: nil)
     }
 }
@@ -175,9 +222,11 @@ extension HomeViewController {
         }
         
         _ = welcomeMotto.then {
-            $0.set(text: "Good good study, day day up!", color: "606266")
+            $0.textColor = UIColor(hexString: "606266")
+            $0.font = UIFont.systemFont(ofSize: 14)
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
+            $0.setLineSpacing(lineSpacing: 12, lineHeightMultiple: 1)
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalTo(welcomeLabel)
@@ -187,11 +236,45 @@ extension HomeViewController {
         }
         
         _ = bgImage.then {
-            $0.image = R.image.image_home_bg_sun()
+            $0.image = R.image.image_bg_sun()
+            $0.contentMode = .scaleAspectFill
             view.addSubview($0)
             $0.snp.makeConstraints {
+                $0.width.height.equalTo(144)
                 $0.top.equalTo(topLayoutGuide.snp.bottom).offset(10)
                 $0.right.equalToSuperview().offset(16)
+            }
+        }
+    }
+}
+
+// MARK: - 动画
+extension HomeViewController {
+    func setupAnimations() {
+        
+        let fromAnimation = AnimationType.from(direction: .bottom, offset: 120.0)
+        view.animate(animations: [fromAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 1, usingSpringWithDamping: 0.9, initialSpringVelocity: 1)
+        
+        let scaleAnimation = AnimationType.zoom(scale: 0)
+        
+        editButton.animate(animations: [scaleAnimation], reversed: false, initialAlpha: 1, finalAlpha: 1, delay: 0.4, duration: 0.4, usingSpringWithDamping: 0.6, initialSpringVelocity: 3, completion: nil)
+        
+        //        bgImage.animate(animations: [scaleAnimation], reversed: false, initialAlpha: 1, finalAlpha: 1, delay: 0.2, duration: 0.6, usingSpringWithDamping: 0.6, initialSpringVelocity: 2) {
+        //        }
+        
+        
+        
+        let labelAnimation = AnimationType.from(direction: .bottom, offset: 20.0)
+        welcomeLabel.animate(animations: [labelAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0.2, duration: 0.6, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, completion: nil)
+        welcomeMotto.animate(animations: [labelAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0.2, duration: 0.8, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, completion: nil)
+        
+        
+        for index in 0..<mottoData.count {
+            if let cell = carouselPager.cellForItem(at: index) {
+                let zoomAnimation = AnimationType.zoom(scale: 0.8)
+                UIView.animate(views: [cell],
+                               animations: [zoomAnimation],
+                               duration: 1)
             }
         }
     }

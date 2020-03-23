@@ -18,4 +18,7 @@ extension DefaultsKeys {
     static let todayMottoImage = DefaultsKey<String>("todayMottoImage")
     static let todayMotto = DefaultsKey<String>("todayMotto")
     static let todayMottoAuthor = DefaultsKey<String>("todayMottoAuthor")
+    
+    /// 最后活跃的时间，用于判断活跃天数是否加1
+    static let lastActiveDay = DefaultsKey<String>("lastActiveDay")
 }

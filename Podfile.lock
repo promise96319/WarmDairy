@@ -1,4 +1,7 @@
 PODS:
+  - Charts (3.4.0):
+    - Charts/Core (= 3.4.0)
+  - Charts/Core (3.4.0)
   - DTCoreText (1.6.23):
     - DTCoreText/Core (= 1.6.23)
     - DTFoundation/Core (~> 1.7.5)
@@ -45,6 +48,7 @@ PODS:
   - ViewAnimator (2.7.0)
 
 DEPENDENCIES:
+  - Charts
   - DTCoreText
   - FSPagerView
   - Hero
@@ -65,6 +69,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Charts
     - DTCoreText
     - DTFoundation
     - FSPagerView
@@ -86,6 +91,7 @@ SPEC REPOS:
     - ViewAnimator
 
 SPEC CHECKSUMS:
+  Charts: 74c9f256eaf0460c0c416522d1cf8c634ea6b286
   DTCoreText: 67023bb51b26711d5f640c851f4845aea14c24c9
   DTFoundation: 25aa19bb7c6e225b1dfae195604fb8cf1da0ab4c
   FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
@@ -106,6 +112,6 @@ SPEC CHECKSUMS:
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
   ViewAnimator: 5af1c6f3b310f012bf081259c43717aa54fbae73
 
-PODFILE CHECKSUM: ef84490e98465041348848bef6cc14c99d02e774
+PODFILE CHECKSUM: 5bf274a34f8d32c474caf08df9d311ff92a1c16d
 
 COCOAPODS: 1.8.4

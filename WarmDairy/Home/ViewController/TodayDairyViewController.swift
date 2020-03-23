@@ -10,8 +10,12 @@ import UIKit
 import RQShineLabel
 import SwiftDate
 import WebKit
+import ViewAnimator
 
 class TodayDairyViewController: UIViewController {
+    
+    /// 当前需要做动画的cell，默认为0，被点击编辑的时候改变
+    var currentAnimateCellIndex = 0
     
     lazy var mottoData = MottoModel()
     lazy var dairesData = [DairyModel]()
@@ -37,14 +41,36 @@ class TodayDairyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        editButton.alpha = 0
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
         setupUI()
+        loadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         mottoLabel.shine()
+        for (index, cell) in dairyCells.enumerated() {
+            if index < currentAnimateCellIndex {
+                UIView.animate(withDuration: 0.2) {
+                    cell.alpha = 1
+                }
+            } else {
+                let fromAnimation = AnimationType.from(direction: .bottom, offset: 100.0)
+                cell.animate(animations: [fromAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: Double(index - currentAnimateCellIndex) * 0.2, duration: 1, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut, completion: nil)
+            }
+        }
+        
+        let scaleAnimation = AnimationType.zoom(scale: 0)
+        
+        editButton.animate(animations: [scaleAnimation], reversed: false, initialAlpha: 1, finalAlpha: 1, delay: 0.6, duration: 0.4, usingSpringWithDamping: 0.6, initialSpringVelocity: 3, completion: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        for cell in dairyCells {
+            cell.alpha = 0
+        }
     }
     
     func initData(mottoData: MottoModel) {
@@ -56,12 +82,11 @@ class TodayDairyViewController: UIViewController {
         dayLabel.text = mottoData.date.toFormat("dd")
         dateLabel.text = mottoData.date.toFormat("MMM yyyy")
         weekLabel.text = mottoData.date.weekdayName(.default, locale: Locales.chineseSimplified)
-        loadData()
     }
     
     @objc func loadData() {
         DairyAPI.getDairy(date: mottoData.date) { (dairies) in
-            print("测试 ===> today dairies的值为: \(dairies)")
+            CLog("today dairies的值为: \(dairies)")
             self.dairesData = dairies
             self.setupDairyView()
         }
@@ -69,7 +94,6 @@ class TodayDairyViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
     }
 }
 
@@ -111,11 +135,21 @@ extension TodayDairyViewController {
         setupDate()
         setupMotto()
         
+        _ = backButton.then {
+            $0.setImage(R.image.icon_today_back(), for: .normal)
+            
+            view.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.top.equalTo(topLayoutGuide.snp.bottom).offset(16)
+                $0.left.equalToSuperview().offset(8)
+                $0.width.height.equalTo(44)
+            }
+            $0.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+        }
+        
         _ = editButton.then {
             $0.setImage(R.image.icon_home_add(), for: .normal)
             $0.imageEdgeInsets = UIEdgeInsets(top: 13, left: 13, bottom: 13, right: 13)
-            $0.titleLabel?.font = UIFont.systemFont(ofSize: 32)
-            $0.titleLabel?.textAlignment = .center
             $0.layer.cornerRadius = 32
             $0.layer.shadowColor = UIColor(hexString: "000000")?.cgColor
             $0.layer.shadowOpacity = 0.2
@@ -143,6 +177,7 @@ extension TodayDairyViewController {
         
         for (index, dairy) in dairesData.enumerated() {
             let dairyCell = DairyCell().then {
+                $0.alpha = 0
                 $0.initData(dairy: dairy)
                 $0.delegate = self
                 $0.tag = index
@@ -177,7 +212,7 @@ extension TodayDairyViewController {
             $0.lineBreakMode = .byWordWrapping
             contentView.addSubview($0)
             $0.snp.makeConstraints {
-                $0.top.equalTo(dateLabel.snp.bottom).offset(32)
+                $0.top.equalTo(dateLabel.snp.bottom).offset(48)
                 $0.width.equalTo(DeviceInfo.screenWidth * 0.8)
                 $0.right.equalToSuperview().offset(-24)
             }
@@ -280,16 +315,6 @@ extension TodayDairyViewController {
                 $0.edges.equalToSuperview()
                 $0.width.equalTo(view)
             }
-        }
-        
-        _ = backButton.then {
-            $0.setImage(R.image.icon_today_back(), for: .normal)
-            contentView.addSubview($0)
-            $0.snp.makeConstraints {
-                $0.top.equalToSuperview().offset(16)
-                $0.left.equalToSuperview().offset(8)
-            }
-            $0.addTarget(self, action: #selector(goBack), for: .touchUpInside)
         }
     }
 }

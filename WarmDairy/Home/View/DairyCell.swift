@@ -103,6 +103,7 @@ class DairyCell: UIView {
 // MARK: - 事件处理
 extension DairyCell {
     @objc func showEdit() {
+        delegate?.currentAnimateCellIndex = tag
         delegate?.editDairy(dairy: dairy)
     }
     

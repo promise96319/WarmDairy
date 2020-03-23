@@ -14,7 +14,7 @@ target 'WarmDairy' do
 
   pod 'DTCoreText'   # 阅读器解析库
 
-  pod "Qiniu", "~> 7.3" # 七牛图片数据
+#  pod "Qiniu", "~> 7.3" # 七牛图片数据
   
 #  pod 'IceCream'     # iCloud 同步 realm
   pod 'Realm'
@@ -23,6 +23,7 @@ target 'WarmDairy' do
   pod 'SwiftTheme'   # 主题切换
   pod 'ViewAnimator' # view 动画
   pod 'Hero'         # controller 转场动画
+#  pod 'Charts'       # 表格
   pod 'Kingfisher'   # 图片加载
   pod 'FSPagerView'  # 轮播图
   pod 'RQShineLabel' # shine label

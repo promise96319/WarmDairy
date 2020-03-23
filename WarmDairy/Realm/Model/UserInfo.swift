@@ -11,15 +11,20 @@ import RealmSwift
 
 /// 用户信息，只有一个用户，记录其偏好
 class UserInfo: Object {
-    @objc dynamic var id = 0
+    @objc dynamic var id = UserInfoAPI.userID
+    static let avatarKey = "user_avatar"
     /// 头像
     @objc dynamic var avatar: CreamAsset?
     /// 名称
     @objc dynamic var name = "Warm Dairy"
     /// 描述：格言等
-    @objc dynamic var motto = "Good good study, day day up!"
+    @objc dynamic var motto = "满地都是六便士，他却抬头看见了月亮🌙"
     /// 密码
     @objc dynamic var password = ""
+    /// 记录时长
+    @objc dynamic var recordTime: Int = 0
+    /// 连续创作天数
+    @objc dynamic var continuousCreation: Int = 0
     
     @objc dynamic var isDeleted = false
     

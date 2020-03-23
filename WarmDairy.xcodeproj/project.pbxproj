@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		894C3201F9E43BFE006268CA /* Pods_WarmDairy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 103890749CFA55E140750473 /* Pods_WarmDairy.framework */; };
+		B122B90724275C74003C5DC9 /* MoodModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B90624275C74003C5DC9 /* MoodModel.swift */; };
+		B122B9092427620F003C5DC9 /* MeMoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B9082427620F003C5DC9 /* MeMoodCell.swift */; };
+		B122B90B242773CB003C5DC9 /* UserInfoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B90A242773CB003C5DC9 /* UserInfoAPI.swift */; };
+		B122B90E24278A3C003C5DC9 /* RecordTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B90D24278A3C003C5DC9 /* RecordTimeManager.swift */; };
+		B122B9122427958E003C5DC9 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B9112427958E003C5DC9 /* SettingViewController.swift */; };
+		B122B9142427B862003C5DC9 /* SettingCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B9132427B862003C5DC9 /* SettingCellModel.swift */; };
+		B122B9162427BA45003C5DC9 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B9152427BA45003C5DC9 /* SettingCell.swift */; };
+		B122B91824289BB6003C5DC9 /* MessageTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B91724289BB6003C5DC9 /* MessageTool.swift */; };
+		B122B91E2428E236003C5DC9 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B91D2428E236003C5DC9 /* SubscriptionViewController.swift */; };
 		B1297F6D242129C70015DFDA /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1297F6C242129C70015DFDA /* DatePicker.swift */; };
 		B1297F6F2421C7DC0015DFDA /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1297F6E2421C7DC0015DFDA /* Date.swift */; };
 		B1335A5724193C22006F1785 /* squire-raw.js in Resources */ = {isa = PBXBuildFile; fileRef = B1335A4F24193C22006F1785 /* squire-raw.js */; };
@@ -107,6 +116,15 @@
 /* Begin PBXFileReference section */
 		103890749CFA55E140750473 /* Pods_WarmDairy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WarmDairy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48502487EE9789126C4ACC36 /* Pods-WarmDairy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WarmDairy.release.xcconfig"; path = "Target Support Files/Pods-WarmDairy/Pods-WarmDairy.release.xcconfig"; sourceTree = "<group>"; };
+		B122B90624275C74003C5DC9 /* MoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodModel.swift; sourceTree = "<group>"; };
+		B122B9082427620F003C5DC9 /* MeMoodCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeMoodCell.swift; sourceTree = "<group>"; };
+		B122B90A242773CB003C5DC9 /* UserInfoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoAPI.swift; sourceTree = "<group>"; };
+		B122B90D24278A3C003C5DC9 /* RecordTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordTimeManager.swift; sourceTree = "<group>"; };
+		B122B9112427958E003C5DC9 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		B122B9132427B862003C5DC9 /* SettingCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCellModel.swift; sourceTree = "<group>"; };
+		B122B9152427BA45003C5DC9 /* SettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
+		B122B91724289BB6003C5DC9 /* MessageTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTool.swift; sourceTree = "<group>"; };
+		B122B91D2428E236003C5DC9 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 		B1297F6C242129C70015DFDA /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		B1297F6E2421C7DC0015DFDA /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		B1335A4F24193C22006F1785 /* squire-raw.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "squire-raw.js"; sourceTree = "<group>"; };
@@ -227,6 +245,46 @@
 				103890749CFA55E140750473 /* Pods_WarmDairy.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B122B90C24278A27003C5DC9 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				B122B90D24278A3C003C5DC9 /* RecordTimeManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		B122B9192428E1FA003C5DC9 /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				B122B91C2428E21B003C5DC9 /* Model */,
+				B122B91B2428E217003C5DC9 /* View */,
+				B122B91A2428E20E003C5DC9 /* ViewController */,
+			);
+			path = Subscription;
+			sourceTree = "<group>";
+		};
+		B122B91A2428E20E003C5DC9 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				B122B91D2428E236003C5DC9 /* SubscriptionViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		B122B91B2428E217003C5DC9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B122B91C2428E21B003C5DC9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		B1335A2F24193BBD006F1785 /* RichEditor */ = {
@@ -433,12 +491,13 @@
 		B1551BB124112E0500A7782B /* WarmDairy */ = {
 			isa = PBXGroup;
 			children = (
+				B122B9192428E1FA003C5DC9 /* Subscription */,
+				B1335AB5241CAD17006F1785 /* WarmDairy.entitlements */,
+				B1551BC724112E8800A7782B /* Main */,
+				B1551BCC2411ECB400A7782B /* Home */,
+				B1335A60241A6494006F1785 /* Editor */,
 				B1A0D2DD241F2C4300BCC8C0 /* Category */,
 				B1F5C111241DFC2A00F2D21E /* Me */,
-				B1335AB5241CAD17006F1785 /* WarmDairy.entitlements */,
-				B1335A60241A6494006F1785 /* Editor */,
-				B1551BCC2411ECB400A7782B /* Home */,
-				B1551BC724112E8800A7782B /* Main */,
 				B1F5C0E5241CC2FA00F2D21E /* Realm */,
 				B1551BE52412203A00A7782B /* Common */,
 				B1551BC624112E6500A7782B /* SupportingFiles */,
@@ -603,6 +662,7 @@
 				B18302EF241E091400A8E527 /* DairyImageAPI.swift */,
 				B1C6576F2421E02F00D6F56A /* MottoAPI.swift */,
 				B1C657852425F8E800D6F56A /* CategoryAPI.swift */,
+				B122B90A242773CB003C5DC9 /* UserInfoAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -613,6 +673,7 @@
 				B1F5C0EE241CDBF200F2D21E /* IDTool.swift */,
 				B1C657832425CA1900D6F56A /* Log.swift */,
 				B1C9BB072426215B00ED55B3 /* AnimationTool.swift */,
+				B122B91724289BB6003C5DC9 /* MessageTool.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -640,6 +701,7 @@
 		B1F5C111241DFC2A00F2D21E /* Me */ = {
 			isa = PBXGroup;
 			children = (
+				B122B90C24278A27003C5DC9 /* Manager */,
 				B1F5C114241DFC4700F2D21E /* Model */,
 				B1F5C113241DFC3D00F2D21E /* View */,
 				B1F5C112241DFC3400F2D21E /* ViewController */,
@@ -651,6 +713,7 @@
 			isa = PBXGroup;
 			children = (
 				B1F5C115241DFC5600F2D21E /* MeViewController.swift */,
+				B122B9112427958E003C5DC9 /* SettingViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -658,6 +721,8 @@
 		B1F5C113241DFC3D00F2D21E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				B122B9082427620F003C5DC9 /* MeMoodCell.swift */,
+				B122B9152427BA45003C5DC9 /* SettingCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -665,6 +730,8 @@
 		B1F5C114241DFC4700F2D21E /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B122B90624275C74003C5DC9 /* MoodModel.swift */,
+				B122B9132427B862003C5DC9 /* SettingCellModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -824,7 +891,9 @@
 				B1335A6A241A866E006F1785 /* ToolbarModel.swift in Sources */,
 				B1C6577E2424BF1700D6F56A /* CategorySectionFrameModel.swift in Sources */,
 				B1A0D2DC241F1AB900BCC8C0 /* TodayDairyViewController.swift in Sources */,
+				B122B90724275C74003C5DC9 /* MoodModel.swift in Sources */,
 				B1A0D2E2241F2DB700BCC8C0 /* CategoryViewController.swift in Sources */,
+				B122B91824289BB6003C5DC9 /* MessageTool.swift in Sources */,
 				B1F5C102241DD94900F2D21E /* PublicDatabaseManager.swift in Sources */,
 				B1551BB724112E0500A7782B /* ViewController.swift in Sources */,
 				B1551BB324112E0500A7782B /* AppDelegate.swift in Sources */,
@@ -844,6 +913,7 @@
 				B1A0D2DA241E831100BCC8C0 /* CarouselFrameModel.swift in Sources */,
 				B1335A97241BE755006F1785 /* DUADataParser.swift in Sources */,
 				B1A0D2D4241E6D1500BCC8C0 /* UserInfo.swift in Sources */,
+				B122B9092427620F003C5DC9 /* MeMoodCell.swift in Sources */,
 				B1335A91241BE755006F1785 /* UIView+subScript.swift in Sources */,
 				B1F5C107241DD94900F2D21E /* CKRecordRecoverable.swift in Sources */,
 				B1335A9B241BE755006F1785 /* DUAPageModel.swift in Sources */,
@@ -863,6 +933,7 @@
 				B1F5C103241DD94900F2D21E /* BackgroundWorker.swift in Sources */,
 				B1551BE82412207500A7782B /* UIColor+Extension.swift in Sources */,
 				B1A0D2D8241E7FA000BCC8C0 /* CarouselCell.swift in Sources */,
+				B122B9162427BA45003C5DC9 /* SettingCell.swift in Sources */,
 				B1F5C116241DFC5600F2D21E /* MeViewController.swift in Sources */,
 				B1C9BB1024265D1600ED55B3 /* SearchDairyViewController.swift in Sources */,
 				B18302F0241E091400A8E527 /* DairyImageAPI.swift in Sources */,
@@ -872,10 +943,13 @@
 				B1F5C101241DD94900F2D21E /* ErrorHandler.swift in Sources */,
 				B1C9BB0E24263B2100ED55B3 /* CategoryChooserViewController.swift in Sources */,
 				B1335A6C241A8823006F1785 /* ToolbarCell.swift in Sources */,
+				B122B91E2428E236003C5DC9 /* SubscriptionViewController.swift in Sources */,
 				B1C657702421E02F00D6F56A /* MottoAPI.swift in Sources */,
 				B1335A92241BE755006F1785 /* DUAPageViewController.swift in Sources */,
 				B1551BCB2411508900A7782B /* R.generated.swift in Sources */,
+				B122B90B242773CB003C5DC9 /* UserInfoAPI.swift in Sources */,
 				B1335A68241A67C0006F1785 /* DeviceInfo.swift in Sources */,
+				B122B9142427B862003C5DC9 /* SettingCellModel.swift in Sources */,
 				B1335A5F241A63F5006F1785 /* ToolbarView.swift in Sources */,
 				B1C657782424A9EE00D6F56A /* CategorySection.swift in Sources */,
 				B1A0D2D2241E6B9900BCC8C0 /* MottoModel.swift in Sources */,
@@ -883,6 +957,7 @@
 				B1C9BB0A24262CE500ED55B3 /* NotificationName+Extension.swift in Sources */,
 				B1C657762424A5CB00D6F56A /* CategoryModel.swift in Sources */,
 				B1335A6E241BD15B006F1785 /* FileManager+Extension.swift in Sources */,
+				B122B90E24278A3C003C5DC9 /* RecordTimeManager.swift in Sources */,
 				B1F5C0EC241CD28600F2D21E /* DairyAPI.swift in Sources */,
 				B1335A9E241BE755006F1785 /* DUAConVexLensView.swift in Sources */,
 				B1F5C10E241DE89200F2D21E /* TabBarViewController.swift in Sources */,
@@ -892,6 +967,7 @@
 				B1C9BB1224266C8F00ED55B3 /* SearchResultCell.swift in Sources */,
 				B1C9BB00242609A300ED55B3 /* CategoryEditViewController.swift in Sources */,
 				B1F5C109241DD94900F2D21E /* Notification+Name.swift in Sources */,
+				B122B9122427958E003C5DC9 /* SettingViewController.swift in Sources */,
 				B1A0D2E6242093B600BCC8C0 /* WeatherPicker.swift in Sources */,
 				B1335A95241BE755006F1785 /* DUAtranslationController.swift in Sources */,
 				B1F5C0EF241CDBF200F2D21E /* IDTool.swift in Sources */,
