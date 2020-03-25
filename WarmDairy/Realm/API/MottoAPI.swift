@@ -13,13 +13,13 @@ import SwiftyUserDefaults
 class MottoAPI {
     static func getMottos(callback: @escaping(_ data: [MottoModel]) -> Void) {
         let realm = try! Realm()
-        let res: [MottoModel] = realm.objects(MottoModel.self).sorted(byKeyPath: "id", ascending: true).map { $0 }
+        let res: [MottoModel] = realm.objects(MottoModel.self).filter("isDeleted = false").sorted(byKeyPath: "id", ascending: true).map { $0 }
         callback(res)
     }
     
     static func getMotto(mottoId: Int, callback: @escaping(_ data: MottoModel?) -> Void) {
         let realm = try! Realm()
-        let res: MottoModel? = realm.objects(MottoModel.self).filter("id = \(mottoId)").first
+        let res: MottoModel? = realm.objects(MottoModel.self).filter("isDeleted = false AND id = \(mottoId)").first
         callback(res)
     }
     
@@ -44,7 +44,7 @@ class MottoAPI {
         let motto = MottoModel()
         motto.id = id
         motto.date = date
-        if date.compare(.isToday) {
+        if date.compare(.isToday) && Defaults[.todayMottoImage] != "" {
             motto.imageURL = Defaults[.todayMottoImage]
             motto.motto = Defaults[.todayMotto]
             motto.author = Defaults[.todayMottoAuthor]

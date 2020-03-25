@@ -14,6 +14,7 @@ class CategoryEditViewController: UIViewController {
     
     let animations = [AnimationType.from(direction: .bottom, offset: 80.0)]
     lazy var categories = [CustomCategoryModel]()
+    var currentSelectedCategoryIndex = -1
     
     lazy var titleLabel = UILabel()
     lazy var backButton = UIButton()
@@ -57,15 +58,21 @@ class CategoryEditViewController: UIViewController {
 extension CategoryEditViewController {
     @objc func goBack() {
         navigationController?.popViewController(animated: true)
-        navigationController?.navigationBar.isHidden = false
         (navigationController?.tabBarController as? TabBarViewController)?.showTabbar()
+        navigationController?.navigationBar.isHidden = false
     }
     
-    @objc func addCate() {
-        let alert = UIAlertController(title: "添加分类", message: "", preferredStyle: .alert)
+    @objc func addCate(isEdit: Bool = false) {
+        let title = isEdit ? "编辑分类名称" : "添加分类"
+        let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
                
                alert.addTextField{(usernameText) ->Void in
                    usernameText.placeholder = "分类名称"
+                if isEdit {
+                    if self.currentSelectedCategoryIndex >= 0 {
+                        usernameText.text = self.categories[self.currentSelectedCategoryIndex].name
+                    }
+                }
                }
                
                let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -74,10 +81,11 @@ extension CategoryEditViewController {
                    let text = alert.textFields?.first?.text
                     if let text = text {
                         if text != "" {
-                            CategoryAPI.addCategory(name: text) { (isAdded) in
-                                if isAdded {
-                                    NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
-                                }
+                            if isEdit {
+                                let cate = self.categories[self.currentSelectedCategoryIndex]
+                                CategoryAPI.updateCategory(id: cate.id, name: text)  { _ in }
+                            } else {
+                                CategoryAPI.addCategory(name: text) { _ in }
                             }
                         }
                     }
@@ -88,7 +96,45 @@ extension CategoryEditViewController {
                self.present(alert, animated: true, completion: nil)
     }
     
-    
+    @objc func cellLongPress(sender: UILongPressGestureRecognizer) {
+        guard let tag = sender.view?.tag else { return }
+        currentSelectedCategoryIndex = tag
+        let alert = UIAlertController(title: "编辑分类", message: categories[tag].name, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        let confirm = UIAlertAction(title: "编辑", style: .default, handler: {
+            ACTION in
+            self.addCate(isEdit: true)
+        })
+        
+        let delete = UIAlertAction(title: "删除", style: .destructive) { (ACTION) in
+            
+            let deleteAlert = UIAlertController(title: "删除分类", message: self.categories[tag].name, preferredStyle: .alert)
+            
+            let deleteCancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            let deleteConfirm = UIAlertAction(title: "删除", style: .destructive, handler: {
+                ACTION in
+               CategoryAPI.removeCategory(id: self.categories[tag].id) { (isDeleted) in
+               }
+            })
+            deleteAlert.addAction(deleteCancel)
+            deleteAlert.addAction(deleteConfirm)
+            self.present(deleteAlert, animated: true, completion: nil)
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(confirm)
+        alert.addAction(delete)
+        if DeviceInfo.isiPad {
+            let popover = alert.popoverPresentationController
+            if let popover = popover {
+                popover.barButtonItem = self.navigationItem.rightBarButtonItem
+                popover.sourceView = self.view
+                popover.sourceRect = CGRect(x: 0, y: DeviceInfo.screenHeight, width: DeviceInfo.screenWidth, height: 360)
+            }
+        }
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -103,6 +149,9 @@ extension CategoryEditViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategorySectionCell.identifier, for: indexPath) as! CategorySectionCell
         cell.initFavoriteData(data: categories[indexPath.row])
+        cell.tag = indexPath.row
+        let longPressGuesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPress))
+        cell.addGestureRecognizer(longPressGuesture)
         return cell
     }
     

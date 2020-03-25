@@ -20,6 +20,9 @@ class EditorViewController: UIViewController {
     
     lazy var myDairy = DairyModel()
     
+    /// 是编辑界面 还是新增界面，默认新增
+    var isDairyEditing: Bool = false
+    
     lazy var editorView = SQTextEditorView()
     lazy var toolbar = ToolbarView()
     
@@ -52,8 +55,9 @@ class EditorViewController: UIViewController {
         setupUI()
     }
     
-    func initData(dairy: DairyModel) {
+    func initData(dairy: DairyModel, isDairyEditing: Bool = false) {
         myDairy = dairy
+        self.isDairyEditing = isDairyEditing
         chooseDate(date: dairy.createdAt)
         chooseMood(mood: dairy.mood)
         chooseWeather(weather: dairy.weather)
@@ -103,8 +107,8 @@ extension EditorViewController: CategoryChooserDelegate {
     
     @objc func showDatePicker() {
         // TODO：如果是更新日记，暂且不允许改date
-        if myDairy.images != "" {
-            MessageTool.shared.showMessage(theme: .info, title: "暂不支持更改日记日期，敬请谅解~")
+        if isDairyEditing {
+            MessageTool.shared.showMessage(theme: .warning, title: "暂不支持更改日记日期")
             return
         }
         showMask()
@@ -278,6 +282,7 @@ extension EditorViewController: CategoryChooserDelegate {
                 DairyAPI.addDairy(dairy: self.myDairy) { (isAdded) in
                     if (isAdded) {
                         MessageTool.shared.showMessage(title: "保存成功！")
+                        self.dismiss(animated: true, completion: nil)
                     } else {
                         MessageTool.shared.showMessage(title: "保存失败，请稍后重试")
                     }
@@ -519,22 +524,9 @@ extension EditorViewController: UIImagePickerControllerDelegate, UINavigationCon
     // 上传图片
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let pickedImage = info[.originalImage] as! UIImage
-        var imageData = pickedImage.pngData()
+        
         // 控制在2M以内
-        var rate =  CGFloat(2 * 1024 * 1024) / CGFloat(imageData!.count)
-        CLog("测试 ===> rate的值为: \(rate)")
-        rate = rate >= 1 ? 1 : rate
-        imageData = pickedImage.jpegData(compressionQuality: CGFloat(rate))
-        
-        CLog("测试 ===> imagedata的值为: \(imageData!.count / 1024 / 1024)")
-        // 压缩系数
-        var resizeRate: Int = 10
-        // 头像限制大小 <= 100kb
-        while imageData!.count > 2 * 1024 * 1024 && resizeRate > 1 {
-            resizeRate -= 1
-            imageData = pickedImage.jpegData(compressionQuality: CGFloat(resizeRate / 10))
-        }
-        
+        let imageData = ImageCompressTool.compress(image: pickedImage, to: 2 * 1024)
         picker.dismiss(animated: true, completion: nil)
         
         if let path = DairyImageAPI.saveImageToTmp(image: UIImage(data: imageData!)!) {

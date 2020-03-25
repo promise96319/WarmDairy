@@ -12,19 +12,19 @@ import RealmSwift
 class DairyAPI {
     static func getDairy(callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
-        let res: [DairyModel] = realm.objects(DairyModel.self).map { $0 }
+        let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false").map { $0 }
         callback(res)
     }
     
     static func getDairy(cateId: Int, callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
-        let res: [DairyModel] = realm.objects(DairyModel.self).filter("cateIds CONTAINS %@", "\(cateId)").map { $0 }
+        let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false AND cateIds CONTAINS %@", "\(cateId)").map { $0 }
         callback(res)
     }
     
     static func getDairy(date: Date, callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
-        let res: [DairyModel] = realm.objects(DairyModel.self).map { $0 }
+        let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false").map { $0 }
         let filterRes = res.filter {
             return $0.createdAt.compare(toDate: date, granularity: .day) == .orderedSame
         }

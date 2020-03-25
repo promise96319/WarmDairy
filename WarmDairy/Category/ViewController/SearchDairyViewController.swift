@@ -77,7 +77,7 @@ extension SearchDairyViewController {
             $0.minimumLineSpacing = 0
             $0.minimumInteritemSpacing = 0
             $0.scrollDirection = .vertical
-            $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 220, right: 0)
+            $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 240, right: 0)
         }
         
         collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 0, height: 0), collectionViewLayout: layout).then {

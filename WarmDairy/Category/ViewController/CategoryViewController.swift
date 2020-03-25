@@ -130,6 +130,7 @@ class CategoryViewController: UIViewController {
     }
 }
 
+// MARK: - search
 extension CategoryViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let value = searchController.searchBar.text
@@ -173,6 +174,7 @@ extension CategoryViewController: UISearchResultsUpdating {
     }
 }
 
+// MARK: - UI
 extension CategoryViewController {
     func setupUI() {
         setupBg()
@@ -266,6 +268,7 @@ extension CategoryViewController {
     }
 }
 
+// MARK: - reader
 extension CategoryViewController: DUAReaderDelegate {
     func readerDidClickSettingFrame(reader: DUAReader) {
         if reader.bottomBar.alpha == 0 {

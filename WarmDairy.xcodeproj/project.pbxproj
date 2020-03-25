@@ -17,6 +17,8 @@
 		B122B9162427BA45003C5DC9 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B9152427BA45003C5DC9 /* SettingCell.swift */; };
 		B122B91824289BB6003C5DC9 /* MessageTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B91724289BB6003C5DC9 /* MessageTool.swift */; };
 		B122B91E2428E236003C5DC9 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B91D2428E236003C5DC9 /* SubscriptionViewController.swift */; };
+		B122B9202429E1FB003C5DC9 /* ImageCompress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B91F2429E1FB003C5DC9 /* ImageCompress.swift */; };
+		B122B922242A1F50003C5DC9 /* GIF.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B122B921242A1F50003C5DC9 /* GIF.bundle */; };
 		B1297F6D242129C70015DFDA /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1297F6C242129C70015DFDA /* DatePicker.swift */; };
 		B1297F6F2421C7DC0015DFDA /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1297F6E2421C7DC0015DFDA /* Date.swift */; };
 		B1335A5724193C22006F1785 /* squire-raw.js in Resources */ = {isa = PBXBuildFile; fileRef = B1335A4F24193C22006F1785 /* squire-raw.js */; };
@@ -55,7 +57,6 @@
 		B1551BBF24112E0600A7782B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1551BBD24112E0600A7782B /* LaunchScreen.storyboard */; };
 		B1551BCB2411508900A7782B /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BCA2411508900A7782B /* R.generated.swift */; };
 		B1551BD12411ECE100A7782B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BD02411ECE100A7782B /* HomeViewController.swift */; };
-		B1551BE424121FB900A7782B /* Books.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B1551BE324121FB900A7782B /* Books.bundle */; };
 		B1551BE82412207500A7782B /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1551BE72412207500A7782B /* UIColor+Extension.swift */; };
 		B18302EE241E065A00A8E527 /* DairyImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18302ED241E065A00A8E527 /* DairyImageModel.swift */; };
 		B18302F0241E091400A8E527 /* DairyImageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18302EF241E091400A8E527 /* DairyImageAPI.swift */; };
@@ -125,6 +126,8 @@
 		B122B9152427BA45003C5DC9 /* SettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		B122B91724289BB6003C5DC9 /* MessageTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTool.swift; sourceTree = "<group>"; };
 		B122B91D2428E236003C5DC9 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
+		B122B91F2429E1FB003C5DC9 /* ImageCompress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompress.swift; sourceTree = "<group>"; };
+		B122B921242A1F50003C5DC9 /* GIF.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GIF.bundle; sourceTree = "<group>"; };
 		B1297F6C242129C70015DFDA /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		B1297F6E2421C7DC0015DFDA /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		B1335A4F24193C22006F1785 /* squire-raw.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "squire-raw.js"; sourceTree = "<group>"; };
@@ -166,7 +169,6 @@
 		B1551BC024112E0600A7782B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1551BCA2411508900A7782B /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = SOURCE_ROOT; };
 		B1551BD02411ECE100A7782B /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		B1551BE324121FB900A7782B /* Books.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Books.bundle; sourceTree = "<group>"; };
 		B1551BE72412207500A7782B /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		B18302ED241E065A00A8E527 /* DairyImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyImageModel.swift; sourceTree = "<group>"; };
 		B18302EF241E091400A8E527 /* DairyImageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyImageAPI.swift; sourceTree = "<group>"; };
@@ -515,8 +517,8 @@
 				B1551BBB24112E0600A7782B /* Assets.xcassets */,
 				B1551BBD24112E0600A7782B /* LaunchScreen.storyboard */,
 				B1551BC024112E0600A7782B /* Info.plist */,
-				B1551BE324121FB900A7782B /* Books.bundle */,
 				B1C657712423198F00D6F56A /* README.md */,
+				B122B921242A1F50003C5DC9 /* GIF.bundle */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -674,6 +676,7 @@
 				B1C657832425CA1900D6F56A /* Log.swift */,
 				B1C9BB072426215B00ED55B3 /* AnimationTool.swift */,
 				B122B91724289BB6003C5DC9 /* MessageTool.swift */,
+				B122B91F2429E1FB003C5DC9 /* ImageCompress.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -807,12 +810,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1551BBF24112E0600A7782B /* LaunchScreen.storyboard in Resources */,
+				B122B922242A1F50003C5DC9 /* GIF.bundle in Resources */,
 				B1335A5924193C22006F1785 /* editor.css in Resources */,
 				B1335A5724193C22006F1785 /* squire-raw.js in Resources */,
 				B1335A5A24193C22006F1785 /* editor.js in Resources */,
 				B1551BBC24112E0600A7782B /* Assets.xcassets in Resources */,
 				B1335A5824193C22006F1785 /* index.html in Resources */,
-				B1551BE424121FB900A7782B /* Books.bundle in Resources */,
 				B1C657722423198F00D6F56A /* README.md in Resources */,
 				B1551BBA24112E0500A7782B /* Main.storyboard in Resources */,
 			);
@@ -925,6 +928,7 @@
 				B1A0D2E8242093E900BCC8C0 /* MoodPicker.swift in Sources */,
 				B1335A9C241BE755006F1785 /* DUAAttributedView.swift in Sources */,
 				B1335AA0241BE755006F1785 /* DUAStatusBar.swift in Sources */,
+				B122B9202429E1FB003C5DC9 /* ImageCompress.swift in Sources */,
 				B1335A9F241BE755006F1785 /* DUATableViewCell.swift in Sources */,
 				B1C6577424236C2D00D6F56A /* DairyCell.swift in Sources */,
 				B1F5C110241DE8BF00F2D21E /* CustomTabBarView.swift in Sources */,

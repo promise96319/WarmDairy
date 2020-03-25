@@ -178,6 +178,7 @@ extension DUAReader {
         }
         
         let shareButton = UIButton().then {
+            $0.isHidden = true
             $0.setImage(R.image.icon_reader_share(), for: .normal)
             topBar.addSubview($0)
             $0.snp.makeConstraints {
@@ -189,6 +190,7 @@ extension DUAReader {
         }
         
         _ = UIButton().then {
+            $0.isHidden = true
             $0.setImage(R.image.icon_reader_download(), for: .normal)
             topBar.addSubview($0)
             $0.snp.makeConstraints {

@@ -12,7 +12,6 @@ import Then
 import FSPagerView
 import SwiftyUserDefaults
 import ViewAnimator
-import RQShineLabel
 
 class HomeViewController: UIViewController {
     
@@ -22,7 +21,7 @@ class HomeViewController: UIViewController {
     let heroID = "Home_Carousel_ID"
     
     lazy var welcomeLabel = UILabel()
-    lazy var welcomeMotto = RQShineLabel()
+    lazy var welcomeMotto = UILabel()
     lazy var bgImage = UIImageView()
     lazy var editButton = UIButton()
     lazy var carouselPager = FSPagerView()
@@ -49,12 +48,15 @@ class HomeViewController: UIViewController {
         animation.toValue = Double.pi
         animation.isRemovedOnCompletion = false
         bgImage.layer.add(animation, forKey: "transform.rotation.z")
+        
+        let vc = SubscriptionViewController()
+               vc.modalPresentationStyle = .fullScreen
+               present(vc, animated: true, completion: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         welcomeLabel.text = "\(caculateTime())，\(userInfo.name)"
         setupAnimations()
-        welcomeMotto.shine()
     }
     
     @objc func loadInfo() {

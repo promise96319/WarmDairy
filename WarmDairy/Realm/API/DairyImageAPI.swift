@@ -66,7 +66,7 @@ class DairyImageAPI {
     
     static func getImage(id: Int, callback: @escaping(_ data: DairyImageModel?) -> Void) {
         let realm = try! Realm()
-        let res: DairyImageModel? = realm.objects(DairyImageModel.self).filter("id = id").first
+        let res: DairyImageModel? = realm.objects(DairyImageModel.self).filter("id = \(id)").first
         callback(res)
     }
     
@@ -124,6 +124,7 @@ extension DairyImageAPI {
                 }
             } else {
                 print("测试 ===> doc,tmp均不存在图片")
+                MessageTool.shared.showMessage(title: "正在同步数据，请耐心等待...")
                 getImage(id: id) { (asset) in
                     guard let asset = asset else {
                         print("测试 ===> image不存在")

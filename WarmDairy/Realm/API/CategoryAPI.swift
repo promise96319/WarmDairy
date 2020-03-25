@@ -12,13 +12,14 @@ import RealmSwift
 class CategoryAPI {
     static func getCategories(callback: @escaping(_ data: [CategoryModel]) -> Void) {
         let realm = try! Realm()
-        let res: [CategoryModel] = realm.objects(CategoryModel.self).map { $0 }
+        var res: [CategoryModel] = realm.objects(CategoryModel.self).filter("isDeleted = false").map { $0 }
+        res = res.sorted(by: { $0.id > $1.id })
         callback(res)
     }
     
     static func getCategoriesWithDairies(callback: @escaping(_ data: [CustomCategoryModel]) -> Void) {
         let realm = try! Realm()
-        let res: [CategoryModel] = realm.objects(CategoryModel.self).map { $0 }
+        let res: [CategoryModel] = realm.objects(CategoryModel.self).filter("isDeleted = false").map { $0 }
         var datas = [CustomCategoryModel]()
         for cate in res {
             DairyAPI.getDairy(cateId: cate.id) { (dairies) in
@@ -30,6 +31,7 @@ class CategoryAPI {
                 datas.append(cateModel)
             }
         }
+        datas = datas.sorted(by: {  $0.id > $1.id })
         callback(datas)
     }
     
@@ -41,6 +43,8 @@ class CategoryAPI {
             realm.add(cate)
         }
         callback(true)
+        NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
+        MessageTool.shared.showMessage(title: "添加成功！")
     }
     
     static func updateCategory(id: Int, name: String, callback: @escaping(_ isUpdated: Bool) -> Void) {
@@ -49,6 +53,8 @@ class CategoryAPI {
             realm.create(CategoryModel.self, value: ["id": id, "name": name], update: .modified)
         }
         callback(true)
+        NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
+        MessageTool.shared.showMessage(title: "编辑成功！")
     }
     
     static func removeCategory(id: Int, callback: @escaping(_ isDeleted: Bool) -> Void) {
@@ -57,5 +63,7 @@ class CategoryAPI {
             realm.create(CategoryModel.self, value: ["id": id, "isDeleted": true], update: .modified)
         }
         callback(true)
+        NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
+        MessageTool.shared.showMessage(title: "删除成功！")
     }
 }

@@ -43,6 +43,7 @@ class TodayDairyViewController: UIViewController {
         super.viewDidLoad()
         editButton.alpha = 0
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
         setupUI()
         loadData()
     }
@@ -85,6 +86,7 @@ class TodayDairyViewController: UIViewController {
     }
     
     @objc func loadData() {
+        self.currentAnimateCellIndex = 0
         DairyAPI.getDairy(date: mottoData.date) { (dairies) in
             CLog("today dairies的值为: \(dairies)")
             self.dairesData = dairies
@@ -94,6 +96,7 @@ class TodayDairyViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
     }
 }
 
@@ -112,7 +115,7 @@ extension TodayDairyViewController {
     
     func editDairy(dairy: DairyModel) {
         let vc = EditorViewController()
-        vc.initData(dairy: dairy)
+        vc.initData(dairy: dairy, isDairyEditing: true)
         vc.initBg(image: mottoData.imageURL)
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true, completion: nil)

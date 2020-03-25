@@ -60,15 +60,7 @@ class SettingViewController: UIViewController {
 extension SettingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let pickedImage = info[.originalImage] as! UIImage
-        var imageData = pickedImage.pngData()
-        
-        // 压缩系数
-        var resizeRate: Int = 10
-        // 头像限制大小 <= 100kb
-        while imageData!.count > 400 * 1024 && resizeRate > 1 {
-            resizeRate -= 1
-            imageData = pickedImage.jpegData(compressionQuality: CGFloat(resizeRate / 10))
-        }
+        let imageData = ImageCompressTool.compress(image: pickedImage, to: 500)
         
         picker.dismiss(animated: true, completion: nil)
         

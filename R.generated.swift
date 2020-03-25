@@ -18,8 +18,8 @@ struct R: Rswift.Validatable {
   
   /// This `R.file` struct is generated, and contains static references to 6 files.
   struct file {
-    /// Resource file `Books.bundle`.
-    static let booksBundle = Rswift.FileResource(bundle: R.hostingBundle, name: "Books", pathExtension: "bundle")
+    /// Resource file `GIF.bundle`.
+    static let gifBundle = Rswift.FileResource(bundle: R.hostingBundle, name: "GIF", pathExtension: "bundle")
     /// Resource file `README.md`.
     static let readmeMd = Rswift.FileResource(bundle: R.hostingBundle, name: "README", pathExtension: "md")
     /// Resource file `editor.css`.
@@ -31,9 +31,9 @@ struct R: Rswift.Validatable {
     /// Resource file `squire-raw.js`.
     static let squireRawJs = Rswift.FileResource(bundle: R.hostingBundle, name: "squire-raw", pathExtension: "js")
     
-    /// `bundle.url(forResource: "Books", withExtension: "bundle")`
-    static func booksBundle(_: Void = ()) -> Foundation.URL? {
-      let fileResource = R.file.booksBundle
+    /// `bundle.url(forResource: "GIF", withExtension: "bundle")`
+    static func gifBundle(_: Void = ()) -> Foundation.URL? {
+      let fileResource = R.file.gifBundle
       return fileResource.bundle.url(forResource: fileResource)
     }
     

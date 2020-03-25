@@ -17,6 +17,7 @@ class CategorySection: UIView {
     
     lazy var monthData = [CategoryMonthModel]()
     lazy var favoriteData = [CustomCategoryModel]()
+    var currentSelectedCategoryIndex = -1
     
     lazy var titleLabel = UILabel()
     lazy var titleButton = UIButton()
@@ -34,6 +35,7 @@ class CategorySection: UIView {
     
     func initData(year: Int, monthData: [CategoryMonthModel]) {
         self.isFavorite = false
+        self.monthData = monthData.sorted(by: { $0.month < $1.month })
         
         titleLabel.text = "\(year)年"
         var totalCount = 0
@@ -43,16 +45,14 @@ class CategorySection: UIView {
         totalCountLabel.text = "\(totalCount)个故事"
         titleButton.isHidden = true
         
-        self.monthData = monthData.sorted(by: { $0.month < $1.month })
-        
         collectionView.reloadData()
     }
     
     func initFavoriteData(data: [CustomCategoryModel]) {
         self.isFavorite = true
+        self.favoriteData = data
         titleLabel.text = "我的收藏"
         totalCountLabel.isHidden = true
-        self.favoriteData = data
         collectionView.reloadData()
     }
 }
@@ -64,6 +64,84 @@ extension CategorySection {
         vc.delegate = delegate
         vc.initData(categories: favoriteData)
         delegate?.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    /// 只有在用户自己的分类才出现
+    @objc func addCate(isEdit: Bool = false) {
+        let title = isEdit ? "编辑分类名称" : "添加分类"
+        let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
+               
+               alert.addTextField{(usernameText) ->Void in
+                   usernameText.placeholder = "分类名称"
+                if isEdit {
+                    if self.currentSelectedCategoryIndex >= 0 {
+                        usernameText.text = self.favoriteData[self.currentSelectedCategoryIndex].name
+                    }
+                }
+               }
+               
+               let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+               let confirm = UIAlertAction(title: "确定", style: .default, handler: {
+                   ACTION in
+                   let text = alert.textFields?.first?.text
+                    if let text = text {
+                        if text != "" {
+                            if isEdit {
+                                let cate = self.favoriteData[self.currentSelectedCategoryIndex]
+                                CategoryAPI.updateCategory(id: cate.id, name: text)  { _ in }
+                            } else {
+                                CategoryAPI.addCategory(name: text) { _ in }
+                            }
+                        }
+                    }
+               })
+               
+               alert.addAction(cancel)
+               alert.addAction(confirm)
+        self.delegate?.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func cellLongPress(sender: UILongPressGestureRecognizer) {
+        guard let tag = sender.view?.tag else { return }
+        currentSelectedCategoryIndex = tag
+        let alert = UIAlertController(title: "编辑分类", message: favoriteData[tag].name, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        let add = UIAlertAction(title: "添加", style: .default, handler: { ACTION in
+            self.addCate()
+        })
+        let confirm = UIAlertAction(title: "编辑", style: .default, handler: {
+            ACTION in
+            self.addCate(isEdit: true)
+        })
+        
+        let delete = UIAlertAction(title: "删除", style: .destructive) { (ACTION) in
+            
+            let deleteAlert = UIAlertController(title: "删除分类", message: self.favoriteData[tag].name, preferredStyle: .alert)
+            
+            let deleteCancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            let deleteConfirm = UIAlertAction(title: "删除", style: .destructive, handler: {
+                ACTION in
+               CategoryAPI.removeCategory(id: self.favoriteData[tag].id) { (isDeleted) in
+               }
+            })
+            deleteAlert.addAction(deleteCancel)
+            deleteAlert.addAction(deleteConfirm)
+            self.delegate?.present(deleteAlert, animated: true, completion: nil)
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(confirm)
+        alert.addAction(add)
+        alert.addAction(delete)
+        if DeviceInfo.isiPad {
+            let popover = alert.popoverPresentationController
+            if let popover = popover {
+                popover.sourceView = self.delegate?.view
+                popover.sourceRect = CGRect(x: 0, y: DeviceInfo.screenHeight, width: DeviceInfo.screenWidth, height: 480)
+            }
+        }
+        self.delegate?.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -84,6 +162,9 @@ extension CategorySection: UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategorySectionCell.identifier, for: indexPath) as! CategorySectionCell
         if isFavorite {
             cell.initFavoriteData(data: favoriteData[indexPath.row])
+            cell.tag = indexPath.row
+            let longPressGuesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPress))
+            cell.addGestureRecognizer(longPressGuesture)
         } else {
             cell.initData(monthData: monthData[indexPath.row])
         }

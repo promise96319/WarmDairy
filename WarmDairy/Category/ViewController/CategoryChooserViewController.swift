@@ -71,11 +71,7 @@ extension CategoryChooserViewController {
             let text = alert.textFields?.first?.text
             if let text = text {
                 if text != "" {
-                    CategoryAPI.addCategory(name: text) { (isAdded) in
-                        if isAdded {
-                            NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
-                        }
-                    }
+                    CategoryAPI.addCategory(name: text) { _ in }
                 }
             }
         })
@@ -226,9 +222,12 @@ extension CategoryChooserCell {
         _ = cateLabel.then {
             $0.textColor = UIColor(hexString: "303133")
             $0.font = UIFont.systemFont(ofSize: 18)
+            if DeviceInfo.isiPad {
+                $0.textAlignment = .center
+            }
             addSubview($0)
             $0.snp.makeConstraints {
-                $0.left.equalToSuperview()
+                $0.left.right.equalToSuperview()
                 $0.centerY.equalToSuperview()
             }
         }
