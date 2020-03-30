@@ -21,7 +21,7 @@ extension UILabel {
     
     
     
-    func setLineSpacing(lineSpacing: CGFloat = 0.0, lineHeightMultiple: CGFloat = 0.0) {
+    func setLineSpacing(lineSpacing: CGFloat = 0.0, lineHeightMultiple: CGFloat = 0.0, letterSpacing: CGFloat = 0.0) {
         
         guard let labelText = self.text else { return }
         
@@ -36,12 +36,10 @@ extension UILabel {
             attributedString = NSMutableAttributedString(string: labelText)
         }
         
-        // (Swift 4.2 and above) Line spacing attribute
-        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value:paragraphStyle, range:NSMakeRange(0, attributedString.length))
-        
-        
         // (Swift 4.1 and 4.0) Line spacing attribute
-        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value:paragraphStyle, range:NSMakeRange(0, attributedString.length))
+        attributedString.addAttribute(NSAttributedString.Key.kern, value: letterSpacing, range: NSMakeRange(0, attributedString.length))
+        
+        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: .init(location: 0, length: attributedString.length))
         
         self.attributedText = attributedString
     }

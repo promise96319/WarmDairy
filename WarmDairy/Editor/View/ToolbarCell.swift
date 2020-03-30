@@ -76,6 +76,10 @@ class ToolbarCell: UICollectionViewCell {
             imageView.tintColor = attribute.textInfo.color
         }
     }
+    
+    deinit {
+        CLog("toolcell注销")
+    }
 }
 
 extension ToolbarCell {

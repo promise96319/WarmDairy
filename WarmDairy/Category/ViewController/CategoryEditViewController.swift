@@ -8,6 +8,7 @@
 
 import UIKit
 import ViewAnimator
+import SwiftyUserDefaults
 
 class CategoryEditViewController: UIViewController {
     weak var delegate: CategoryViewController?
@@ -51,6 +52,7 @@ class CategoryEditViewController: UIViewController {
     }
     
     deinit {
+        CLog("category edit 注销")
         NotificationCenter.default.removeObserver(self, name: .categoryDidChanged, object: nil)
     }
 }
@@ -63,6 +65,13 @@ extension CategoryEditViewController {
     }
     
     @objc func addCate(isEdit: Bool = false) {
+        AnalysisTool.shared.logEvent(event: "编辑归档_分类名称编辑")
+        if !Defaults[.isVIP] && categories.count > VIPModel.categoryCount {
+            let vc = SubscriptionViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true, completion: nil)
+            return
+        }
         let title = isEdit ? "编辑分类名称" : "添加分类"
         let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
                
@@ -97,6 +106,7 @@ extension CategoryEditViewController {
     }
     
     @objc func cellLongPress(sender: UILongPressGestureRecognizer) {
+        AnalysisTool.shared.logEvent(event: "编辑归档_长按弹出菜单")
         guard let tag = sender.view?.tag else { return }
         currentSelectedCategoryIndex = tag
         let alert = UIAlertController(title: "编辑分类", message: categories[tag].name, preferredStyle: .actionSheet)
@@ -104,16 +114,18 @@ extension CategoryEditViewController {
         let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         let confirm = UIAlertAction(title: "编辑", style: .default, handler: {
             ACTION in
+            AnalysisTool.shared.logEvent(event: "编辑归档_长按_编辑")
             self.addCate(isEdit: true)
         })
         
         let delete = UIAlertAction(title: "删除", style: .destructive) { (ACTION) in
-            
+            AnalysisTool.shared.logEvent(event: "编辑归档_长按删除")
             let deleteAlert = UIAlertController(title: "删除分类", message: self.categories[tag].name, preferredStyle: .alert)
             
             let deleteCancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             let deleteConfirm = UIAlertAction(title: "删除", style: .destructive, handler: {
                 ACTION in
+                AnalysisTool.shared.logEvent(event: "编辑归档_长按删除确认")
                CategoryAPI.removeCategory(id: self.categories[tag].id) { (isDeleted) in
                }
             })
@@ -156,6 +168,7 @@ extension CategoryEditViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        AnalysisTool.shared.logEvent(event: "编辑归档_打开阅读器")
         if categories[indexPath.row].dairies.count == 0 {
             MessageTool.shared.showMessage(theme: .warning, title: "暂无日记", body: "请添加日记到该分类中再尝试查看")
             return

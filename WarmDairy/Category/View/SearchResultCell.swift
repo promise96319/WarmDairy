@@ -28,7 +28,12 @@ class SearchResultCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        // super.prepareForReuse()
+        super.prepareForReuse()
+        titleLabel.text = ""
+        dateLabel.text = ""
+        moodView.image = nil
+        weatherView.image = nil
+        weatherView.snp.removeConstraints()
     }
     
     func initData(dairy: DairyModel) {
@@ -36,23 +41,13 @@ class SearchResultCell: UICollectionViewCell {
         dateLabel.text = dairy.createdAt.toFormat("yyyy年MM月dd日") + "" +  dairy.createdAt.weekdayName(.default, locale: Locales.chineseSimplified)
         
         if dairy.mood != "" {
-            _ = moodView.then {
-                $0.image = UIImage(named: "icon_mood_\(dairy.mood)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
-                $0.contentMode = .scaleAspectFill
-                addSubview($0)
-                $0.snp.makeConstraints {
-                    $0.width.height.equalTo(DairyCellFrame.headerHeight)
-                    $0.centerY.equalToSuperview()
-                    $0.right.equalToSuperview()
-                }
-            }
+            moodView.image = UIImage(named: "icon_mood_\(dairy.mood)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
         }
         
         if dairy.weather != "" {
             _ = weatherView.then {
                 $0.image = UIImage(named: "icon_weather_\(dairy.weather)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
-                $0.contentMode = .scaleAspectFill
-                addSubview($0)
+                
                 $0.snp.makeConstraints {
                     $0.width.height.equalTo(DairyCellFrame.headerHeight)
                     $0.centerY.equalToSuperview()
@@ -97,6 +92,21 @@ extension SearchResultCell {
                 $0.bottom.equalToSuperview().offset(-12)
                 $0.left.equalToSuperview().offset(12)
             }
+        }
+        
+        _ = moodView.then {
+            $0.contentMode = .scaleAspectFill
+            addSubview($0)
+            $0.snp.makeConstraints {
+                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                $0.centerY.equalToSuperview()
+                $0.right.equalToSuperview()
+            }
+        }
+        
+        _ = weatherView.then {
+            $0.contentMode = .scaleAspectFill
+            addSubview($0)
         }
     }
 }

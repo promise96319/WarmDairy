@@ -52,7 +52,17 @@ extension DUAReader {
     }
     
     @objc func share() {
+        let text = "我在Warm Diary里写了一本日记，你也来写写吧~"
+        let url = URL.init(string: "https://itunes.apple.com/us/app/id1504446852")!
+        let image = R.image.launch_logo()
+        let activityVC = UIActivityViewController(activityItems: [text, url, image as Any], applicationActivities: nil)
         
+        if DeviceInfo.isiPad {
+            let popOver = activityVC.popoverPresentationController
+            popOver?.sourceView = view
+            popOver?.sourceRect = CGRect(x: 0, y: 0, width: DeviceInfo.screenWidth, height: 340)
+        }
+        present(activityVC, animated: true, completion: nil)
     }
     
     @objc func download() {
@@ -178,7 +188,6 @@ extension DUAReader {
         }
         
         let shareButton = UIButton().then {
-            $0.isHidden = true
             $0.setImage(R.image.icon_reader_share(), for: .normal)
             topBar.addSubview($0)
             $0.snp.makeConstraints {

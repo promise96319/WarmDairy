@@ -17,7 +17,8 @@ enum DUAReaderScrollType: Int {
 
 enum ReaderBg: String {
     case white = "F6F7F9"
-    case green = "C7EAC9"
+//    case green = "C7EAC9"
+    case green = "b6d9b8"
     case yellow = "F0EDD9"
     static let all: [ReaderBg] = [.white, .green, .yellow]
 }

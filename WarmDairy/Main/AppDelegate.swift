@@ -16,9 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var syncEngine: SyncEngine?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        /// 配置 firebase
+        configFirebase()
         
+        /// 配置 时间时区
+        configDefaultRegion()
+        
+        /// 完成交易
+        completeTransaction()
+        
+        /// 配置 iCloud 同步
         configRealm()
-        
         // 同步 iCloud
         syncEngine = SyncEngine(objects: [
             SyncObject<MottoModel>(),
@@ -27,10 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SyncObject<UserInfo>(),
             SyncObject<CategoryModel>(),
         ], databaseScope: .private, container: CKContainer(identifier: "iCloud.com.GuanghuiQin.WarmDairy"))
-        
         application.registerForRemoteNotifications()
         
-        configDefaultRegion()
+        /// 配置 默认值
         configUserDefault()
         
         window = UIWindow(frame: UIScreen.main.bounds)

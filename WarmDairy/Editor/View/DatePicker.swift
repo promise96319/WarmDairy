@@ -34,6 +34,10 @@ class DatePicker: UIView {
         titleLabel.text = "日记日期 - \(date.year)年"
         datePicker.date = currentDate
     }
+    
+    deinit {
+        CLog("datepicker注销")
+    }
 }
 
 extension DatePicker {

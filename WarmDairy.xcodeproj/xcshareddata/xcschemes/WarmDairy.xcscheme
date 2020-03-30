@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B1551BAE24112E0500A7782B"
-               BuildableName = "WarmDairy.app"
+               BuildableName = "WarmDiary.app"
                BlueprintName = "WarmDairy"
                ReferencedContainer = "container:WarmDairy.xcodeproj">
             </BuildableReference>
@@ -45,11 +45,17 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B1551BAE24112E0500A7782B"
-            BuildableName = "WarmDairy.app"
+            BuildableName = "WarmDiary.app"
             BlueprintName = "WarmDairy"
             ReferencedContainer = "container:WarmDairy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-FIRAnalyticsDebugEnabled"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "OS_ACTIVITY_MODE"
@@ -69,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B1551BAE24112E0500A7782B"
-            BuildableName = "WarmDairy.app"
+            BuildableName = "WarmDiary.app"
             BlueprintName = "WarmDairy"
             ReferencedContainer = "container:WarmDairy.xcodeproj">
          </BuildableReference>

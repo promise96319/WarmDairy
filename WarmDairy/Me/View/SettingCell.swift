@@ -12,6 +12,8 @@ class SettingCell: UIView {
     
     lazy var leftLabel = UILabel()
     lazy var rightLabel = UILabel()
+    lazy var rightArrowIcon = UIImageView()
+    lazy var rightSwitch = UISwitch()
     lazy var avatarImage = UIImageView()
     
     var action: (() -> Void)?
@@ -25,9 +27,19 @@ class SettingCell: UIView {
         fatalError("init(code:) has not been implemented")
     }
     
-    func initData(leftText: String, rightText: String? = nil, isBorder: Bool = true, avatar: CreamAsset? = nil, callback: @escaping () -> Void) {
+    func initData(leftText: String,
+                  rightText: String? = nil,
+                  isBorder: Bool = true,
+                  avatar: CreamAsset? = nil,
+                  isRightArrowIcon: Bool = false,
+                  isRightSwitch: Bool = false,
+                  callback: @escaping () -> Void) {
         self.action = callback
         leftLabel.text = leftText
+        
+        if isRightSwitch {
+            rightSwitch.isHidden = false
+        }
         
         if rightText != nil {
             rightLabel.isHidden = false
@@ -50,6 +62,10 @@ class SettingCell: UIView {
                     $0.height.equalTo(1)
                 }
             }
+        }
+        
+        if isRightArrowIcon {
+            rightArrowIcon.isHidden = false
         }
     }
 }
@@ -76,9 +92,22 @@ extension SettingCell {
         
         setupRightLabel()
         setupAvatar()
+        setupRightArrorIcon()
+        setupSwitch()
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(cellClick))
         self.addGestureRecognizer(tap)
+    }
+    
+    func setupSwitch() {
+        _ = rightSwitch.then {
+            $0.isHidden = true
+            addSubview($0)
+            $0.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.right.equalToSuperview().offset(-24)
+            }
+        }
     }
     
     func setupAvatar() {
@@ -131,6 +160,21 @@ extension SettingCell {
                 $0.centerY.equalToSuperview()
                 $0.right.equalToSuperview().offset(-24)
                 $0.width.equalTo(DeviceInfo.screenWidth * 0.6)
+            }
+        }
+    }
+    
+    func setupRightArrorIcon() {
+        _ = rightArrowIcon.then {
+            $0.isHidden = true
+            $0.image = R.image.icon_me_arrow_right()?.withRenderingMode(.alwaysTemplate)
+            $0.tintColor = UIColor(hexString: "c0c4cc")
+            $0.contentMode = .scaleAspectFill
+            addSubview($0)
+            $0.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.right.equalToSuperview().offset(-14)
+                $0.width.height.equalTo(44)
             }
         }
     }

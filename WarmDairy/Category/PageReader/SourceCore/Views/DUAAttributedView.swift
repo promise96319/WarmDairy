@@ -279,7 +279,7 @@ class DUAAttributedView: DTAttributedLabel, UIGestureRecognizerDelegate {
             endIndex = pageContent.index(before: endIndex)
         }
         let slice = pageContent[startIndex...endIndex]
-        print("当前选中范围 \(hitRange)  选中内容 \(slice)")
+        CLog("当前选中范围 \(hitRange)  选中内容 \(slice)")
         
         self.resignFirstResponder()
         
@@ -296,7 +296,7 @@ class DUAAttributedView: DTAttributedLabel, UIGestureRecognizerDelegate {
             endIndex = pageContent.index(before: endIndex)
         }
         let slice = pageContent[startIndex...endIndex]
-        print("当前选中范围 \(hitRange)  选中内容 \(slice)")
+        CLog("当前选中范围 \(hitRange)  选中内容 \(slice)")
         
         self.resignFirstResponder()
         

@@ -32,6 +32,8 @@ class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(loadFavoriteData), name: .categoryDidChanged, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadAll), name: .dairyDidAdded, object: nil)
         setupUI()
         loadFavoriteData()
         loadData()
@@ -39,7 +41,10 @@ class CategoryViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        setupAnimations()
+    }
+    
+    func setupAnimations() {
         let fromAnimation = AnimationType.from(direction: .bottom, offset: 120.0)
         view.animate(animations: [fromAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 1, usingSpringWithDamping: 0.9, initialSpringVelocity: 1)
         
@@ -57,19 +62,25 @@ class CategoryViewController: UIViewController {
     }
     
     @objc func loadFavoriteData() {
-        CategoryAPI.getCategoriesWithDairies { (categories) in
-            self.favoriteData = categories
-            self.myFavoriteSection.initFavoriteData(data: categories)
-            self.myFavoriteSection.collectionView.reloadData()
+        CategoryAPI.getCategoriesWithDairies { [weak self] (categories) in
+            self?.favoriteData = categories
+            self?.myFavoriteSection.initFavoriteData(data: categories)
+            self?.myFavoriteSection.collectionView.reloadData()
         }
     }
     
+    @objc func reloadAll() {
+        loadFavoriteData()
+        loadData()
+    }
+    
     func loadData() {
-        DairyAPI.getDairy() { (dairies) in
-            self.totleDairies = dairies
-            self.categories = self.formatDairies(dairies: dairies)
-            DispatchQueue.main.async {
-                self.setupCategorySection()
+        DairyAPI.getDairy() { [weak self] (dairies) in
+            guard let weakSelf = self else { return }
+            weakSelf.totleDairies = dairies
+            weakSelf.categories = weakSelf.formatDairies(dairies: dairies)
+            DispatchQueue.main.async { [weak self] in
+                self?.setupCategorySection()
             }
         }
     }
@@ -105,28 +116,43 @@ class CategoryViewController: UIViewController {
             
             if foundYearIndex != -1 {
                 if foundMonthIndex != -1 {
+                    /// 每一次添加日记，判断一下日记是否加锁，如果加锁，则该分类加锁
+                    if dairy.isLocked {
+                        results[foundYearIndex].months[foundMonthIndex].isLocked = true
+                    }
                     results[foundYearIndex].months[foundMonthIndex].dairies.append(dairy)
                 } else {
                     let monthData = CategoryMonthModel()
                     monthData.month = month
+                    if dairy.isLocked {
+                        monthData.isLocked = true
+                    }
                     monthData.dairies.append(dairy)
                     results[foundYearIndex].months.append(monthData)
                 }
             } else {
-                let monthsData = CategoryMonthModel()
-                monthsData.month = month
-                monthsData.dairies.append(dairy)
+                let monthData = CategoryMonthModel()
+                monthData.month = month
+                if dairy.isLocked {
+                    monthData.isLocked = true
+                }
+                monthData.dairies.append(dairy)
                 let newData = CategoryYearModel()
                 newData.year = year
-                newData.months.append(monthsData)
+                newData.months.append(monthData)
                 results.append(newData)
             }
         }
+        
+        results = results.sorted(by: { $0.year > $1.year })
+        
         return results
     }
     
     deinit {
+        CLog("category 注销")
         NotificationCenter.default.removeObserver(self, name: .categoryDidChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
     }
 }
 
@@ -138,6 +164,8 @@ extension CategoryViewController: UISearchResultsUpdating {
             return
         }
         if v == "" { return }
+        
+        AnalysisTool.shared.logEvent(event: "category_searchbar_used")
         
         filetedDairies = totleDairies.filter { (dairy) -> Bool in
             
@@ -187,7 +215,7 @@ extension CategoryViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         
         searchController.searchBar.placeholder = "搜索日记"
-        
+        searchController.searchBar.setValue("取消", forKey: "cancelButtonText")
         definesPresentationContext = true
         
         navigationItem.title = "归档"
@@ -227,6 +255,30 @@ extension CategoryViewController {
             section.removeFromSuperview()
         }
         categorySections = []
+        
+        if categories.count == 0 {
+            myFavoriteSection.snp.makeConstraints {
+                if #available(iOS 11.0, *) {
+                    $0.top.equalToSuperview().offset(20)
+                } else {
+                    $0.top.equalToSuperview().offset(64)
+                }
+                $0.left.right.equalToSuperview()
+                $0.height.equalTo(CategorySectionFrameModel.sectionHeight)
+                $0.bottom.equalTo(contentView).offset(-100)
+            }
+        } else {
+            myFavoriteSection.snp.removeConstraints()
+            myFavoriteSection.snp.makeConstraints {
+                if #available(iOS 11.0, *) {
+                    $0.top.equalToSuperview().offset(20)
+                } else {
+                    $0.top.equalToSuperview().offset(64)
+                }
+                $0.left.right.equalToSuperview()
+                $0.height.equalTo(CategorySectionFrameModel.sectionHeight)
+            }
+        }
         
         for (index, section) in categories.enumerated() {
             _ = CategorySection().then {
@@ -293,10 +345,24 @@ extension CategoryViewController: DUAReaderDelegate {
 }
 
 extension CategoryViewController {
-    func setupReader(dairies: [DairyModel]) {
+    func setupReader(dairies: [DairyModel], url: String = "") {
         mreader = DUAReader()
         let configuration = DUAConfiguration()
-        configuration.backgroundImage = R.image.image_editor_bg()
+        
+        if url == "" {
+            configuration.backgroundImage =  R.image.image_editor_bg()
+        } else {
+            if let imageUrl = URL(string: url) {
+                let data = NSData(contentsOf: imageUrl)
+                if let imageData = data {
+                    configuration.backgroundImage = UIImage(data: imageData as Data)
+                } else {
+                    configuration.backgroundImage =  R.image.image_editor_bg()
+                }
+            } else {
+                configuration.backgroundImage =  R.image.image_editor_bg()
+            }
+        }
         configuration.bookType = .epub
         configuration.backgroundColor = .yellow
         mreader?.config = configuration

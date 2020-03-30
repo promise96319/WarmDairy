@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '10.0'
 
 target 'WarmDairy' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -29,5 +29,14 @@ target 'WarmDairy' do
   pod 'RQShineLabel' # shine label
   pod 'SwiftDate'    # date 格式化
   pod 'SwiftMessages' # message
-  pod 'NVActivityIndicatorView' # loading
+  pod 'MBProgressHUD' # loading
+  
+  pod 'SwiftyStoreKit' # 内购
+  
+  pod 'Firebase/Analytics' # 事件分析
+  pod 'Fabric', '~> 1.10.2'
+  pod 'Crashlytics', '~> 3.13.3' # Fabric 崩溃统计包含事件统计
+  script_phase :name=> 'Fabric',
+  :script=> '"${PODS_ROOT}/Fabric/run"',
+  :input_files=> ['$SRCROOT/$PRODUCT_NAME/$(INFOPLIST_PATH)']
 end

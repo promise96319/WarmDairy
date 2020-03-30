@@ -43,7 +43,7 @@ class TodayDairyViewController: UIViewController {
         super.viewDidLoad()
         editButton.alpha = 0
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
         setupUI()
         loadData()
     }
@@ -95,8 +95,9 @@ class TodayDairyViewController: UIViewController {
     }
     
     deinit {
+        CLog("today 注销")
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
+//        NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
     }
 }
 
@@ -107,6 +108,7 @@ extension TodayDairyViewController {
     }
     
     @objc func showEditor() {
+        AnalysisTool.shared.logEvent(event: "today_addbutton_clicked")
         let vc = EditorViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.initBg(image: mottoData.imageURL)
@@ -114,6 +116,7 @@ extension TodayDairyViewController {
     }
     
     func editDairy(dairy: DairyModel) {
+        AnalysisTool.shared.logEvent(event: "today_editbutton_clicked")
         let vc = EditorViewController()
         vc.initData(dairy: dairy, isDairyEditing: true)
         vc.initBg(image: mottoData.imageURL)
@@ -121,12 +124,26 @@ extension TodayDairyViewController {
         present(vc, animated: true, completion: nil)
     }
     
-    @objc func updateDairyCell(at index: Int, webViewHeight: Int) {
+    @objc func updateDairyCell(at index: Int, webViewHeight: Int, isManualUnlocked: Bool = false) {
+        if dairesData[index].isLocked && !isManualUnlocked {
+            return
+        }
         dairyCells[index].snp.updateConstraints {
             let otherHeight = DairyCellFrame.headerHeight + DairyCellFrame.titleHeight + DairyCellFrame.bottomSpacing
             $0.height.equalTo(otherHeight + webViewHeight + 16)
         }
         dairyCells[index].layoutIfNeeded()
+    }
+    
+    func unlockDairyCell(at index: Int) {
+        PasswordManager.shared.passwordAuth(reason: "查看日记") { (success) in
+            if success {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.dairyCells[index].initData(dairy: self.dairesData[index], isManualUnlocked: true)
+                }
+            }
+        }
     }
 }
 
@@ -209,8 +226,8 @@ extension TodayDairyViewController {
     func setupMotto() {
         
         _ = mottoLabel.then {
-            $0.setLineSpacing(lineSpacing: 10, lineHeightMultiple: 1)
-            $0.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+            $0.setLineSpacing(lineSpacing: 10, lineHeightMultiple: 1, letterSpacing: 2)
+            $0.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
             contentView.addSubview($0)

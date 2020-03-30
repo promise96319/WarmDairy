@@ -9,9 +9,29 @@
 import UIKit
 
 class CarouselFrameModel {
-    static let cellWidth: CGFloat = 275 / 375 * DeviceInfo.screenWidth
+    static var cellWidth: CGFloat {
+        if DeviceInfo.isInch40 {
+            return 275 / 375 * DeviceInfo.screenWidth
+        }
+        
+        if DeviceInfo.isInch47 {
+            return 250 / 375 * DeviceInfo.screenWidth
+        }
+        
+        return 275 / 375 * DeviceInfo.screenWidth
+    }
     
-    static let cellHeight: CGFloat = CarouselFrameModel.cellWidth * 400 / 275
+    static var cellHeight: CGFloat {
+        if DeviceInfo.isInch40 {
+            return 180 * 400 / 275
+        }
+        
+        if DeviceInfo.isiPad {
+            return CarouselFrameModel.cellWidth * 360 / 275
+        }
+        
+        return CarouselFrameModel.cellWidth * 400 / 275
+    }
     
     static let horizontalSpacing: CGFloat = 20
 }

@@ -42,6 +42,7 @@ class DairyAPI {
             newDairy.location = dairy.location
             newDairy.mood = dairy.mood
             newDairy.bgColor = dairy.bgColor
+            newDairy.cateIds = dairy.cateIds
             
             DairyImageAPI.replaceHtmlWithImagePath(images: newDairy.images, html: newDairy.content) { (newHtml) in
                 if let newHtml = newHtml {

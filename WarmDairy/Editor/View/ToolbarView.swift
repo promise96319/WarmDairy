@@ -8,12 +8,13 @@
 
 import UIKit
 import ViewAnimator
+import SwiftyUserDefaults
 
 class ToolbarView: UIView {
+
     lazy var tools = ToolOptions.all
     
     weak var delegate: EditorViewController?
-    weak var editor: SQTextEditorView?
     
     var toolbarCollectionView: UICollectionView!
     lazy var keyboardButton = UIButton()
@@ -23,10 +24,10 @@ class ToolbarView: UIView {
     
     lazy var fontColorPicker = UIView()
     var fontColors = [
-        "303133", "9dc6a7", "be79df", "98d6ea",
-        "1eb2a6", "f57b51", "a6b1e1", "216353",
-        "7a4d1d", "ffe3ed", "142850", "5b8c85",
-        "ffc7c7", "feb377", "eab0d9", "61d4b3",
+        "303133", "61d4b3", "f57b51", "7a4d1d", "9dc6a7", "be79df", "98d6ea",
+        "ff4777", "1685a9", "1eb2a6", "cca413", "a6b1e1", "f47983", "216353",
+        "ffe3ed", "142850", "ff4617", "622a1d", "70f3ff", "00e079", "boa4e3",
+        "ffc7c7", "feb377", "eab0d9", "177cb0", "789262", "ff8936", "808080",
     ]
     
     override init(frame: CGRect) {
@@ -41,17 +42,31 @@ class ToolbarView: UIView {
     func initData(tools: [ToolOptions]) {
         self.tools = tools
     }
+    
+    deinit {
+        CLog("toolbar注销")
+    }
 }
 
 // MARK: - 事件处理
 extension ToolbarView {
     @objc func chooseFontColor(sender: UITapGestureRecognizer) {
-        let tag = sender.view?.tag
-        editor?.setText(color: UIColor(hexString: fontColors[tag!])!)
+        let vtag = sender.view?.tag
+        guard let tag = vtag else { return }
+
+        if !Defaults[.isVIP] && tag >= VIPModel.fontColorCount {
+            let vc = SubscriptionViewController()
+            vc.modalPresentationStyle = .fullScreen
+            delegate?.present(vc, animated: true, completion: nil)
+            return
+        }
+        AnalysisTool.shared.logEvent(event: "editor_toolbar_choosefontcolor_\(tag)")
+        delegate?.editorView?.setText(color: UIColor(hexString: fontColors[tag])!)
         hideFontColorPicker()
     }
     
     func showFontColorPicker() {
+        AnalysisTool.shared.logEvent(event: "editor_toolbar_showfontcolorpicker")
         fontColorPicker.alpha = 1
         let animation = AnimationType.from(direction: .right, offset: DeviceInfo.screenWidth - ToolbarFrameModel.cellWidth)
         UIView.animate(views: [fontColorPicker], animations: [animation], reversed: false, initialAlpha: 1, finalAlpha: 1, delay: 0, duration: 0.6, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut)
@@ -59,20 +74,22 @@ extension ToolbarView {
     
     @objc func hideFontColorPicker() {
         let animation = AnimationType.from(direction: .right, offset: DeviceInfo.screenWidth - ToolbarFrameModel.cellWidth)
-        UIView.animate(views: [fontColorPicker], animations: [animation], reversed: true, initialAlpha: 1, finalAlpha: 1, delay: 0, duration: 0.6, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut)  {
-            self.fontColorPicker.alpha = 0
+        UIView.animate(views: [fontColorPicker], animations: [animation], reversed: true, initialAlpha: 1, finalAlpha: 1, delay: 0, duration: 0.6, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut)  { [weak self] in
+            guard let weakSelf = self else { return }
+            weakSelf.fontColorPicker.alpha = 0
                     let animation2 = AnimationType.from(direction: .left, offset: DeviceInfo.screenWidth - ToolbarFrameModel.cellWidth)
-            UIView.animate(views: [self.fontColorPicker], animations: [animation2], reversed: true, initialAlpha: 0, finalAlpha: 0, duration: 0)
+            UIView.animate(views: [weakSelf.fontColorPicker], animations: [animation2], reversed: true, initialAlpha: 0, finalAlpha: 0, duration: 0)
             }
     }
     
     @objc func fontSizeChanged(sender: UISlider) {
         let size = Int(sender.value)
         fontSizeLabel.text = "\(size)pt"
-        editor?.setText(size: size)
+        delegate?.editorView?.setText(size: size)
     }
     
     func showFontSizePicker() {
+        AnalysisTool.shared.logEvent(event: "editor_toolbar_showfontsizepicker")
         fontSizePicker.alpha = 1
         let animation = AnimationType.from(direction: .right, offset: DeviceInfo.screenWidth - ToolbarFrameModel.cellWidth)
         UIView.animate(views: [fontSizePicker], animations: [animation], reversed: false, initialAlpha: 1, finalAlpha: 1, delay: 0, duration: 0.6, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut)
@@ -80,10 +97,11 @@ extension ToolbarView {
     
     @objc func hideFontSizePicker() {
         let animation = AnimationType.from(direction: .right, offset: DeviceInfo.screenWidth - ToolbarFrameModel.cellWidth)
-        UIView.animate(views: [fontSizePicker], animations: [animation], reversed: true, initialAlpha: 1, finalAlpha: 1, delay: 0, duration: 0.6, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut)  {
-            self.fontSizePicker.alpha = 0
+        UIView.animate(views: [fontSizePicker], animations: [animation], reversed: true, initialAlpha: 1, finalAlpha: 1, delay: 0, duration: 0.6, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: .curveEaseInOut)  { [weak self] in
+            guard let weakSelf = self else { return }
+            weakSelf.fontSizePicker.alpha = 0
                     let animation2 = AnimationType.from(direction: .left, offset: DeviceInfo.screenWidth - ToolbarFrameModel.cellWidth)
-            UIView.animate(views: [self.fontSizePicker], animations: [animation2], reversed: true, initialAlpha: 0, finalAlpha: 0, duration: 0)
+            UIView.animate(views: [weakSelf.fontSizePicker], animations: [animation2], reversed: true, initialAlpha: 0, finalAlpha: 0, duration: 0)
             }
         
     }
@@ -93,7 +111,7 @@ extension ToolbarView {
     }
     
     @objc func collapseKeyboard() {
-        editor?.collpaseKeyboard()
+        delegate?.editorView?.collpaseKeyboard()
     }
 }
 
@@ -110,39 +128,47 @@ extension ToolbarView: ToolbarActionHandleDelegate {
             showFontColorPicker()
             break
         case .bold:
-            editor?.bold()
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_bold_clicked")
+            delegate?.editorView?.bold()
             break
         case .italic:
-            editor?.italic()
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_italic_clicked")
+            delegate?.editorView?.italic()
             break
         case .underline:
-            editor?.underline()
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_underline_clicked")
+            delegate?.editorView?.underline()
             break
         case .align_left:
-            if editor?.selectedTextAttribute.align == .left {
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_align_left_clicked")
+            if delegate?.editorView?.selectedTextAttribute.align == .left {
                 break
             }
-            editor?.setTextAlignment(alignment: "left") {_ in}
+            delegate?.editorView?.setTextAlignment(alignment: "left") {_ in}
             toolbarCollectionView.reloadData()
             break
         case .align_center:
-            if editor?.selectedTextAttribute.align == .center {
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_align_center_clicked")
+            if delegate?.editorView?.selectedTextAttribute.align == .center {
                 break
             }
-            editor?.setTextAlignment(alignment: "center") {_ in}
+            delegate?.editorView?.setTextAlignment(alignment: "center") {_ in}
             toolbarCollectionView.reloadData()
             break
         case .align_right:
-            if editor?.selectedTextAttribute.align == .right {
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_align_right_clicked")
+            if delegate?.editorView?.selectedTextAttribute.align == .right {
                 break
             }
-            editor?.setTextAlignment(alignment: "right") {_ in}
+            delegate?.editorView?.setTextAlignment(alignment: "right") {_ in}
             toolbarCollectionView.reloadData()
             break
         case .undo:
-            editor?.undo { _ in }
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_undo_clicked")
+            delegate?.editorView?.undo { _ in }
         case .redo:
-            editor?.redo { _ in }
+            AnalysisTool.shared.logEvent(event: "editor_toolbar_redo_clicked")
+            delegate?.editorView?.redo { _ in }
         default:
             break
         }
@@ -160,7 +186,7 @@ extension ToolbarView: UICollectionViewDataSource {
 extension ToolbarView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ToolbarCell.identifier, for: indexPath) as! ToolbarCell
-        cell.initData(tool: tools[indexPath.row], attribute: (editor?.selectedTextAttribute)!)
+        cell.initData(tool: tools[indexPath.row], attribute: (delegate?.editorView?.selectedTextAttribute)!)
         cell.delegate = self
         return cell
     }
@@ -326,6 +352,8 @@ extension ToolbarView {
                 $0.addGestureRecognizer(tapGesture)
             }
             _ = UIView().then {
+                $0.layer.borderColor = UIColor(hexString: "eeeeee")?.cgColor
+                $0.layer.borderWidth = 1
                 $0.backgroundColor = UIColor(hexString: color)
                 $0.layer.cornerRadius = 12
                 $0.clipsToBounds = true
@@ -333,6 +361,18 @@ extension ToolbarView {
                 $0.snp.makeConstraints {
                     $0.center.equalToSuperview()
                     $0.width.height.equalTo(24)
+                }
+            }
+            
+            if !Defaults[.isVIP] && index >= VIPModel.fontColorCount {
+                _ = UIImageView().then {
+                    $0.image = UIImage(named: "icon_me_premium")?.withAlignmentRectInsets(UIEdgeInsets(top: -6, left: -6, bottom: -6, right: -6))
+                    $0.contentMode = .scaleAspectFill
+                    v.addSubview($0)
+                    $0.snp.makeConstraints {
+                        $0.width.height.equalTo(24)
+                        $0.center.equalToSuperview()
+                    }
                 }
             }
         }

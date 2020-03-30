@@ -10,6 +10,7 @@ import UIKit
 import Photos
 import ViewAnimator
 import SwiftDate
+import SwiftyUserDefaults
 
 extension NSNotification.Name {
     /// 日记被添加了
@@ -22,9 +23,16 @@ class EditorViewController: UIViewController {
     
     /// 是编辑界面 还是新增界面，默认新增
     var isDairyEditing: Bool = false
+    /// 是否在选择图片
+    var isPickingImage: Bool = false
     
-    lazy var editorView = SQTextEditorView()
-    lazy var toolbar = ToolbarView()
+    var bgImageUrlString: String = ""
+    
+    var editorView: SQTextEditorView?
+    var toolbar: ToolbarView?
+    
+    /// 是否是第一次进入这个界面，默认为true
+    var isFirstTimeEntered: Bool = true
     
     var picker: UIImagePickerController?
     
@@ -37,10 +45,12 @@ class EditorViewController: UIViewController {
     
     lazy var titleField = UITextField()
     lazy var actionBar = UIView()
-
+    
     lazy var weatherButton = UIButton()
     lazy var moodButton = UIButton()
     lazy var loveButton = UIButton()
+    lazy var backgroundButton = UIButton()
+    lazy var lockButton = UIButton()
     
     lazy var weatherPicker = WeatherPicker()
     lazy var moodPicker = MoodPicker()
@@ -58,24 +68,59 @@ class EditorViewController: UIViewController {
     func initData(dairy: DairyModel, isDairyEditing: Bool = false) {
         myDairy = dairy
         self.isDairyEditing = isDairyEditing
+        CLog("dairy的值为: \(dairy.bgColor)")
+        chooseBackground(color: dairy.bgColor)
         chooseDate(date: dairy.createdAt)
         chooseMood(mood: dairy.mood)
         chooseWeather(weather: dairy.weather)
+        setLockImage()
         setLoveImage()
         titleField.text = dairy.title
     }
     
     func initBg(image: String) {
+        self.bgImageUrlString = image
         bgImageView.kf.setImage(with: URL(string: image))
     }
     
     deinit {
+        toolbar = nil
+        editorView?.inputAccessoryView = nil
+        editorView?.destroyEditor() { _ in }
+        editorView = nil
         recordManager.stopRecordTimer()
+        CLog("editor注销")
     }
 }
 
 // MARK: - 事件处理
-extension EditorViewController: CategoryChooserDelegate {
+extension EditorViewController: CategoryChooserDelegate, BackgroundColorChooserDelegate {
+    
+    @objc func toggleLock() {
+        myDairy.isLocked = !myDairy.isLocked
+        setLockImage()
+    }
+    
+    func setLockImage() {
+        if myDairy.isLocked {
+            lockButton.setImage(R.image.icon_editor_locked(), for: .normal)
+        } else {
+            lockButton.setImage(R.image.icon_editor_unlock(), for: .normal)
+        }
+    }
+    
+    func chooseBackground(color: String) {
+        myDairy.bgColor = color
+        bgMask.backgroundColor = UIColor(hexString: color, alpha: 0.9)
+    }
+    
+    @objc func showBgChooser() {
+        let vc = BackgroundChooserViewController()
+        vc.initData(bgImage: bgImageUrlString)
+        vc.delegate = self
+        present(vc, animated: true, completion: nil)
+    }
+    
     @objc func hideMask() {
         hideWeatherPicker()
         hideMoodPicker()
@@ -83,11 +128,11 @@ extension EditorViewController: CategoryChooserDelegate {
     }
     
     func showMask() {
-        UIView.animate(withDuration: 0.3) {
-            self.popMaskView.alpha = 1
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.popMaskView.alpha = 1
         }
         titleField.resignFirstResponder()
-        editorView.collpaseKeyboard()
+        editorView?.collpaseKeyboard()
     }
     
     func chooseDate(date: Date) {
@@ -99,31 +144,44 @@ extension EditorViewController: CategoryChooserDelegate {
     }
     
     func hideDatePicker() {
-        UIView.animate(withDuration: 0.5) {
-            self.datePicker.alpha = 0
-            self.popMaskView.alpha = 0
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.datePicker.alpha = 0
+            self?.popMaskView.alpha = 0
         }
     }
     
     @objc func showDatePicker() {
-        // TODO：如果是更新日记，暂且不允许改date
-        if isDairyEditing {
-            MessageTool.shared.showMessage(theme: .warning, title: "暂不支持更改日记日期")
-            return
-        }
+        AnalysisTool.shared.logEvent(event: "editor_showdate_button_clicked")
         showMask()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         datePicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
     }
     
     func hideMoodPicker() {
-        UIView.animate(withDuration: 0.5) {
-            self.moodPicker.alpha = 0
-            self.popMaskView.alpha = 0
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.moodPicker.alpha = 0
+            self?.popMaskView.alpha = 0
         }
     }
     
     func chooseMood(mood: String) {
+        AnalysisTool.shared.logEvent(event: "editor_choosemood_button_clicked_\(mood)")
+        // vip 设置
+        if !Defaults[.isVIP] {
+            let vc = SubscriptionViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true, completion: nil)
+            return
+        }
+        
+        // 说明不是正常选择，而是编辑界面过来的
+        if mood == "" {
+            moodButton.setImage(UIImage(named: "icon_editor_mood"), for: .normal)
+            moodButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            hideMoodPicker()
+            return
+        }
+        
         myDairy.mood = mood
         moodButton.setImage(UIImage(named: "icon_mood_\(mood)"), for: .normal)
         moodButton.imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -131,19 +189,27 @@ extension EditorViewController: CategoryChooserDelegate {
     }
     
     @objc func showMoodPicker() {
+        AnalysisTool.shared.logEvent(event: "editor_showmood_button_clicked")
         showMask()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         moodPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
     }
     
     func chooseWeather(weather: String) {
+        AnalysisTool.shared.logEvent(event: "editor_chooseweather_button_clicked_\(weather)")
         myDairy.weather = weather
-        weatherButton.setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
-        weatherButton.imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        if weather == "" {
+            weatherButton.setImage(UIImage(named: "icon_editor_weather"), for: .normal)
+            weatherButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        } else {
+            weatherButton.setImage(UIImage.init(named: "icon_weather_\(weather)"), for: .normal)
+            weatherButton.imageEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        }
         hideWeatherPicker()
     }
     
     @objc func showWeatherPicker() {
+        AnalysisTool.shared.logEvent(event: "editor_showweather_button_clicked")
         showMask()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         weatherPicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
@@ -151,11 +217,12 @@ extension EditorViewController: CategoryChooserDelegate {
     
     /// 切换是否收藏该日记
     /// - Parameter isToggle: 默认为true，需要切换。为false的时候无需切换
-//    @objc func toggleLove() {
-//        myDairy.isLoved = !myDairy.isLoved
-//        setLoveImage()
-//    }
+    //    @objc func toggleLove() {
+    //        myDairy.isLoved = !myDairy.isLoved
+    //        setLoveImage()
+    //    }
     @objc func showCategories() {
+        AnalysisTool.shared.logEvent(event: "editor_showcategory_button_clicked")
         let vc = CategoryChooserViewController()
         vc.delegate = self
         vc.initData(cateIds: myDairy.cateIds)
@@ -176,9 +243,9 @@ extension EditorViewController: CategoryChooserDelegate {
     }
     
     func hideWeatherPicker() {
-        UIView.animate(withDuration: 0.5) {
-            self.weatherPicker.alpha = 0
-            self.popMaskView.alpha = 0
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.weatherPicker.alpha = 0
+            self?.popMaskView.alpha = 0
         }
     }
     
@@ -188,7 +255,7 @@ extension EditorViewController: CategoryChooserDelegate {
     func beforeUploadHTML(html: String, imagesStr: String) -> (String, String) {
         //        Optional("<div><img src=\"/private/var/mobile/Containers/Data/Application/C63B2ADA-F9FB-4235-BB34-054F179A8CB6/tmp/editor/images/silence_158427570975781\"><br></div>")
         let pattern = "src=\\\"\(FileManager.tmpPath + DairyImageAPI.imagePath)/\(DairyImageAPI.prefix)[0-9]{15}\\\""
-        print("测试 ===> pattern的值为: \(pattern)")
+        CLog("测试 ===> pattern的值为: \(pattern)")
         let regex = try! NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
         let res = regex.matches(in: html, options: NSRegularExpression.MatchingOptions.init(rawValue: 0), range: NSMakeRange(0, html.count))
         
@@ -203,10 +270,10 @@ extension EditorViewController: CategoryChooserDelegate {
         for checkingRes in res {
             let res = (html as NSString).substring(with: checkingRes.range)
             // src="/private/var/mobile/Containers/Data/Application/219416EE-2291-4A1C-8AEC-EA4F081D075F/tmp/editor/images/silence_158427716981744"
-            print("测试 ===> result的值为: \(res)")
+            CLog("测试 ===> result的值为: \(res)")
             var path = res.replacingOccurrences(of: "src=\"", with: "")
             path = path.replacingOccurrences(of: "\"", with: "")
-            print("测试 ===> path的值为: \(path)")
+            CLog("测试 ===> path的值为: \(path)")
             
             ///  如果更新，需要将imgid进行对比
             if imagesStr != "" {
@@ -233,7 +300,7 @@ extension EditorViewController: CategoryChooserDelegate {
                     }
                 } else {
                     /// 如果结果不存在，说明tmp 文件有问题
-                    print("测试 ====> image tmp 文件路径有问题")
+                    CLog("测试 ====> image tmp 文件路径有问题")
                 }
             } else {
                 // 说明是新增，直接将path替换
@@ -256,7 +323,7 @@ extension EditorViewController: CategoryChooserDelegate {
             
         }
         
-        print("测试 ===> html的值为: \(newHTML)")
+        CLog("测试 ===> html的值为: \(newHTML)")
         return (newHTML, (oldIds + newIds).joined(separator: ","))
     }
     
@@ -272,19 +339,21 @@ extension EditorViewController: CategoryChooserDelegate {
     /// 最终返回HTML
     /// 保存日记（查询判断是新增还是更新）
     @objc func saveDairy() {
+        AnalysisTool.shared.logEvent(event: "editor_savedairy_button_clicked")
         myDairy.title = titleField.text!
-        editorView.getHTML { (html) in
+        editorView?.getHTML { [weak self] (html) in
+            guard let weakSelf = self else { return }
             if let html = html {
-                let res = self.beforeUploadHTML(html: html, imagesStr: self.myDairy.images)
-                self.myDairy.content = res.0
-                self.myDairy.images = res.1
+                let res = weakSelf.beforeUploadHTML(html: html, imagesStr: weakSelf.myDairy.images)
+                weakSelf.myDairy.content = res.0
+                weakSelf.myDairy.images = res.1
                 
-                DairyAPI.addDairy(dairy: self.myDairy) { (isAdded) in
+                DairyAPI.addDairy(dairy: weakSelf.myDairy) { [weak self] (isAdded) in
                     if (isAdded) {
+                        self?.dismiss(animated: true, completion: nil)
                         MessageTool.shared.showMessage(title: "保存成功！")
-                        self.dismiss(animated: true, completion: nil)
                     } else {
-                        MessageTool.shared.showMessage(title: "保存失败，请稍后重试")
+                        MessageTool.shared.showMessage(theme: .error, title: "保存失败，请稍后重试")
                     }
                 }
             } else {
@@ -294,10 +363,12 @@ extension EditorViewController: CategoryChooserDelegate {
     }
     
     @objc func goBack() {
+        AnalysisTool.shared.logEvent(event: "editor_goback_button_clicked")
         let alert = UIAlertController(title: "温馨提示", message: "退出编辑界面将会导致未保存的内容丢失，您是否要退出？", preferredStyle: .alert)
         let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         let ok = UIAlertAction(title: "退出", style: .default, handler: {
             ACTION in
+            AnalysisTool.shared.logEvent(event: "editor_goback_did_confrim")
             self.recordManager.stopRecordTimer()
             self.dismiss(animated: true, completion: nil)
         })
@@ -374,13 +445,17 @@ extension EditorViewController {
             }
         }
         
-        loveButton.tag = 0
+        lockButton.tag = 0
+        lockButton.addTarget(self, action: #selector(toggleLock), for: .touchUpInside)
+        backgroundButton.tag = 1
+        backgroundButton.addTarget(self, action: #selector(showBgChooser), for: .touchUpInside)
+        loveButton.tag = 2
         loveButton.addTarget(self, action: #selector(showCategories), for: .touchUpInside)
-        moodButton.tag = 1
+        moodButton.tag = 3
         moodButton.addTarget(self, action: #selector(showMoodPicker), for: .touchUpInside)
-        weatherButton.tag = 2
+        weatherButton.tag = 4
         weatherButton.addTarget(self, action: #selector(showWeatherPicker), for: .touchUpInside)
-        [loveButton, moodButton, weatherButton].forEach {            $0.imageView?.contentMode = .scaleAspectFill
+        [lockButton, backgroundButton, loveButton, moodButton, weatherButton].forEach {            $0.imageView?.contentMode = .scaleAspectFill
             actionBar.addSubview($0)
             let index = $0.tag
             $0.snp.makeConstraints {
@@ -389,6 +464,9 @@ extension EditorViewController {
                 $0.width.height.equalTo(44)
             }
         }
+        
+       setLockImage()
+        backgroundButton.setImage(R.image.icon_editor_backgroundcolor(), for: .normal)
         
         if myDairy.weather == "" {
             weatherButton.setImage(UIImage(named: "icon_editor_weather"), for: .normal)
@@ -431,7 +509,7 @@ extension EditorViewController {
         }
         
         _ = bgMask.then {
-            $0.backgroundColor = UIColor(hexString: "F6E6CD", alpha: 0.8)
+            $0.backgroundColor = UIColor(hexString: myDairy.bgColor, alpha: 0.9)
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.edges.equalToSuperview()
@@ -484,11 +562,11 @@ extension EditorViewController {
     }
     
     func setupEditor() {
-        toolbar.frame = CGRect(x: 0, y: 0, width: DeviceInfo.screenWidth, height: ToolbarFrameModel.height)
-        toolbar.editor = self.editorView
-        toolbar.delegate = self
+        toolbar = ToolbarView()
+        toolbar?.frame = CGRect(x: 0, y: 0, width: DeviceInfo.screenWidth, height: ToolbarFrameModel.height)
+        toolbar?.delegate = self
         
-        _ = editorView.then {
+        editorView = SQTextEditorView().then {
             $0.inputAccessoryView = toolbar
             $0.backgroundColor = .clear
             view.addSubview($0)
@@ -514,7 +592,6 @@ extension EditorViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        //        editorView.becomeFirstResponder()
         return true
     }
 }
@@ -523,14 +600,17 @@ extension EditorViewController: UITextFieldDelegate {
 extension EditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // 上传图片
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let pickedImage = info[.originalImage] as! UIImage
-        
-        // 控制在2M以内
-        let imageData = ImageCompressTool.compress(image: pickedImage, to: 2 * 1024)
         picker.dismiss(animated: true, completion: nil)
+        /// 如果选择了图片，必须再次点击插入图片按钮才可以继续选择
         
+        if isPickingImage { return }
+        isPickingImage = true
+        let pickedImage = info[.originalImage] as! UIImage
+        let size = ImageQuality.all[Defaults[.imageQuality]].size
+        let imageData = ImageCompressTool.compress(image: pickedImage, to: size)
+        CLog("imagegd的值为: \(imageData!.count/1024)KB")
         if let path = DairyImageAPI.saveImageToTmp(image: UIImage(data: imageData!)!) {
-            editorView.insertImage(url: path)
+            self.editorView?.insertImage(url: path)
         }
     }
 }
@@ -538,16 +618,44 @@ extension EditorViewController: UIImagePickerControllerDelegate, UINavigationCon
 // MARK: - 插入图片
 extension EditorViewController {
     func insertImage() {
+        AnalysisTool.shared.logEvent(event: "editor_toolbar_insertimage_button_clicked")
+        // vip 设置
+        if !Defaults[.isVIP] {
+            editorView?.getHTML { [weak self] (html) in
+                guard let html = html else { return }
+                let pattern = "src=\\\"\(FileManager.tmpPath + DairyImageAPI.imagePath)/\(DairyImageAPI.prefix)[0-9]{15}\\\""
+                let regex = try! NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+                let res = regex.matches(in: html, options: NSRegularExpression.MatchingOptions.init(rawValue: 0), range: NSMakeRange(0, html.count))
+                if res.count >= VIPModel.imagePerDairy {
+                    let vc = SubscriptionViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    self?.present(vc, animated: true, completion: nil)
+                    return
+                } else {
+                    self?.showPicker()
+                }
+            }
+        } else {
+            showPicker()
+        }
+    }
+    
+    func showPicker() {
+        /// 每次选择图片重置
+        isPickingImage = false
         let photosStatus = PHPhotoLibrary.authorizationStatus()
         switch photosStatus {
         case .authorized:
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
                 picker = UIImagePickerController()
                 picker?.delegate = self
+                picker?.mediaTypes = ["public.image"]
                 picker?.sourceType = .photoLibrary
                 present(picker!, animated: true, completion: nil)
             } else {
-                //                MessageManager.share.showMessage(theme: .warning, body: "Sorry, currently the device cannot access the album.")
+                DispatchQueue.main.async {
+                    MessageTool.shared.showMessage(theme: .error, title: "该设备暂不支持使用相册功能")
+                }
             }
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization { [weak self] (status) in
@@ -562,7 +670,7 @@ extension EditorViewController {
                         }
                     } else {
                         DispatchQueue.main.async {
-                            //                            MessageManager.share.showMessage(theme: .warning, body: "Sorry, currently the device cannot access the album.")
+                            MessageTool.shared.showMessage(theme: .error, title: "该设备暂不支持使用相册功能")
                         }
                     }
                 }
@@ -577,7 +685,7 @@ extension EditorViewController {
                         UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: [:],
                                                   completionHandler: {
                                                     (success) in
-                                  CLog("开启设置")
+                                                    CLog("开启设置")
                         })
                     } else {
                         UIApplication.shared.openURL(URL.init(string: UIApplication.openSettingsURLString)!)
@@ -597,13 +705,16 @@ extension EditorViewController {
 extension EditorViewController: SQTextEditorDelegate {
     func editorDidLoad(_ editor: SQTextEditorView) {
         CLog("editorDidLoad")
-        editorView.insertHTML(myDairy.content)
-        editorView.setText(color: UIColor(hexString: "303133")!)
+        if isFirstTimeEntered {
+            isFirstTimeEntered = false
+            editorView?.insertHTML(myDairy.content)
+            editorView?.setText(color: UIColor(hexString: "303133")!)
+        }
     }
     
     func editor(_ editor: SQTextEditorView, selectedTextAttributeDidChange attribute: SQTextAttribute) {
         CLog("text info changed")
-        toolbar.toolbarCollectionView.reloadData()
+        toolbar?.toolbarCollectionView.reloadData()
     }
     
     func editor(_ editor: SQTextEditorView, contentHeightDidChange height: Int) {

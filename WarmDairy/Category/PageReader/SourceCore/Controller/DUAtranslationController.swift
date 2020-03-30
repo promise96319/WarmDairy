@@ -15,8 +15,6 @@ let limitRate: CGFloat = 0.05
 let screenWidth = UIScreen.main.bounds.width
 let screenHeight = UIScreen.main.bounds.height
 
-
-
 enum translationControllerNavigationDirection {
     case left
     case right

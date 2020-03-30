@@ -34,6 +34,10 @@ class MoodPicker: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(code:) has not been implemented")
     }
+    
+    deinit {
+        CLog("moodpicker注销")
+    }
 }
 
 // MARK: - 事件处理

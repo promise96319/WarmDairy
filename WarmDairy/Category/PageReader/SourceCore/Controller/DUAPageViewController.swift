@@ -39,7 +39,7 @@ class DUAPageViewController: UIViewController {
         
         if backgroundColor != nil {
             _ = UIView().then {
-                $0.backgroundColor = UIColor(hexString: backgroundColor!, alpha: 0.9)
+                $0.backgroundColor = UIColor(hexString: backgroundColor!, alpha: 0.95)
                 view.insertSubview($0, at: 1)
                 $0.snp.makeConstraints {
                     $0.edges.equalToSuperview()

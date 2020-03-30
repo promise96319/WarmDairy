@@ -27,6 +27,16 @@ class HomeViewController: UIViewController {
     lazy var carouselPager = FSPagerView()
     
     override func viewDidLoad() {
+        
+        
+//        MessageTool.shared.showMessage(title: "加载成功啦！")
+//        MessageTool.shared.showLoading(title: "正在努力加载图片")
+        
+        loadInfo()
+        if userInfo.isLaunchPasswordEnable {
+            lockScreen()
+        }
+        
         view.alpha = 0
         editButton.alpha = 0
         welcomeLabel.alpha = 0
@@ -38,7 +48,7 @@ class HomeViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(loadInfo), name: .userInfoDidChanged, object: nil)
         
         setupUI()
-        loadInfo()
+        
         loadData()
         
         let animation = CABasicAnimation(keyPath: "transform.rotation.z")
@@ -48,10 +58,6 @@ class HomeViewController: UIViewController {
         animation.toValue = Double.pi
         animation.isRemovedOnCompletion = false
         bgImage.layer.add(animation, forKey: "transform.rotation.z")
-        
-        let vc = SubscriptionViewController()
-               vc.modalPresentationStyle = .fullScreen
-               present(vc, animated: true, completion: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -59,23 +65,40 @@ class HomeViewController: UIViewController {
         setupAnimations()
     }
     
+    func lockScreen() {
+        let vc = AboutMeViewController()
+        vc.modalPresentationStyle = .fullScreen
+        vc.navbar.alpha = 0
+        present(vc, animated: false, completion: nil)
+        
+        PasswordManager.shared.passwordAuth(reason: "启动 Warm Diarry") { (success) in
+            if success {
+                DispatchQueue.main.async {
+                    vc.dismiss(animated: false, completion: nil)
+                }
+            }
+        }
+    }
+    
     @objc func loadInfo() {
-        UserInfoAPI.getUser { (userInfo) in
-            self.userInfo = userInfo
-            self.welcomeLabel.text = "\(self.caculateTime())，\(userInfo.name)"
-            self.welcomeMotto.text = userInfo.motto
+        UserInfoAPI.getUser { [weak self] (userInfo) in
+            guard let weakSelf = self else { return }
+            weakSelf.userInfo = userInfo
+            let time = self?.caculateTime() ?? "你好"
+            weakSelf.welcomeLabel.text = "\(time)，\(userInfo.name)"
+            weakSelf.welcomeMotto.text = userInfo.motto
         }
     }
     
     @objc func loadData() {
         
-        MottoAPI.getMottos { (data) in
+        MottoAPI.getMottos { [weak self] (data) in
             CLog("测试 ===> motto data的值为: \(data)")
             // 如果没有数据，或者有数据时最后一天不是今天，创建一个新的空数据
             if data.count == 0 || (data.count > 0 && !data[data.count - 1].date.compare(.isToday)) {
                 // 如果今天没有手动创建，则手动创建，有则复用今天的
                 if (Defaults[.todayMottoImage] == "") {
-                    let motto = MottoAPI.generateRandomMotto()
+                    let motto = MottoAPI.generateRandomMotto(index: data.count)
                     Defaults[.todayMottoImage] = motto.0
                     Defaults[.todayMotto] = motto.1
                     Defaults[.todayMottoAuthor] = motto.2
@@ -87,19 +110,20 @@ class HomeViewController: UIViewController {
                 todayMotto.author = Defaults[.todayMottoAuthor]
                 // 记一个标识符，看是否为今天创建
                 todayMotto.isDeleted = true
-                self.mottoData = data
-                self.mottoData.append(todayMotto)
+                self?.mottoData = data
+                self?.mottoData.append(todayMotto)
                 CLog("测试 ===> 今天存在格言")
             } else {
                 CLog("测试 ===> 不存在格言")
-                self.mottoData = data
+                self?.mottoData = data
             }
             
-            self.carouselPager.reloadData()
-            self.carouselPager.layoutIfNeeded()
-            if (self.mottoData.count > 1) {
-                DispatchQueue.main.async {
-                    self.carouselPager.scrollToItem(at: self.mottoData.count - 1, animated: false)
+            self?.carouselPager.reloadData()
+            self?.carouselPager.layoutIfNeeded()
+            if ((self?.mottoData.count)! > 1) {
+                DispatchQueue.main.async { [weak self] in
+                    guard let weakSelf = self else { return }
+                    weakSelf.carouselPager.scrollToItem(at: weakSelf.mottoData.count - 1, animated: false)
                 }
             }
         }
@@ -120,6 +144,7 @@ class HomeViewController: UIViewController {
     }
     
     deinit {
+        CLog("home 注销")
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
         NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
         NotificationCenter.default.removeObserver(self, name: .userInfoDidChanged, object: nil)
@@ -129,6 +154,7 @@ class HomeViewController: UIViewController {
 // MARK: - 事件
 extension HomeViewController {
     @objc func showEditor() {
+        AnalysisTool.shared.logEvent(event: "home_addbutton_clicked")
         let vc = EditorViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.initBg(image: mottoData[mottoData.count - 1].imageURL)
@@ -152,6 +178,7 @@ extension HomeViewController: FSPagerViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension HomeViewController: FSPagerViewDelegate {
     func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
+        AnalysisTool.shared.logEvent(event: "home_carousel_cell_clicked")
         // 如果isDeleted为 true, 说明是手动创建的今天motto，此时是没有数据的
         if mottoData[index].isDeleted {
             let vc = EditorViewController()
@@ -215,7 +242,8 @@ extension HomeViewController {
     
     func setupWelcome() {
         _ = welcomeLabel.then {
-            $0.set(text: "下午好，Silence~", size: 28, weight: .medium)
+            $0.textColor = UIColor(hexString: "303133")
+            $0.font = UIFont.systemFont(ofSize: 28, weight: .medium)
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalToSuperview().offset(24)

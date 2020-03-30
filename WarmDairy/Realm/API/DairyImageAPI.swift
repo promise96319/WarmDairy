@@ -79,7 +79,7 @@ class DairyImageAPI {
             /// 说明有数据，那么更新
             try! realm.write {
                 realm.create(DairyImageModel.self, value: ["id": id, "isDeleted": true], update: .modified)
-                print("测试 ====> 删除图片完毕")
+                CLog("测试 ====> 删除图片完毕")
             }
         }
     }
@@ -94,6 +94,10 @@ extension DairyImageAPI {
     static func replaceHtmlWithImagePath(images: String, html: String, callback: @escaping (_ result: String?) -> Void) {
         let imageIds = images.split(separator: ",")
         var newHtml = html
+        
+        /// 是否正在同步数据（文件不存在时执行）
+        var isSyncData = false
+        
         for id in imageIds {
             // 首先在tmp中查找图片，查找到则返回路径
             // 根据id找到图片得到图片document 路径
@@ -113,45 +117,51 @@ extension DairyImageAPI {
             CLog("tmpPath: \(tmpPath)")
             if (FileManager.fileExists(atPath: tmpPath)) {
                 newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
-                print("测试 ====> tmp 中存在image")
+                CLog("测试 ====> tmp 中存在image")
             } else if (FileManager.fileExists(atPath: docPath)) {
-                print("测试 ====> document 中存在image")
+                CLog("测试 ====> document 中存在image")
                 if copeImage(fromPath: docPath, dirType: .tmp, toPath: tmpPath) {
                     newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
-                    print("测试 ====> newHtml\(newHtml)")
+                    CLog("测试 ====> newHtml\(newHtml)")
                 } else {
-                    print("测试 ===> copy image 失败")
+                    CLog("测试 ===> copy image 失败")
                 }
             } else {
-                print("测试 ===> doc,tmp均不存在图片")
-                MessageTool.shared.showMessage(title: "正在同步数据，请耐心等待...")
+                CLog("测试 ===> doc,tmp均不存在图片")
                 getImage(id: id) { (asset) in
                     guard let asset = asset else {
-                        print("测试 ===> image不存在")
+                        CLog("测试 ===> image不存在")
                         callback(nil)
                         return
                     }
                     
                     guard let data = asset.image?.storedData() else {
-                        print("测试 ====> image stored data 不存在")
+                        CLog("测试 ====> image stored data 不存在")
                         callback(nil)
                         return
                     }
+                    if !isSyncData {
+                        isSyncData = true
+                        MessageTool.shared.showLoading(title: "正在同步数据，请耐心等待...")
+                    }
                     
                     let isSaved = FileManager.save(image: UIImage(data: data)!, toFilePath: docPath)
-                    print("测试 ===> isSaved的值为: \(isSaved)")
+                    CLog("测试 ===> isSaved的值为: \(isSaved)")
                     let isTmpSaved = FileManager.save(image: UIImage(data: data)!, toFilePath: tmpPath)
-                    print("测试 ===> isTmpSaved的值为: \(isTmpSaved)")
+                    CLog("测试 ===> isTmpSaved的值为: \(isTmpSaved)")
                     if isSaved && isTmpSaved {
-                        print("测试 ===> icloud copy 到本地了")
+                        CLog("测试 ===> icloud copy 到本地了")
                         newHtml = newHtml.replacingOccurrences(of: fileId, with: tmpPath)
                     } else {
-                        print("测试 ====> iclcoud copy 失败")
+                        CLog("测试 ====> iclcoud copy 失败")
                         callback(nil)
                     }
                 }
             }
         }
+        
+        isSyncData = false
+        MessageTool.shared.hideLoading()
         callback(newHtml)
     }
     

@@ -43,6 +43,10 @@ class WeatherPicker: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(code:) has not been implemented")
     }
+    
+    deinit {
+        CLog("weather注销")
+    }
 }
 
 // MARK: - 事件处理

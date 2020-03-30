@@ -27,10 +27,12 @@ class DUAEpubDataParser: DUADataParser {
         /// 每一天的日记（需要将title添加进去）
         var models: [DUAChapterModel] = []
         /// 遍历日记，添加到章节
-        for (index, dairy) in dairies.enumerated() {                titleArray.append(dairy.title)
+        for (index, dairy) in dairies.enumerated() {
+            let title = dairy.title == "" ? "暂无标题" : dairy.title
+            titleArray.append(title)
             
             let chapter = DUAChapterModel()
-            chapter.title = dairy.title
+            chapter.title = title
             chapter.date = dairy.createdAt
             chapter.weather = dairy.weather
             chapter.mood = dairy.mood
@@ -51,7 +53,7 @@ class DUAEpubDataParser: DUADataParser {
         let start = "<!DOCTYPE html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><meta charset=\"UTF-8\"><style media=\"screen\">img { display: block; text-align: center; padding: 8px; margin: 0px;} h1 {font-size: 28px; font-weight: 700;}</style></head><body>"
         let end = "</body>"
         let str = start + chapter.content + end
-        print("测试 ===> str的值为: \(str)")
+        CLog("测试 ===> str的值为: \(str)")
         
         let htmlData = Data(str.utf8)
         

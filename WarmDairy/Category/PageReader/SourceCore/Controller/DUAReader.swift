@@ -151,10 +151,10 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     
     private func processPageArray(pages: [DUAPageModel], chapter: DUAChapterModel, pageIndex: Int) -> Void {
         
-        print("测试 ===> pageIndex的值为: \(pageIndex)")
+        CLog("测试 ===> pageIndex的值为: \(pageIndex)")
         self.postReaderStateNotification(state: .ready)
         if pageHunger {
-            print("测试 ===> pageHunger的值为: \(pageHunger)")
+            CLog("测试 ===> pageHunger的值为: \(pageHunger)")
             pageHunger = false
             if pageVC != nil {
                 self.loadPage(pageIndex: currentPageIndex)
@@ -170,7 +170,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         
         if firstIntoReader {
-            print("测试 ===> firstIntoReader的值为: \(firstIntoReader)")
+            CLog("测试 ===> firstIntoReader的值为: \(firstIntoReader)")
             firstIntoReader = false
             currentPageIndex = pageIndex <= 0 ? 0 : (pageIndex - 1)
             updateChapterIndex(index: chapter.chapterIndex)
@@ -181,7 +181,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         
         if isReCutPage {
-            print("测试 ===> isReCutPage的值为: \(isReCutPage)")
+            CLog("测试 ===> isReCutPage的值为: \(isReCutPage)")
             isReCutPage = false
             var newIndex = 1
             for (index, item) in pages.enumerated() {
@@ -323,7 +323,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
             }
             self.pageVC?.setViewControllers([page!], direction: .forward, animated: false, completion: nil)
         case .vertical:
-            print("load table view page")
+            CLog("load table view page")
             tableView?.dataArray.removeAll()
             tableView?.dataArray = self.pageArrayFromCache(chapterIndex: currentChapterIndex)
             self.tableView?.cellIndex = pageIndex
@@ -364,8 +364,8 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         if config.scrollType == .curl {
             curPage = pageVC?.viewControllers?.first as? DUAPageViewController
             if let curPage = curPage {
-                let bgMask = curPage.view.subviews[1] as! UIView
-                bgMask.backgroundColor = UIColor(hexString: self.config.backgroundColor.rawValue, alpha: 0.9)
+                let bgMask = curPage.view.subviews[1]
+                bgMask.backgroundColor = UIColor(hexString: self.config.backgroundColor.rawValue, alpha: 0.95)
             }
         }
     }
@@ -450,6 +450,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         if pageArray.isEmpty {
             return nil
         }
+        if pageIndex > pageArray.count - 1 { return nil }
         let pageModel = pageArray[pageIndex]
         dtLabel.attributedString = pageModel.attributedString
         dtLabel.backgroundColor = UIColor.clear
@@ -495,7 +496,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         if currentChapterIndex == index {
             return
         }
-        print("进入第 \(index) 章")
+        CLog("进入第 \(index) 章")
         let forward = currentChapterIndex > index ? false : true
         currentChapterIndex = index
         
@@ -577,7 +578,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         self.cacheQueue.async {
             let nextPageArray = self.pageArrayFromCache(chapterIndex: predictIndex)
             if nextPageArray.isEmpty {
-                print("执行预缓存 章节 \(predictIndex)")
+                CLog("执行预缓存 章节 \(predictIndex)")
                 self.requestChapterWith(index: predictIndex)
             }
         }
@@ -591,7 +592,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
             pageArray.append(page)
             if completed {
                 self.cachePageArray(pageModels: pageArray, chapterIndex: chapter.chapterIndex)
-                print("预缓存完成")
+                CLog("预缓存完成")
                 if pageHunger {
                     DispatchQueue.main.async {
                         self.postReaderStateNotification(state: .ready)
@@ -650,7 +651,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     // MARK:--PageVC Delegate
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        print("向前翻页")
+        CLog("向前翻页")
         struct FirstPage {
             static var arrived = false
         }
@@ -689,13 +690,13 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        print("向后翻页")
+        CLog("向后翻页")
         struct LastPage {
             static var arrived = false
         }
         let nextIndex: Int
         let pageArray = self.pageArrayFromCache(chapterIndex: currentChapterIndex)
-        print("测试 ===> pageArray的值为: \(pageArray)")
+        CLog("测试 ===> pageArray的值为: \(pageArray)")
         if viewController is DUAPageViewController {
             let page = viewController as! DUAPageViewController
             nextIndex = page.index + 1
@@ -734,7 +735,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         prePageStartLocation = -1
         let curPage = currentController as! DUAPageViewController
         let previousPage = previousController as! DUAPageViewController
-        print("当前页面所在章节 \(curPage.chapterBelong) 先前页面所在章节 \(previousPage.chapterBelong)")
+        CLog("当前页面所在章节 \(curPage.chapterBelong) 先前页面所在章节 \(previousPage.chapterBelong)")
         
         currentPageIndex = curPage.index
         
@@ -749,7 +750,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         
         if didStepIntoNextChapter {
-            print("进入下一章")
+            CLog("进入下一章")
             updateChapterIndex(index: currentChapterIndex + 1)
             if type == 0 {
                 pageVC?.willStepIntoLastChapter = true
@@ -761,7 +762,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
 
         }
         if didStepIntoLastChapter {
-            print("进入上一章")
+            CLog("进入上一章")
             updateChapterIndex(index: currentChapterIndex - 1)
             if type == 0 {
                 pageVC?.willStepIntoNextChapter = true
@@ -791,7 +792,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
         }
         
         ///     进度信息必要时可以通过delegate回调出去
-        print("当前阅读进度 章节 \(currentChapterIndex) 总页数 \(self.pageArrayFromCache(chapterIndex: currentChapterIndex).count) 当前页 \(currentPageIndex + 1)")
+        CLog("当前阅读进度 章节 \(currentChapterIndex) 总页数 \(self.pageArrayFromCache(chapterIndex: currentChapterIndex).count) 当前页 \(currentPageIndex + 1)")
         if self.delegate?.reader(reader: readerProgressUpdated: curPage: totalPages: ) != nil {
             self.delegate?.reader(reader: self, readerProgressUpdated: currentChapterIndex, curPage: currentPageIndex + 1, totalPages: self.pageArrayFromCache(chapterIndex: currentChapterIndex).count)
         }
@@ -853,10 +854,10 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
             prePageStartLocation = -1
             tableView.cellIndex = majorIndexPath!.row
             currentPageIndex = self.tableView!.dataArray[tableView.cellIndex].pageIndex
-            print("进入下一页 页码 \(currentPageIndex)")
+            CLog("进入下一页 页码 \(currentPageIndex)")
             
             if currentPageIndex == 0 {
-                print("跳入下一章，从 \(currentChapterIndex) 到 \(currentChapterIndex + 1)")
+                CLog("跳入下一章，从 \(currentChapterIndex) 到 \(currentChapterIndex + 1)")
                 updateChapterIndex(index: currentChapterIndex + 1)
                 self.statusBarForTableView?.totalPageCounts = self.pageArrayFromCache(chapterIndex: currentChapterIndex).count
             }
@@ -874,11 +875,11 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
             prePageStartLocation = -1
             tableView.cellIndex = majorIndexPath!.row
             currentPageIndex = (self.tableView?.dataArray[tableView.cellIndex].pageIndex)!
-            print("进入上一页 页码 \(currentPageIndex)")
+            CLog("进入上一页 页码 \(currentPageIndex)")
             
             let previousPageIndex = self.tableView!.dataArray[tableView.cellIndex + 1].pageIndex
             if currentChapterIndex - 1 > 0 && currentPageIndex == self.pageArrayFromCache(chapterIndex: currentChapterIndex - 1).count - 1 && previousPageIndex == 0 {
-                print("跳入上一章，从 \(currentChapterIndex) 到 \(currentChapterIndex - 1)")
+                CLog("跳入上一章，从 \(currentChapterIndex) 到 \(currentChapterIndex - 1)")
                 updateChapterIndex(index: currentChapterIndex - 1)
                 self.statusBarForTableView?.totalPageCounts = self.pageArrayFromCache(chapterIndex: currentChapterIndex).count
 
@@ -924,7 +925,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     
     func translationController(translationController: DUAtranslationController, controllerBefore controller: UIViewController) -> UIViewController? {
         
-        print("向前翻页")
+        CLog("向前翻页")
         var nextPage: DUAPageViewController? = nil
         if controller is DUAPageViewController {
             let page = controller as! DUAPageViewController
@@ -952,7 +953,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     }
     
     func translationController(translationController: DUAtranslationController, willTransitionTo controller: UIViewController) {
-        print("willTransitionTo")
+        CLog("willTransitionTo")
     }
     
     func translationController(translationController: DUAtranslationController, didFinishAnimating finished: Bool, previousController: UIViewController, transitionCompleted completed: Bool)

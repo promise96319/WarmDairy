@@ -14,6 +14,8 @@ class CategoryYearModel {
 }
 
 class CategoryMonthModel {
+    /// 如果 diary 中存在 locked 则需要验证才能打开
+    var isLocked: Bool = false
     var image: String = MottoAPI.generateRandomMotto().0
     var month: Int = -1
     var dairies: [DairyModel] = [DairyModel]()

@@ -36,6 +36,10 @@ class SearchDairyViewController: UIViewController {
                 })
         }, completion: nil)
     }
+    
+    deinit {
+        CLog("search 注销")
+    }
 }
 
 // MARK: - UICollectionViewDataSource

@@ -20,6 +20,9 @@ class DairyCell: UIView {
     
     weak var delegate: TodayDairyViewController?
     
+    /// 用户是否手动解锁了
+    var isManualUnlocked: Bool = false
+    
     lazy var dairy = DairyModel()
     
     lazy var headerView = UIView()
@@ -28,6 +31,7 @@ class DairyCell: UIView {
     lazy var moodView = UIImageView()
     lazy var loveButton = UIButton()
     lazy var editButton = UIButton()
+    lazy var lockButton = UIButton()
     
     lazy var mainView = UIView()
     lazy var titleLabel = UILabel()
@@ -42,13 +46,35 @@ class DairyCell: UIView {
         fatalError("init(code:) has not been implemented")
     }
     
-    func initData(dairy: DairyModel) {
+    /// 初始化
+    /// - Parameters:
+    ///   - dairy: dairy
+    ///   - isManualUnlocked: 是否手动解锁了
+    func initData(dairy: DairyModel, isManualUnlocked: Bool = false) {
         self.dairy = dairy
-        
+        self.isManualUnlocked = isManualUnlocked
         layer.borderColor = UIColor(hexString: dairy.bgColor, alpha: 0.8)?.cgColor
         mainView.backgroundColor = UIColor(hexString: dairy.bgColor, alpha: 0.8)
         timeLabel.text = dairy.createdAt.toFormat("a hh:mm", locale: Locales.chineseSimplified)
         titleLabel.text = dairy.title == "" ? "标题" : dairy.title
+        
+        if dairy.isLocked && !isManualUnlocked {
+            lockButton.isHidden = false
+            /// 如果没有手动解锁，则都不显示
+            return
+        }
+        
+        editButton.isHidden = false
+        loveButton.isHidden = false
+        if dairy.isLocked {
+            editButton.snp.makeConstraints {
+                $0.right.equalTo(lockButton.snp.left)
+            }
+        } else {
+            editButton.snp.makeConstraints {
+                $0.right.equalToSuperview().offset(-10)
+            }
+        }
         
         if dairy.cateIds != "" {
             loveButton.setImage(R.image.icon_editor_love_selected(), for: .normal)
@@ -57,31 +83,21 @@ class DairyCell: UIView {
         }
         
         if dairy.mood != "" {
-            _ = moodView.then {
-                $0.image = UIImage(named: "icon_mood_\(dairy.mood)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
-                $0.contentMode = .scaleAspectFill
-                headerView.addSubview($0)
-                $0.snp.makeConstraints {
-                    $0.width.height.equalTo(DairyCellFrame.headerHeight)
-                    $0.centerY.equalToSuperview()
-                    $0.right.equalTo(editButton.snp.left)
-                }
-            }
+            moodView.isHidden = false
+            moodView.image = UIImage(named: "icon_mood_\(dairy.mood)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
         }
         
         if dairy.weather != "" {
-            _ = weatherView.then {
-                $0.image = UIImage(named: "icon_weather_\(dairy.weather)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
-                $0.contentMode = .scaleAspectFill
-                headerView.addSubview($0)
-                $0.snp.makeConstraints {
-                    $0.width.height.equalTo(DairyCellFrame.headerHeight)
-                    $0.centerY.equalToSuperview()
-                    if dairy.mood == "" {
-                        $0.right.equalTo(editButton.snp.left)
-                    } else {
-                        $0.right.equalTo(moodView.snp.left)
-                    }
+            weatherView.isHidden = false
+            weatherView.image = UIImage(named: "icon_weather_\(dairy.weather)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
+            
+            if dairy.mood == "" {
+                weatherView.snp.makeConstraints {
+                    $0.right.equalTo(loveButton.snp.left)
+                }
+            } else {
+                weatherView.snp.makeConstraints {
+                    $0.right.equalTo(moodView.snp.left)
                 }
             }
         }
@@ -107,19 +123,26 @@ extension DairyCell {
         delegate?.editDairy(dairy: dairy)
     }
     
-//    @objc func showCate() {
-//        let vc = CategoryChooserViewController()
-//        vc.initData(cateIds: dairy.cateIds)
-//        delegate?.present(vc, animated: true, completion: nil)
-//    }
+    @objc func unlockDairy() {
+        // 如果已经手动解锁 则不再解锁
+        if isManualUnlocked { return }
+        delegate?.unlockDairyCell(at: tag)
+    }
+    
+    //    @objc func showCate() {
+    //        let vc = CategoryChooserViewController()
+    //        vc.initData(cateIds: dairy.cateIds)
+    //        delegate?.present(vc, animated: true, completion: nil)
+    //    }
 }
 
 // MARK: - webview delegate 用于检测高度，更新相关UI
 extension DairyCell: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webView.evaluateJavaScript("document.body.scrollHeight") { (value, error) in
+        webView.evaluateJavaScript("document.body.scrollHeight") { [weak self] (value, error) in
+            guard let self = self else { return }
             if let value = value as? Int {
-                self.delegate?.updateDairyCell(at: self.tag, webViewHeight: value)
+                self.delegate?.updateDairyCell(at: self.tag, webViewHeight: value, isManualUnlocked: self.isManualUnlocked)
             }
         }
     }
@@ -202,25 +225,60 @@ extension DairyCell {
             }
         }
         
+        _ = lockButton.then {
+            $0.isHidden = true
+            $0.setImage(R.image.icon_today_locked(), for: .normal)
+            headerView.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.right.equalToSuperview().offset(-10)
+                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+            }
+            $0.addTarget(self, action: #selector(unlockDairy), for: .touchUpInside)
+        }
+        
         _ = editButton.then {
+            $0.isHidden = true
             $0.setImage(R.image.icon_today_edit(), for: .normal)
             headerView.addSubview($0)
             $0.snp.makeConstraints {
                 $0.centerY.equalToSuperview()
-                $0.right.equalToSuperview().offset(-12)
                 $0.width.height.equalTo(DairyCellFrame.headerHeight)
             }
             $0.addTarget(self, action: #selector(showEdit), for: .touchUpInside)
         }
         
-//        _ = loveButton.then {
-//            headerView.addSubview($0)
-//            $0.snp.makeConstraints {
-//                $0.right.equalTo(editButton.snp.left)
-//                $0.centerY.equalToSuperview()
-//                $0.width.height.equalTo(DairyCellFrame.headerHeight)
-//            }
-//            $0.addTarget(self, action: #selector(showCate), for: .touchUpInside)
-//        }
+        _ = loveButton.then {
+                    $0.isHidden = true
+                    headerView.addSubview($0)
+                    $0.snp.makeConstraints {
+                        $0.right.equalTo(editButton.snp.left)
+                        $0.centerY.equalToSuperview()
+                        $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                    }
+        //            $0.addTarget(self, action: #selector(showCate), for: .touchUpInside)
+                }
+        
+        _ = moodView.then {
+            $0.isHidden = true
+            $0.contentMode = .scaleAspectFill
+            headerView.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                $0.centerY.equalToSuperview()
+                $0.right.equalTo(loveButton.snp.left)
+            }
+        }
+        
+        _ = weatherView.then {
+            $0.isHidden = true
+            $0.contentMode = .scaleAspectFill
+            headerView.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                $0.centerY.equalToSuperview()
+                
+            }
+        }
     }
 }

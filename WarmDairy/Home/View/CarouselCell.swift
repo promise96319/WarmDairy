@@ -45,6 +45,7 @@ class CarouselCell: FSPagerViewCell {
         ])
         self.authorLabel.text = mottoData.author
         self.mottoLabel.text = mottoData.motto
+        self.mottoLabel.setLineSpacing(lineSpacing: 6, lineHeightMultiple: 0, letterSpacing: 4)
         self.dayLabel.text = mottoData.date.toFormat("dd")
         self.dateLabel.text = mottoData.date.toFormat("MMM yyyy")
     }
@@ -121,8 +122,7 @@ extension CarouselCell {
         
         _ = mottoLabel.then {
             $0.textColor = UIColor(hexString: "ffffff")
-            $0.font = UIFont.systemFont(ofSize: 16)
-            $0.setLineSpacing(lineSpacing: 8, lineHeightMultiple: 1)
+            $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
             $0.preferredMaxLayoutWidth = CarouselFrameModel.cellWidth - 40
@@ -132,7 +132,7 @@ extension CarouselCell {
                 $0.right
                     .equalToSuperview().offset(-20)
                 $0.bottom.equalTo(authorLabel
-                    .snp.top).offset(-16)
+                    .snp.top).offset(-20)
             }
         }
     }

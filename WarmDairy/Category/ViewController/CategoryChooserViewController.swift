@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyUserDefaults
 
 protocol CategoryChooserDelegate {
     func moveToCate(cateIds: String) -> Void
@@ -44,6 +45,7 @@ class CategoryChooserViewController: UIViewController {
     }
     
     deinit {
+        CLog("chooserview注销")
         NotificationCenter.default.removeObserver(self, name: .categoryDidChanged, object: nil)
     }
 }
@@ -53,12 +55,21 @@ extension CategoryChooserViewController {
         dismiss(animated: true, completion: nil)
     }
     @objc func saveCate() {
+        AnalysisTool.shared.logEvent(event: "编辑器_保存分类")
         let ids = catesID.map { "\($0)" }
         delegate?.moveToCate(cateIds: ids.joined(separator: ","))
         goBack()
     }
     
     @objc func addCate() {
+        AnalysisTool.shared.logEvent(event: "编辑器_添加分类")
+        if !Defaults[.isVIP] && categories.count > VIPModel.categoryCount {
+            let vc = SubscriptionViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true, completion: nil)
+            return
+        }
+        
         let alert = UIAlertController(title: "添加分类", message: "", preferredStyle: .alert)
         
         alert.addTextField{(usernameText) ->Void in
@@ -107,6 +118,28 @@ extension CategoryChooserViewController: UICollectionViewDelegate {
         }
         collectionView.reloadData()
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if (kind == UICollectionView.elementKindSectionFooter) {
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "FooterCollectionReusableView", for: indexPath)
+            _ = addButton.then {
+                $0.setTitle("新增分类", for: .normal)
+                $0.setTitleColor(UIColor(hexString: "409EFF"), for: .normal)
+                $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+                footerView.addSubview($0)
+                $0.snp.makeConstraints {
+                    $0.center.equalToSuperview()
+                    $0.height.equalTo(44)
+                    $0.width.equalToSuperview()
+                }
+                $0.addTarget(self, action: #selector(addCate), for: .touchUpInside)
+            }
+            return footerView
+        }
+        
+        fatalError()
+    }
+    
 }
 
 // MARK: - UI 界面
@@ -125,32 +158,19 @@ extension CategoryChooserViewController {
             }
         }
         
-        //        _ = backButton.then {
-        //            $0.setImage(R.image.icon_editor_back(), for: .normal)
-        //            view.addSubview($0)
-        //            $0.snp.makeConstraints {
-        //                $0.centerY.equalTo(titleLabel)
-        //                $0.left.equalToSuperview().offset(14)
-        //                $0.width.height.equalTo(44)
-        //            }
-        //            $0.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-        //        }
-        
-        _ = addButton.then {
-            $0.setTitle("新增", for: .normal)
-            $0.setTitleColor(UIColor(hexString: "409EFF"), for: .normal)
-            $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        _ = backButton.then {
+            $0.setImage(R.image.icon_editor_back(), for: .normal)
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.centerY.equalTo(titleLabel)
-                $0.left.equalToSuperview().offset(24)
+                $0.left.equalToSuperview().offset(10)
                 $0.width.height.equalTo(44)
             }
-            $0.addTarget(self, action: #selector(addCate), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(goBack), for: .touchUpInside)
         }
         
         _ = saveButton.then {
-            $0.setTitle("保存", for: .normal)
+            $0.setTitle("确定", for: .normal)
             $0.setTitleColor(UIColor(hexString: "409EFF"), for: .normal)
             $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
             view.addSubview($0)
@@ -162,12 +182,12 @@ extension CategoryChooserViewController {
             $0.addTarget(self, action: #selector(saveCate), for: .touchUpInside)
         }
         
-        
         let layout = UICollectionViewFlowLayout().then {
-            $0.itemSize = CGSize(width: DeviceInfo.screenWidth - 48, height: 30)
+            $0.itemSize = CGSize(width: DeviceInfo.screenWidth - 48, height: 44)
             $0.minimumLineSpacing = 12
             $0.minimumInteritemSpacing = 12
             $0.scrollDirection = .vertical
+            $0.footerReferenceSize = CGSize(width: DeviceInfo.screenWidth - 48, height: 44)
         }
         
         collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 0, height: 0), collectionViewLayout: layout).then {
@@ -185,51 +205,7 @@ extension CategoryChooserViewController {
                 $0.top.equalTo(titleLabel.snp.bottom).offset(24)
                 $0.bottom.equalToSuperview()
             }
-        }
-    }
-}
-
-// MARK: - 分类cell
-class CategoryChooserCell: UICollectionViewCell {
-    static let identifier = "CategoryChooserCell_ID"
-    lazy var cateLabel = UILabel()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupUI()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func initData(cate: String, isSelected: Bool) {
-        cateLabel.text = cate
-        if isSelected {
-            cateLabel.textColor = UIColor(hexString: "409eff")
-        } else {
-            cateLabel.textColor = UIColor(hexString: "303133")
-        }
-    }
-    
-    override func prepareForReuse() {
-        // super.prepareForReuse()
-    }
-}
-
-extension CategoryChooserCell {
-    func setupUI() {
-        _ = cateLabel.then {
-            $0.textColor = UIColor(hexString: "303133")
-            $0.font = UIFont.systemFont(ofSize: 18)
-            if DeviceInfo.isiPad {
-                $0.textAlignment = .center
-            }
-            addSubview($0)
-            $0.snp.makeConstraints {
-                $0.left.right.equalToSuperview()
-                $0.centerY.equalToSuperview()
-            }
+            $0.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "FooterCollectionReusableView")
         }
     }
 }

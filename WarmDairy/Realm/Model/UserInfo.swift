@@ -16,7 +16,7 @@ class UserInfo: Object {
     /// 头像
     @objc dynamic var avatar: CreamAsset?
     /// 名称
-    @objc dynamic var name = "Warm Dairy"
+    @objc dynamic var name = "Warm Diary"
     /// 描述：格言等
     @objc dynamic var motto = "满地都是六便士，他却抬头看见了月亮🌙"
     /// 密码
@@ -25,6 +25,8 @@ class UserInfo: Object {
     @objc dynamic var recordTime: Int = 0
     /// 连续创作天数
     @objc dynamic var continuousCreation: Int = 0
+    /// 是否使用锁屏密码
+    @objc dynamic var isLaunchPasswordEnable: Bool = false
     
     @objc dynamic var isDeleted = false
     

@@ -64,8 +64,12 @@ public class SQTextEditorView: UIView {
         case undo
         case redo
         
+        case destroyEditor
+        
         var name: String {
             switch self {
+            case .destroyEditor:
+                return "destroyEditor()"
             case .undo:
                 return "undo()"
             case .redo:
@@ -181,6 +185,7 @@ public class SQTextEditorView: UIView {
     }
     
     deinit {
+        CLog("editor view 注销")
         JSMessageName.allCases.forEach {
             webView
                 .configuration
@@ -230,6 +235,13 @@ public class SQTextEditorView: UIView {
     
     public func collpaseKeyboard() {
         webView.resignFirstResponder()
+    }
+    
+    /// 摧毁 editor
+    public func destroyEditor(completion: @escaping (_ error: Error?) -> ()) {
+        webView.evaluateJavaScript(JSFunctionType.destroyEditor.name, completionHandler: { (_ ,error) in
+            completion(error)
+        })
     }
     
     //MARK: - Public Methods
@@ -467,10 +479,6 @@ public class SQTextEditorView: UIView {
 extension SQTextEditorView: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         self.delegate?.editorDidLoad?(self)
-        setPlaceholder(text: "每天记一点...") {_ in}
-        getHTML { (html) in
-            print("测试 ===> html的值为: \(html)")
-        }
     }
 }
 

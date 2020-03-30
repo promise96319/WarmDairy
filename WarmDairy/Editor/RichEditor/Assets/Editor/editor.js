@@ -182,6 +182,10 @@ function redo() {
   editor.redo()
 }
 
+function destroyEditor() {
+  editor.destroy()
+}
+
 function postEditorContentHeight(t) {
   window.webkit.messageHandlers.contentHeight.postMessage(t)
 }

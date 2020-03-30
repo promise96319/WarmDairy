@@ -44,58 +44,73 @@ class MeViewController: UIViewController {
         userContainer.alpha = 0
         premiumView.alpha = 0
         moodView.alpha = 0
-        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .userInfoDidChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadUserInfo), name: .userInfoDidChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
         setupUI()
+        loadUserInfo()
         loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        setupAnimations()
+    }
+    
+    func setupAnimations() {
         let fromAnimation = AnimationType.from(direction: .bottom, offset: 120.0)
         view.animate(animations: [fromAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 1, usingSpringWithDamping: 0.9, initialSpringVelocity: 1)
-        
+
         let cellAnimation = AnimationType.from(direction: .bottom, offset: 60.0)
-        UIView.animate(views: [userContainer, premiumView, moodView], animations: [cellAnimation], duration: 0.8)
-        
+        UIView.animate(views: [userContainer, moodView], animations: [cellAnimation], duration: 0.8)
+
         let moodCellAnimation = AnimationType.from(direction: .right, offset: 60.0)
-        moodCollectionView?.performBatchUpdates({
-            UIView.animate(views: self.moodCollectionView!.orderedVisibleCells,
+        moodCollectionView?.performBatchUpdates({ [weak self] in
+            guard let weakSelf = self, let collectionView = weakSelf.moodCollectionView else { return }
+            UIView.animate(views: collectionView.orderedVisibleCells,
                            animations: [moodCellAnimation], duration: 1)
         }, completion: nil)
     }
     
-    @objc func loadData() {
-        UserInfoAPI.getUser { (userInfo) in
-            self.userInfo = userInfo
-            self.usernameLabel.text = userInfo.name
-            self.userMottolLabel.text = userInfo.motto
+    @objc func loadUserInfo() {
+        UserInfoAPI.getUser { [weak self] (userInfo) in
+            guard let weakSelf = self else { return }
+            weakSelf.userInfo = userInfo
+            weakSelf.usernameLabel.text = userInfo.name
+            weakSelf.userMottolLabel.text = userInfo.motto
             
-            self.recordTimeLabel.text = self.formatRecordTime(minutes: userInfo.recordTime)
-            self.continousCreateLabel.text = "\(userInfo.continuousCreation)天"
+            weakSelf.recordTimeLabel.text = weakSelf.formatRecordTime(minutes: userInfo.recordTime)
+            weakSelf.continousCreateLabel.text = "\(userInfo.continuousCreation)天"
             if let data = userInfo.avatar?.storedData() {
-                self.avatarImageView.image = UIImage(data: data)
+                weakSelf.avatarImageView.image = UIImage(data: data)
             }
         }
-        
-        DairyAPI.getDairy { (dairies) in
-            self.allDairyLabel.text = "\(dairies.count)篇"
+    }
+    
+    @objc func loadData() {
+        self.moodTotalCount = 0
+        self.moodMaxCount = 0
+        DairyAPI.getDairy { [weak self] (dairies) in
+            guard let weakSelf = self else { return }
+            weakSelf.allDairyLabel.text = "\(dairies.count)篇"
+            for mood in weakSelf.allMoods {
+                mood.dairyCount = 0
+            }
             for dairy in dairies {
-                for (index, mood) in self.allMoods.enumerated() {
+                for (index, mood) in weakSelf.allMoods.enumerated() {
                     if mood.image == dairy.mood {
-                        self.allMoods[index].dairyCount += 1
+                        weakSelf.allMoods[index].dairyCount += 1
                     }
                 }
             }
             
-            self.allMoods.forEach { mood in
-                self.moodTotalCount += mood.dairyCount
-                if mood.dairyCount > self.moodMaxCount {
-                    self.moodMaxCount = mood.dairyCount
+            weakSelf.allMoods.forEach { mood in
+                weakSelf.moodTotalCount += mood.dairyCount
+                if mood.dairyCount > weakSelf.moodMaxCount {
+                    weakSelf.moodMaxCount = mood.dairyCount
                 }
             }
-            self.moodCountLabel.text = "\(self.moodTotalCount)个心情"
-            self.moodCollectionView.reloadData()
+            weakSelf.moodCountLabel.text = "\(weakSelf.moodTotalCount)个心情"
+            weakSelf.moodCollectionView.reloadData()
         }
     }
     
@@ -111,14 +126,24 @@ class MeViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .userInfoDidChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
+        CLog("me 注销")
     }
 }
 
 // MARK: - 事件处理
 extension MeViewController {
     @objc func showSetting() {
+        AnalysisTool.shared.logEvent(event: "我-设置按钮")
         let vc = SettingViewController()
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func showSubscription() {
+        AnalysisTool.shared.logEvent(event: "我-订阅按钮")
+        let vc = SubscriptionViewController()
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true, completion: nil)
     }
 }
 
@@ -133,12 +158,13 @@ extension MeViewController: UICollectionViewDataSource {
 extension MeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MeMoodCell.identifier, for: indexPath) as! MeMoodCell
-//        for subview in cell.contentView.subviews {
-//
-//            subview.removeFromSuperview()
-//        }
-        let moodHeght: CGFloat = totalHeight * CGFloat(allMoods[indexPath.row].dairyCount) / CGFloat(moodMaxCount)
-        cell.initData(moodHeight: moodHeght, mood: allMoods[indexPath.row])
+        var moodHeight: CGFloat!
+        if moodMaxCount == 0 {
+            moodHeight = 0
+        } else {
+            moodHeight = totalHeight * CGFloat(allMoods[indexPath.row].dairyCount) / CGFloat(moodMaxCount)
+        }
+        cell.initData(moodHeight: moodHeight, mood: allMoods[indexPath.row])
         return cell
     }
     
@@ -233,8 +259,12 @@ extension MeViewController {
                 $0.top.equalTo(userContainer.snp.bottom).offset(16)
                 $0.height.equalTo(64)
             }
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showSubscription))
+            $0.addGestureRecognizer(tapGesture)
         }
         _ = UIImageView().then {
+            $0.isUserInteractionEnabled = true
             $0.image = R.image.image_me_bg()
             $0.contentMode = .scaleAspectFill
             $0.layer.cornerRadius = 6
@@ -244,14 +274,6 @@ extension MeViewController {
                 $0.edges.equalToSuperview()
             }
         }
-        
-        //        _ = UIVisualEffectView().then {
-        //            $0.effect = UIBlurEffect(style: .light)
-        //            premiumView.addSubview($0)
-        //            $0.snp.makeConstraints {
-        //                $0.edges.equalToSuperview()
-        //            }
-        //        }
         
         _ = UIView().then {
             $0.backgroundColor = UIColor(hexString: "000000", alpha: 0.5)
@@ -271,7 +293,7 @@ extension MeViewController {
             }
         }
         _ = UILabel().then {
-            $0.text = "解锁专业版"
+            $0.text = "解锁高级版"
             $0.textColor = UIColor(hexString: "F4C204")
             $0.font = UIFont.systemFont(ofSize: 20)
             premiumView.addSubview($0)
@@ -345,12 +367,23 @@ extension MeViewController {
             }
         }
         
+        let container = UIView().then {
+            $0.layer.cornerRadius = 6
+            userContainer.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.left.top.right.equalToSuperview()
+                $0.height.equalTo(100)
+            }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showSetting))
+            $0.addGestureRecognizer(tapGesture)
+        }
+        
         _ = avatarImageView.then {
+            $0.isUserInteractionEnabled = true
             $0.layer.cornerRadius = 4
             $0.clipsToBounds = true
-            $0.image = R.image.test()
             $0.contentMode = .scaleAspectFill
-            userContainer.addSubview($0)
+            container.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalToSuperview().offset(12)
                 $0.top.equalToSuperview().offset(-16)
@@ -362,7 +395,7 @@ extension MeViewController {
             $0.text = ""
             $0.textColor = UIColor(hexString: "161A1A")
             $0.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-            userContainer.addSubview($0)
+            container.addSubview($0)
             $0.snp.makeConstraints {
                 $0.top.equalToSuperview().offset(6)
                 $0.left.equalTo(avatarImageView.snp.right).offset(12)
@@ -376,7 +409,7 @@ extension MeViewController {
             $0.setLineSpacing(lineSpacing: 4, lineHeightMultiple: 1)
             $0.numberOfLines = 2
             $0.lineBreakMode = .byWordWrapping
-            userContainer.addSubview($0)
+            container.addSubview($0)
             $0.snp.makeConstraints {
                 $0.left.equalTo(usernameLabel)
                 $0.top.equalTo(usernameLabel.snp.bottom).offset(6)

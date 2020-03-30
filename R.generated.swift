@@ -13,13 +13,16 @@ struct R: Rswift.Validatable {
   fileprivate static let hostingBundle = Bundle(for: R.Class.self)
   
   static func validate() throws {
+    try font.validate()
     try intern.validate()
   }
   
-  /// This `R.file` struct is generated, and contains static references to 6 files.
+  /// This `R.file` struct is generated, and contains static references to 7 files.
   struct file {
     /// Resource file `GIF.bundle`.
     static let gifBundle = Rswift.FileResource(bundle: R.hostingBundle, name: "GIF", pathExtension: "bundle")
+    /// Resource file `GoogleService-Info.plist`.
+    static let googleServiceInfoPlist = Rswift.FileResource(bundle: R.hostingBundle, name: "GoogleService-Info", pathExtension: "plist")
     /// Resource file `README.md`.
     static let readmeMd = Rswift.FileResource(bundle: R.hostingBundle, name: "README", pathExtension: "md")
     /// Resource file `editor.css`.
@@ -34,6 +37,12 @@ struct R: Rswift.Validatable {
     /// `bundle.url(forResource: "GIF", withExtension: "bundle")`
     static func gifBundle(_: Void = ()) -> Foundation.URL? {
       let fileResource = R.file.gifBundle
+      return fileResource.bundle.url(forResource: fileResource)
+    }
+    
+    /// `bundle.url(forResource: "GoogleService-Info", withExtension: "plist")`
+    static func googleServiceInfoPlist(_: Void = ()) -> Foundation.URL? {
+      let fileResource = R.file.googleServiceInfoPlist
       return fileResource.bundle.url(forResource: fileResource)
     }
     
@@ -70,8 +79,51 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 63 images.
+  /// This `R.font` struct is generated, and contains static references to 4 fonts.
+  struct font: Rswift.Validatable {
+    /// Font `DancingScript-Bold`.
+    static let dancingScriptBold = Rswift.FontResource(fontName: "DancingScript-Bold")
+    /// Font `DancingScript-Medium`.
+    static let dancingScriptMedium = Rswift.FontResource(fontName: "DancingScript-Medium")
+    /// Font `DancingScript-SemiBold`.
+    static let dancingScriptSemiBold = Rswift.FontResource(fontName: "DancingScript-SemiBold")
+    /// Font `DancingScript`.
+    static let dancingScript = Rswift.FontResource(fontName: "DancingScript")
+    
+    /// `UIFont(name: "DancingScript", size: ...)`
+    static func dancingScript(size: CGFloat) -> UIKit.UIFont? {
+      return UIKit.UIFont(resource: dancingScript, size: size)
+    }
+    
+    /// `UIFont(name: "DancingScript-Bold", size: ...)`
+    static func dancingScriptBold(size: CGFloat) -> UIKit.UIFont? {
+      return UIKit.UIFont(resource: dancingScriptBold, size: size)
+    }
+    
+    /// `UIFont(name: "DancingScript-Medium", size: ...)`
+    static func dancingScriptMedium(size: CGFloat) -> UIKit.UIFont? {
+      return UIKit.UIFont(resource: dancingScriptMedium, size: size)
+    }
+    
+    /// `UIFont(name: "DancingScript-SemiBold", size: ...)`
+    static func dancingScriptSemiBold(size: CGFloat) -> UIKit.UIFont? {
+      return UIKit.UIFont(resource: dancingScriptSemiBold, size: size)
+    }
+    
+    static func validate() throws {
+      if R.font.dancingScript(size: 42) == nil { throw Rswift.ValidationError(description:"[R.swift] Font 'DancingScript' could not be loaded, is 'DancingScript-Regular.ttf' added to the UIAppFonts array in this targets Info.plist?") }
+      if R.font.dancingScriptBold(size: 42) == nil { throw Rswift.ValidationError(description:"[R.swift] Font 'DancingScript-Bold' could not be loaded, is 'DancingScript-Bold.ttf' added to the UIAppFonts array in this targets Info.plist?") }
+      if R.font.dancingScriptMedium(size: 42) == nil { throw Rswift.ValidationError(description:"[R.swift] Font 'DancingScript-Medium' could not be loaded, is 'DancingScript-Medium.ttf' added to the UIAppFonts array in this targets Info.plist?") }
+      if R.font.dancingScriptSemiBold(size: 42) == nil { throw Rswift.ValidationError(description:"[R.swift] Font 'DancingScript-SemiBold' could not be loaded, is 'DancingScript-SemiBold.ttf' added to the UIAppFonts array in this targets Info.plist?") }
+    }
+    
+    fileprivate init() {}
+  }
+  
+  /// This `R.image` struct is generated, and contains static references to 70 images.
   struct image {
+    /// Image `icon_category_check`.
+    static let icon_category_check = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_category_check")
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
     /// Image `icon_editor_align_left`.
@@ -80,6 +132,8 @@ struct R: Rswift.Validatable {
     static let icon_editor_align_right = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_right")
     /// Image `icon_editor_back`.
     static let icon_editor_back = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_back")
+    /// Image `icon_editor_backgroundcolor`.
+    static let icon_editor_backgroundcolor = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_backgroundcolor")
     /// Image `icon_editor_bold`.
     static let icon_editor_bold = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_bold")
     /// Image `icon_editor_font`.
@@ -94,10 +148,14 @@ struct R: Rswift.Validatable {
     static let icon_editor_italic = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_italic")
     /// Image `icon_editor_keyboard`.
     static let icon_editor_keyboard = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_keyboard")
+    /// Image `icon_editor_location_selected-1`.
+    static let icon_editor_location_selected1 = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_location_selected-1")
     /// Image `icon_editor_location_selected`.
     static let icon_editor_location_selected = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_location_selected")
     /// Image `icon_editor_location`.
     static let icon_editor_location = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_location")
+    /// Image `icon_editor_locked`.
+    static let icon_editor_locked = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_locked")
     /// Image `icon_editor_love_selected`.
     static let icon_editor_love_selected = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_love_selected")
     /// Image `icon_editor_love`.
@@ -110,6 +168,8 @@ struct R: Rswift.Validatable {
     static let icon_editor_underline = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_underline")
     /// Image `icon_editor_undo`.
     static let icon_editor_undo = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_undo")
+    /// Image `icon_editor_unlock`.
+    static let icon_editor_unlock = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_unlock")
     /// Image `icon_editor_weather`.
     static let icon_editor_weather = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_weather")
     /// Image `icon_home_add`.
@@ -154,6 +214,10 @@ struct R: Rswift.Validatable {
     static let icon_reader_menu = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_reader_menu")
     /// Image `icon_reader_share`.
     static let icon_reader_share = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_reader_share")
+    /// Image `icon_subcription_check`.
+    static let icon_subcription_check = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_subcription_check")
+    /// Image `icon_subscription_close`.
+    static let icon_subscription_close = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_subscription_close")
     /// Image `icon_tabbar_category`.
     static let icon_tabbar_category = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_tabbar_category")
     /// Image `icon_tabbar_edit`.
@@ -164,6 +228,8 @@ struct R: Rswift.Validatable {
     static let icon_today_back = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_back")
     /// Image `icon_today_edit`.
     static let icon_today_edit = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_edit")
+    /// Image `icon_today_locked`.
+    static let icon_today_locked = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_locked")
     /// Image `icon_today_love`.
     static let icon_today_love = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_today_love")
     /// Image `icon_weather_cloud_sun`.
@@ -186,18 +252,21 @@ struct R: Rswift.Validatable {
     static let image_bg_sun = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_bg_sun")
     /// Image `image_editor_bg`.
     static let image_editor_bg = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_editor_bg")
-    /// Image `image_home_cr1`.
-    static let image_home_cr1 = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_home_cr1")
-    /// Image `image_home_cr2`.
-    static let image_home_cr2 = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_home_cr2")
-    /// Image `image_home_cr3`.
-    static let image_home_cr3 = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_home_cr3")
     /// Image `image_me_bg`.
     static let image_me_bg = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_me_bg")
-    /// Image `test1`.
-    static let test1 = Rswift.ImageResource(bundle: R.hostingBundle, name: "test1")
-    /// Image `test`.
-    static let test = Rswift.ImageResource(bundle: R.hostingBundle, name: "test")
+    /// Image `image_subscription_bg`.
+    static let image_subscription_bg = Rswift.ImageResource(bundle: R.hostingBundle, name: "image_subscription_bg")
+    /// Image `launch_logo_title`.
+    static let launch_logo_title = Rswift.ImageResource(bundle: R.hostingBundle, name: "launch_logo_title")
+    /// Image `launch_logo`.
+    static let launch_logo = Rswift.ImageResource(bundle: R.hostingBundle, name: "launch_logo")
+    /// Image `logo`.
+    static let logo = Rswift.ImageResource(bundle: R.hostingBundle, name: "logo")
+    
+    /// `UIImage(named: "icon_category_check", bundle: ..., traitCollection: ...)`
+    static func icon_category_check(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_category_check, compatibleWith: traitCollection)
+    }
     
     /// `UIImage(named: "icon_editor_align_center", bundle: ..., traitCollection: ...)`
     static func icon_editor_align_center(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
@@ -217,6 +286,11 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_editor_back", bundle: ..., traitCollection: ...)`
     static func icon_editor_back(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_editor_back, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_editor_backgroundcolor", bundle: ..., traitCollection: ...)`
+    static func icon_editor_backgroundcolor(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_editor_backgroundcolor, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_editor_bold", bundle: ..., traitCollection: ...)`
@@ -264,6 +338,16 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.icon_editor_location_selected, compatibleWith: traitCollection)
     }
     
+    /// `UIImage(named: "icon_editor_location_selected-1", bundle: ..., traitCollection: ...)`
+    static func icon_editor_location_selected1(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_editor_location_selected1, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_editor_locked", bundle: ..., traitCollection: ...)`
+    static func icon_editor_locked(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_editor_locked, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "icon_editor_love", bundle: ..., traitCollection: ...)`
     static func icon_editor_love(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_editor_love, compatibleWith: traitCollection)
@@ -292,6 +376,11 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_editor_undo", bundle: ..., traitCollection: ...)`
     static func icon_editor_undo(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_editor_undo, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_editor_unlock", bundle: ..., traitCollection: ...)`
+    static func icon_editor_unlock(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_editor_unlock, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_editor_weather", bundle: ..., traitCollection: ...)`
@@ -404,6 +493,16 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.icon_reader_share, compatibleWith: traitCollection)
     }
     
+    /// `UIImage(named: "icon_subcription_check", bundle: ..., traitCollection: ...)`
+    static func icon_subcription_check(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_subcription_check, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_subscription_close", bundle: ..., traitCollection: ...)`
+    static func icon_subscription_close(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_subscription_close, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "icon_tabbar_category", bundle: ..., traitCollection: ...)`
     static func icon_tabbar_category(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_tabbar_category, compatibleWith: traitCollection)
@@ -427,6 +526,11 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_today_edit", bundle: ..., traitCollection: ...)`
     static func icon_today_edit(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_today_edit, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_today_locked", bundle: ..., traitCollection: ...)`
+    static func icon_today_locked(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_today_locked, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_today_love", bundle: ..., traitCollection: ...)`
@@ -484,34 +588,29 @@ struct R: Rswift.Validatable {
       return UIKit.UIImage(resource: R.image.image_editor_bg, compatibleWith: traitCollection)
     }
     
-    /// `UIImage(named: "image_home_cr1", bundle: ..., traitCollection: ...)`
-    static func image_home_cr1(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
-      return UIKit.UIImage(resource: R.image.image_home_cr1, compatibleWith: traitCollection)
-    }
-    
-    /// `UIImage(named: "image_home_cr2", bundle: ..., traitCollection: ...)`
-    static func image_home_cr2(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
-      return UIKit.UIImage(resource: R.image.image_home_cr2, compatibleWith: traitCollection)
-    }
-    
-    /// `UIImage(named: "image_home_cr3", bundle: ..., traitCollection: ...)`
-    static func image_home_cr3(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
-      return UIKit.UIImage(resource: R.image.image_home_cr3, compatibleWith: traitCollection)
-    }
-    
     /// `UIImage(named: "image_me_bg", bundle: ..., traitCollection: ...)`
     static func image_me_bg(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.image_me_bg, compatibleWith: traitCollection)
     }
     
-    /// `UIImage(named: "test", bundle: ..., traitCollection: ...)`
-    static func test(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
-      return UIKit.UIImage(resource: R.image.test, compatibleWith: traitCollection)
+    /// `UIImage(named: "image_subscription_bg", bundle: ..., traitCollection: ...)`
+    static func image_subscription_bg(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.image_subscription_bg, compatibleWith: traitCollection)
     }
     
-    /// `UIImage(named: "test1", bundle: ..., traitCollection: ...)`
-    static func test1(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
-      return UIKit.UIImage(resource: R.image.test1, compatibleWith: traitCollection)
+    /// `UIImage(named: "launch_logo", bundle: ..., traitCollection: ...)`
+    static func launch_logo(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.launch_logo, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "launch_logo_title", bundle: ..., traitCollection: ...)`
+    static func launch_logo_title(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.launch_logo_title, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "logo", bundle: ..., traitCollection: ...)`
+    static func logo(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.logo, compatibleWith: traitCollection)
     }
     
     fileprivate init() {}
@@ -565,11 +664,19 @@ struct _R: Rswift.Validatable {
       typealias InitialController = UIKit.UIViewController
       
       let bundle = R.hostingBundle
+      let launchScreen = StoryboardViewControllerResource<UIKit.UIViewController>(identifier: "LaunchScreen")
       let name = "LaunchScreen"
       
+      func launchScreen(_: Void = ()) -> UIKit.UIViewController? {
+        return UIKit.UIStoryboard(resource: self).instantiateViewController(withResource: launchScreen)
+      }
+      
       static func validate() throws {
+        if UIKit.UIImage(named: "launch_logo", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'launch_logo' is used in storyboard 'LaunchScreen', but couldn't be loaded.") }
+        if UIKit.UIImage(named: "launch_logo_title", in: R.hostingBundle, compatibleWith: nil) == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'launch_logo_title' is used in storyboard 'LaunchScreen', but couldn't be loaded.") }
         if #available(iOS 11.0, *) {
         }
+        if _R.storyboard.launchScreen().launchScreen() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'launchScreen' could not be loaded from storyboard 'LaunchScreen' as 'UIKit.UIViewController'.") }
       }
       
       fileprivate init() {}
