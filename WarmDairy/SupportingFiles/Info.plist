@@ -23,7 +23,7 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>使用Face ID 保护日记隐私</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>上传照片到日记当中</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>DancingScript-Regular.ttf</string>
