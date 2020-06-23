@@ -8,6 +8,7 @@
 
 import UIKit
 import ViewAnimator
+import MBProgressHUD
 
 class SearchDairyViewController: UIViewController {
     lazy var dairies = [DairyModel]()
@@ -59,12 +60,23 @@ extension SearchDairyViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let date = dairies[indexPath.row].createdAt
+        
+        let hub = MBProgressHUD.showAdded(to: view, animated: true)
+        hub.mode = .indeterminate
+        hub.animationType = .fade
+        hub.show(animated: true)
+        
         MottoAPI.getMotto(mottoId: Int(date.toFormat("yyyyMMdd"))!) { (motto) in
             guard let motto = motto else { return }
-            let vc = TodayDairyViewController()
-            vc.modalPresentationStyle = .fullScreen
-            vc.initData(mottoData: motto)
-            self.present(vc, animated: true, completion: nil)
+            /// 先获取数据再进入
+            DairyAPI.getDairy(date: motto.date) { [weak self] (dairies) in
+                hub.hide(animated: true)
+                guard let self = self else { return }
+                let vc = TodayDairyViewController()
+                vc.initData(mottoData: motto, dairies: dairies)
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true, completion: nil)
+            }
         }
     }
 }

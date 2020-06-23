@@ -84,7 +84,7 @@ extension AboutMeViewController {
         }
         
         _ = version.then {
-            $0.text = "Warm Diary - V1.0"
+            $0.text = "Warm Diary - V1.3.0"
             $0.textColor = UIColor(hexString: "909399")
             $0.font = UIFont.systemFont(ofSize: 12)
             view.addSubview($0)

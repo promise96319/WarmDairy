@@ -47,6 +47,7 @@ class EditorViewController: UIViewController {
     lazy var actionBar = UIView()
     
     lazy var weatherButton = UIButton()
+    lazy var locationButton = UIButton()
     lazy var moodButton = UIButton()
     lazy var loveButton = UIButton()
     lazy var backgroundButton = UIButton()
@@ -68,11 +69,11 @@ class EditorViewController: UIViewController {
     func initData(dairy: DairyModel, isDairyEditing: Bool = false) {
         myDairy = dairy
         self.isDairyEditing = isDairyEditing
-        CLog("dairy的值为: \(dairy.bgColor)")
         chooseBackground(color: dairy.bgColor)
         chooseDate(date: dairy.createdAt)
-        chooseMood(mood: dairy.mood)
+        chooseMood(mood: dairy.mood, isEnter: true)
         chooseWeather(weather: dairy.weather)
+        setLocationImage()
         setLockImage()
         setLoveImage()
         titleField.text = dairy.title
@@ -94,7 +95,28 @@ class EditorViewController: UIViewController {
 }
 
 // MARK: - 事件处理
-extension EditorViewController: CategoryChooserDelegate, BackgroundColorChooserDelegate {
+extension EditorViewController: CategoryChooserDelegate, BackgroundColorChooserDelegate, LocationListDelegate {
+    func chooseLocation(id: String) {
+        CLog("id的值为: \(id)")
+        myDairy.location = id
+        setLocationImage()
+    }
+    
+    func setLocationImage() {
+        if myDairy.location == "" {
+            locationButton.setImage(R.image.icon_editor_location(), for: .normal)
+        } else {
+            locationButton.setImage(R.image.icon_editor_location_selected(), for: .normal)
+        }
+    }
+    
+    @objc func showLocationPicker() {
+        AnalysisTool.shared.logEvent(event: "编辑界面-选择位置点击")
+        let vc = LocationListViewController()
+        vc.initData(isPresented: true, isHideTabbar: false, isChooseLocation: true, currentChoosedId: myDairy.location)
+        vc.delegate = self
+        present(vc, animated: true, completion: nil)
+    }
     
     @objc func toggleLock() {
         myDairy.isLocked = !myDairy.isLocked
@@ -115,6 +137,7 @@ extension EditorViewController: CategoryChooserDelegate, BackgroundColorChooserD
     }
     
     @objc func showBgChooser() {
+        AnalysisTool.shared.logEvent(event: "编辑界面-选择背景按钮点击")
         let vc = BackgroundChooserViewController()
         vc.initData(bgImage: bgImageUrlString)
         vc.delegate = self
@@ -151,7 +174,7 @@ extension EditorViewController: CategoryChooserDelegate, BackgroundColorChooserD
     }
     
     @objc func showDatePicker() {
-        AnalysisTool.shared.logEvent(event: "editor_showdate_button_clicked")
+        AnalysisTool.shared.logEvent(event: "编辑界面-选择日期按钮点击")
         showMask()
         let animation = AnimationType.from(direction: .top, offset: 200.0)
         datePicker.animate(animations: [animation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 0.8, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: .transitionCurlUp, completion: nil)
@@ -164,10 +187,10 @@ extension EditorViewController: CategoryChooserDelegate, BackgroundColorChooserD
         }
     }
     
-    func chooseMood(mood: String) {
+    func chooseMood(mood: String, isEnter: Bool = false) {
         AnalysisTool.shared.logEvent(event: "editor_choosemood_button_clicked_\(mood)")
         // vip 设置
-        if !Defaults[.isVIP] {
+        if !isEnter && !Defaults[.isVIP] {
             let vc = SubscriptionViewController()
             vc.modalPresentationStyle = .fullScreen
             present(vc, animated: true, completion: nil)
@@ -453,9 +476,11 @@ extension EditorViewController {
         loveButton.addTarget(self, action: #selector(showCategories), for: .touchUpInside)
         moodButton.tag = 3
         moodButton.addTarget(self, action: #selector(showMoodPicker), for: .touchUpInside)
-        weatherButton.tag = 4
+        locationButton.tag = 4
+        locationButton.addTarget(self, action: #selector(showLocationPicker), for: .touchUpInside)
+        weatherButton.tag = 5
         weatherButton.addTarget(self, action: #selector(showWeatherPicker), for: .touchUpInside)
-        [lockButton, backgroundButton, loveButton, moodButton, weatherButton].forEach {            $0.imageView?.contentMode = .scaleAspectFill
+        [lockButton, backgroundButton, loveButton, moodButton, locationButton, weatherButton].forEach {            $0.imageView?.contentMode = .scaleAspectFill
             actionBar.addSubview($0)
             let index = $0.tag
             $0.snp.makeConstraints {
@@ -465,13 +490,16 @@ extension EditorViewController {
             }
         }
         
-       setLockImage()
+        setLockImage()
         backgroundButton.setImage(R.image.icon_editor_backgroundcolor(), for: .normal)
         
         if myDairy.weather == "" {
             weatherButton.setImage(UIImage(named: "icon_editor_weather"), for: .normal)
             weatherButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
+        
+        locationButton.imageEdgeInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        setLocationImage()
         
         if myDairy.mood == "" {
             moodButton.setImage(UIImage(named: "icon_editor_mood"), for: .normal)

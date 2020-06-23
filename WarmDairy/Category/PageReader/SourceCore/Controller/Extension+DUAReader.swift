@@ -8,6 +8,7 @@
 
 import UIKit
 import ViewAnimator
+import SwiftyUserDefaults
 
 class CustonAnimation {
     static func animateHideView(view: UIView, direction: Direction, reverseDirection: Direction, offset: CGFloat) {
@@ -32,6 +33,7 @@ extension DUAReader {
     }
     
     @objc func showSideBar() {
+        AnalysisTool.shared.logEvent(event: "阅读器-显示目录按钮点击")
         removeGesture()
         CustonAnimation.animateShowView(view: sideMask, direction: .left, offset: DeviceInfo.screenWidth * 0.7)
     }
@@ -47,13 +49,15 @@ extension DUAReader {
     }
     
     @objc func toggleBgColor(sender: UIButton) {
+        AnalysisTool.shared.logEvent(event: "阅读器-切换背景按钮点击")
         let tag = sender.tag - 100
         config.backgroundColor = ReaderBg.all[tag]
     }
     
     @objc func share() {
-        let text = "我在Warm Diary里写了一本日记，你也来写写吧~"
-        let url = URL.init(string: "https://itunes.apple.com/us/app/id1504446852")!
+        AnalysisTool.shared.logEvent(event: "阅读器-分享按钮点击")
+        let text = "我在Warm Diary里写了一本日记，你也来写一写吧~"
+        let url = URL.init(string: URLManager.share.rawValue)!
         let image = R.image.launch_logo()
         let activityVC = UIActivityViewController(activityItems: [text, url, image as Any], applicationActivities: nil)
         
@@ -66,7 +70,14 @@ extension DUAReader {
     }
     
     @objc func download() {
-        
+        AnalysisTool.shared.logEvent(event: "阅读器-下载按钮点击")
+        if !Defaults[.isVIP] {
+            let vc = SubscriptionViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true, completion: nil)
+            return
+        }
+        exportDiariesToPDF(diaries: allDiaries, type: .cate, filename: "Warm Diary", isNeedImagePathReplaced: false)
     }
     
     @objc func goBack() {
@@ -180,7 +191,7 @@ extension DUAReader {
             $0.setImage(R.image.icon_editor_back(), for: .normal)
             topBar.addSubview($0)
             $0.snp.makeConstraints {
-                $0.left.equalToSuperview().offset(20)
+                $0.left.equalToSuperview().offset(14)
                 $0.width.height.equalTo(44)
                 $0.bottom.equalToSuperview().offset(-6)
             }
@@ -199,7 +210,6 @@ extension DUAReader {
         }
         
         _ = UIButton().then {
-            $0.isHidden = true
             $0.setImage(R.image.icon_reader_download(), for: .normal)
             topBar.addSubview($0)
             $0.snp.makeConstraints {

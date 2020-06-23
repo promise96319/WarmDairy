@@ -18,4 +18,6 @@ class VIPModel {
     static let categoryCount: Int = 3
     /// 日记背景颜色限制
     static let backgroundCount: Int = 2
+    /// 地点个数限制
+    static let locationCount: Int = 3
 }

@@ -123,7 +123,7 @@ extension SubscriptionViewController {
     
     @objc func showTerms() {
         AnalysisTool.shared.logEvent(event: "订阅-使用协议点击")
-        if let url = URL(string: "https://sites.google.com/view/warmdiary-terms") {
+        if let url = URL(string: URLManager.terms.rawValue) {
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true, completion: nil)
         }
@@ -131,7 +131,7 @@ extension SubscriptionViewController {
     
     @objc func showPolicy() {
         AnalysisTool.shared.logEvent(event: "订阅-隐私政策点击")
-        if let url = URL(string: "https://sites.google.com/view/warm-diary-privacy-policy") {
+        if let url = URL(string: URLManager.privacy.rawValue) {
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true, completion: nil)
         }
@@ -155,6 +155,9 @@ extension SubscriptionViewController {
                 var mdesription = "月度"
                 if id == IAPManager.ProductID.year {
                     mdesription = "年度"
+                    AnalysisTool.shared.logEvent(event: "订购界面-年订阅成功")
+                } else {
+                    AnalysisTool.shared.logEvent(event: "订阅界面-月订阅成功")
                 }
                 MessageTool.shared.showMessage(theme: .success ,title: "购买成功！", body: "您已是 Warm Diary 的\(mdesription)会员了~")
                 CLog("购买产品id的值为: \(product.productIdentifier)")
@@ -198,6 +201,7 @@ extension SubscriptionViewController {
                 MessageTool.shared.showMessage(theme: .error ,title: "取消购买")
                 break
             case .success(let product, let expireDate):
+                AnalysisTool.shared.logEvent(event: "订阅界面-终身会员订阅成功")
                 MessageTool.shared.showMessage(theme: .success ,title: "购买成功！")
                 CLog("购买产品id的值为: \(product.productIdentifier)")
                 Defaults[.isVIP] = true
@@ -485,9 +489,9 @@ extension SubscriptionViewController {
         let checkItems = [
             "12个精选心情图标",
             "每篇日记图片上传无限制",
-            "日记自动同步iCloud",
+            "日记同步iCloud并导出pdf",
             "完整的富文本编辑功能",
-            "无限制创建日记分类",
+            "无限制创建日记分类和位置",
             "现有和后续更新的所有功能",
         ]
         

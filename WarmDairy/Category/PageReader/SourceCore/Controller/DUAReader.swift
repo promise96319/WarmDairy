@@ -22,7 +22,7 @@ protocol DUAReaderDelegate: NSObjectProtocol {
     
 }
 
-class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIGestureRecognizerDelegate, UITableViewDataSource, UITableViewDelegate, DUATranslationProtocol {
+class DUAReader: ExportDiaryControllerDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIGestureRecognizerDelegate, UITableViewDataSource, UITableViewDelegate, DUATranslationProtocol {
     /// 配置类
     public var config: DUAConfiguration!
     /// 代理
@@ -66,6 +66,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     var successSwitchChapter = 0
     
     /// 新增 UI
+    lazy var allDiaries = [DairyModel]()
     lazy var chapterTitles = [String]()
     lazy var topBar = UIView()
     lazy var bottomBar = UIView()
@@ -80,7 +81,7 @@ class DUAReader: UIViewController, UIPageViewControllerDelegate, UIPageViewContr
     
     // MARK:--对外接口
     public func readWith(dairies: [DairyModel], pageIndex: Int) -> Void {
-        
+        self.allDiaries = dairies
         self.postReaderStateNotification(state: .busy)
         self.dataParser.parseChapterFromBook(dairies: dairies, completeHandler: {(titles, models) -> Void in
             if self.delegate?.reader(reader: chapterTitles: ) != nil {

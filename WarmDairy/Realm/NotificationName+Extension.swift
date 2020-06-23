@@ -17,4 +17,6 @@ extension NSNotification.Name {
     
     /// 购买成功通知
     static let purchaseDidSuccessed = Notification.Name("purchaseDidSuccessed")
+    
+    static let locationDidChanged = Notification.Name("locationDidChanged")
 }

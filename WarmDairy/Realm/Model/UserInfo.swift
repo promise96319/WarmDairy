@@ -16,7 +16,7 @@ class UserInfo: Object {
     /// 头像
     @objc dynamic var avatar: CreamAsset?
     /// 名称
-    @objc dynamic var name = "Warm Diary"
+    @objc dynamic var name = "Silence"
     /// 描述：格言等
     @objc dynamic var motto = "满地都是六便士，他却抬头看见了月亮🌙"
     /// 密码

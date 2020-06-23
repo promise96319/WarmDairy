@@ -35,16 +35,24 @@ class CategoryAPI {
         callback(datas)
     }
     
-    static func addCategory(name: String, callback: @escaping(_ isAdd: Bool) -> Void) {
+    static func addCategory(id: Int? = nil, name: String, image: String? = nil, isNotify: Bool = true, callback: @escaping(_ isAdd: Bool) -> Void) {
         let cate = CategoryModel()
         cate.name = name
+        if let id = id {
+            cate.id = id
+        }
+        if let image = image {
+            cate.image = image
+        }
         let realm = try! Realm()
         try! realm.write {
             realm.add(cate)
         }
         callback(true)
-        NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
-        MessageTool.shared.showMessage(title: "添加成功！")
+        if isNotify {
+            NotificationCenter.default.post(name: .categoryDidChanged, object: nil)
+            MessageTool.shared.showMessage(title: "添加成功！")
+        }
     }
     
     static func updateCategory(id: Int, name: String, callback: @escaping(_ isUpdated: Bool) -> Void) {

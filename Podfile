@@ -39,4 +39,9 @@ target 'WarmDairy' do
   script_phase :name=> 'Fabric',
   :script=> '"${PODS_ROOT}/Fabric/run"',
   :input_files=> ['$SRCROOT/$PRODUCT_NAME/$(INFOPLIST_PATH)']
+  
+  pod 'AMap2DMap'
+  pod 'AMapSearch'
+  pod 'AMapLocation'
+  pod 'DZMAnimatedTransitioning'
 end

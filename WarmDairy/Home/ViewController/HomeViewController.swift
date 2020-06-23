@@ -12,6 +12,7 @@ import Then
 import FSPagerView
 import SwiftyUserDefaults
 import ViewAnimator
+import MBProgressHUD
 
 class HomeViewController: UIViewController {
     
@@ -27,14 +28,15 @@ class HomeViewController: UIViewController {
     lazy var carouselPager = FSPagerView()
     
     override func viewDidLoad() {
-        
-        
-//        MessageTool.shared.showMessage(title: "加载成功啦！")
-//        MessageTool.shared.showLoading(title: "正在努力加载图片")
-        
         loadInfo()
         if userInfo.isLaunchPasswordEnable {
             lockScreen()
+        } else {
+            if !Defaults[.isVIP] {
+                let vc = SubscriptionViewController()
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: false, completion: nil)
+            }
         }
         
         view.alpha = 0
@@ -71,10 +73,15 @@ class HomeViewController: UIViewController {
         vc.navbar.alpha = 0
         present(vc, animated: false, completion: nil)
         
-        PasswordManager.shared.passwordAuth(reason: "启动 Warm Diarry") { (success) in
+        PasswordManager.shared.passwordAuth(reason: "启动 Warm Diarry") { [weak self] (success) in
             if success {
                 DispatchQueue.main.async {
                     vc.dismiss(animated: false, completion: nil)
+                    if !Defaults[.isVIP] {
+                        let vc = SubscriptionViewController()
+                        vc.modalPresentationStyle = .fullScreen
+                        self?.present(vc, animated: false, completion: nil)
+                    }
                 }
             }
         }
@@ -91,7 +98,6 @@ class HomeViewController: UIViewController {
     }
     
     @objc func loadData() {
-        
         MottoAPI.getMottos { [weak self] (data) in
             CLog("测试 ===> motto data的值为: \(data)")
             // 如果没有数据，或者有数据时最后一天不是今天，创建一个新的空数据
@@ -154,7 +160,7 @@ class HomeViewController: UIViewController {
 // MARK: - 事件
 extension HomeViewController {
     @objc func showEditor() {
-        AnalysisTool.shared.logEvent(event: "home_addbutton_clicked")
+        AnalysisTool.shared.logEvent(event: "首页-添加按钮点击")
         let vc = EditorViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.initBg(image: mottoData[mottoData.count - 1].imageURL)
@@ -178,7 +184,7 @@ extension HomeViewController: FSPagerViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension HomeViewController: FSPagerViewDelegate {
     func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
-        AnalysisTool.shared.logEvent(event: "home_carousel_cell_clicked")
+        AnalysisTool.shared.logEvent(event: "首页-轮播图cell点击")
         // 如果isDeleted为 true, 说明是手动创建的今天motto，此时是没有数据的
         if mottoData[index].isDeleted {
             let vc = EditorViewController()
@@ -188,10 +194,20 @@ extension HomeViewController: FSPagerViewDelegate {
             return
         }
         
-        let vc = TodayDairyViewController()
-        vc.initData(mottoData: mottoData[index])
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
+        let hub = MBProgressHUD.showAdded(to: view, animated: true)
+        hub.mode = .indeterminate
+        hub.animationType = .fade
+        hub.show(animated: true)
+        
+        /// 先获取数据再进入
+        DairyAPI.getDairy(date: mottoData[index].date) { [weak self] (dairies) in
+            hub.hide(animated: true)
+            guard let self = self else { return }
+            let vc = TodayDairyViewController()
+            vc.initData(mottoData: self.mottoData[index], dairies: dairies)
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
 }
 

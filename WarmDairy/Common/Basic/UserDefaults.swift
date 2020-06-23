@@ -33,4 +33,9 @@ extension DefaultsKeys {
     
     /// 图片质量 index: 0是 low , 1是中等， 2是高，3是超高
     static let imageQuality = DefaultsKey<Int>("imageQuality")
+    
+    /// 用户提醒
+    static let isReminderOn = DefaultsKey<Bool>("isReminderOn")
+    static let reminderHour = DefaultsKey<Int>("reminderHour")
+    static let reminderMinute = DefaultsKey<Int>("reminderMinute")
 }

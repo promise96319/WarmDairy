@@ -13,7 +13,7 @@ import SwiftyUserDefaults
 class CategoryEditViewController: UIViewController {
     weak var delegate: CategoryViewController?
     
-    let animations = [AnimationType.from(direction: .bottom, offset: 80.0)]
+    let animations = [AnimationType.from(direction: .bottom, offset: 60.0)]
     lazy var categories = [CustomCategoryModel]()
     var currentSelectedCategoryIndex = -1
     
@@ -108,6 +108,15 @@ extension CategoryEditViewController {
     @objc func cellLongPress(sender: UILongPressGestureRecognizer) {
         AnalysisTool.shared.logEvent(event: "编辑归档_长按弹出菜单")
         guard let tag = sender.view?.tag else { return }
+        showCategoryEditOptions(tag: tag)
+    }
+    
+    @objc func cellMoreClick(sender: UIButton) {
+        let tag = sender.tag
+        showCategoryEditOptions(tag: tag)
+    }
+    
+    @objc func showCategoryEditOptions(tag: Int) {
         currentSelectedCategoryIndex = tag
         let alert = UIAlertController(title: "编辑分类", message: categories[tag].name, preferredStyle: .actionSheet)
         
@@ -162,8 +171,10 @@ extension CategoryEditViewController: UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategorySectionCell.identifier, for: indexPath) as! CategorySectionCell
         cell.initFavoriteData(data: categories[indexPath.row])
         cell.tag = indexPath.row
+        cell.moreButton.tag = indexPath.row
         let longPressGuesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPress))
         cell.addGestureRecognizer(longPressGuesture)
+        cell.moreButton.addTarget(self, action: #selector(cellMoreClick(sender:)), for: .touchUpInside)
         return cell
     }
     

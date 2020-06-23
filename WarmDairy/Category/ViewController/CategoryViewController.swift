@@ -10,6 +10,7 @@ import UIKit
 import DTCoreText
 import SwiftDate
 import ViewAnimator
+import MBProgressHUD
 
 class CategoryViewController: UIViewController {
     lazy var totleDairies = [DairyModel]()
@@ -17,7 +18,6 @@ class CategoryViewController: UIViewController {
     
     lazy var searchController = UISearchController(searchResultsController: SearchDairyViewController())
 
-    
     lazy var categories = [CategoryYearModel]()
     lazy var favoriteData = [CustomCategoryModel]()
     
@@ -78,14 +78,14 @@ class CategoryViewController: UIViewController {
         DairyAPI.getDairy() { [weak self] (dairies) in
             guard let weakSelf = self else { return }
             weakSelf.totleDairies = dairies
-            weakSelf.categories = weakSelf.formatDairies(dairies: dairies)
+            weakSelf.categories = CategoryViewController.formatDairies(dairies: dairies)
             DispatchQueue.main.async { [weak self] in
                 self?.setupCategorySection()
             }
         }
     }
     
-    func formatDairies(dairies: [DairyModel]) -> [CategoryYearModel] {
+    static func formatDairies(dairies: [DairyModel]) -> [CategoryYearModel] {
         /// [
         ///  year: 2020,
         ///  months: [
@@ -99,6 +99,7 @@ class CategoryViewController: UIViewController {
         var results = [CategoryYearModel]()
         
         for dairy in dairies {
+            CLog("dairy的值为: \(dairy)")
             let year = dairy.createdAt.year
             let month = dairy.createdAt.month
             var foundYearIndex = -1
@@ -345,7 +346,23 @@ extension CategoryViewController: DUAReaderDelegate {
 }
 
 extension CategoryViewController {
+    
+}
+
+extension CategoryViewController {
     func setupReader(dairies: [DairyModel], url: String = "") {
+        CLog("dairies的值为: \(dairies)")
+        
+        /// 将 dairies 的 图片 地址 替换
+        let hub = MBProgressHUD.showAdded(to: view, animated: true)
+        hub.mode = .indeterminate
+        hub.animationType = .fade
+        hub.show(animated: true)
+        
+        let newDiaries = DairyAPI.formatDairyImagePath(dairies: dairies)
+        
+        hub.hide(animated: true)
+        
         mreader = DUAReader()
         let configuration = DUAConfiguration()
         
@@ -368,9 +385,10 @@ extension CategoryViewController {
         mreader?.config = configuration
         mreader?.delegate = self
         mreader?.modalPresentationStyle = .fullScreen
-        present(mreader!, animated: true, completion: nil)
         
-        mreader?.readWith(dairies: dairies, pageIndex: 1)
+//        navigationController?.pushViewController(mreader!, animated: true)
+        present(mreader!, animated: true, completion: nil)
+        mreader?.readWith(dairies: newDiaries, pageIndex: 1)
         mreader?.setupUI()
     }
 }

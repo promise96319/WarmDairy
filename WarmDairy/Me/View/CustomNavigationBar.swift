@@ -14,6 +14,7 @@ class CustomNavigationBar: UIView {
     lazy var hearerContainer = UIView()
     lazy var titleLabel = UILabel()
     lazy var backButton = UIButton()
+    lazy var rightButton = UIButton()
     var action: (() -> Void)?
     
     override init(frame: CGRect) {
@@ -25,9 +26,22 @@ class CustomNavigationBar: UIView {
         fatalError("init(code:) has not been implemented")
     }
     
-    func initData(title: String, isPresent: Bool = false, action: @escaping () -> Void) {
+    func initData(title: String, isPresent: Bool = false, rightText: String? = nil, action: @escaping () -> Void) {
         titleLabel.text = title
         self.action = action
+        
+        if let rightText = rightText {
+            _ = rightButton.then {
+                $0.setTitle(rightText, for: .normal)
+                $0.setTitleColor(UIColor(hexString: "606266"), for: .normal)
+                $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+                addSubview($0)
+                $0.snp.makeConstraints {
+                    $0.right.equalToSuperview().offset(-24)
+                    $0.centerY.equalTo(titleLabel)
+                }
+            }
+        }
     }
 }
 

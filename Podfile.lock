@@ -1,4 +1,11 @@
 PODS:
+  - AMap2DMap (5.6.1):
+    - AMapFoundation (~> 1.4)
+  - AMapFoundation (1.6.3)
+  - AMapLocation (2.6.5):
+    - AMapFoundation (~> 1.6.3)
+  - AMapSearch (7.3.0):
+    - AMapFoundation (~> 1.6.3)
   - Crashlytics (3.13.4):
     - Fabric (~> 1.10.2)
   - DTCoreText (1.6.23):
@@ -111,6 +118,9 @@ PODS:
   - ViewAnimator (2.7.0)
 
 DEPENDENCIES:
+  - AMap2DMap
+  - AMapLocation
+  - AMapSearch
   - Crashlytics (~> 3.13.3)
   - DTCoreText
   - Fabric (~> 1.10.2)
@@ -134,6 +144,10 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AMap2DMap
+    - AMapFoundation
+    - AMapLocation
+    - AMapSearch
     - Crashlytics
     - DTCoreText
     - DTFoundation
@@ -168,6 +182,10 @@ SPEC REPOS:
     - ViewAnimator
 
 SPEC CHECKSUMS:
+  AMap2DMap: cac76bc057de18a1641f34df6b50bf5bc6b23571
+  AMapFoundation: 9ed923193b357ebb30a073e9fe255d3c24054d5a
+  AMapLocation: c566d448285cd502c1e313063d9e2460bd4d7100
+  AMapSearch: a048bcca3bf0b8083345070e1f193f814bd8dc01
   Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
   DTCoreText: 67023bb51b26711d5f640c851f4845aea14c24c9
   DTFoundation: 25aa19bb7c6e225b1dfae195604fb8cf1da0ab4c
@@ -201,6 +219,6 @@ SPEC CHECKSUMS:
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
   ViewAnimator: 5af1c6f3b310f012bf081259c43717aa54fbae73
 
-PODFILE CHECKSUM: 9c491e8c59ace096d463e91f8ec1bdd71dc59d8c
+PODFILE CHECKSUM: e5af4d2a9b3f7d78860f923e89d516c5056fc826
 
 COCOAPODS: 1.8.4

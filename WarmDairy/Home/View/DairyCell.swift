@@ -28,6 +28,7 @@ class DairyCell: UIView {
     lazy var headerView = UIView()
     lazy var timeLabel = UILabel()
     lazy var weatherView = UIImageView()
+    lazy var locationButton = UIButton()
     lazy var moodView = UIImageView()
     lazy var loveButton = UIButton()
     lazy var editButton = UIButton()
@@ -59,13 +60,23 @@ class DairyCell: UIView {
         titleLabel.text = dairy.title == "" ? "标题" : dairy.title
         
         if dairy.isLocked && !isManualUnlocked {
-            lockButton.isHidden = false
             /// 如果没有手动解锁，则都不显示
+            lockButton.snp.makeConstraints {
+                $0.width.equalTo(DairyCellFrame.headerHeight)
+            }
             return
+        } else {
+            lockButton.snp.makeConstraints {
+                $0.width.equalTo(0)
+            }
         }
         
         editButton.isHidden = false
         loveButton.isHidden = false
+        moodView.isHidden = false
+        locationButton.isHidden = false
+        weatherView.isHidden = false
+        
         if dairy.isLocked {
             editButton.snp.makeConstraints {
                 $0.right.equalTo(lockButton.snp.left)
@@ -78,27 +89,45 @@ class DairyCell: UIView {
         
         if dairy.cateIds != "" {
             loveButton.setImage(R.image.icon_editor_love_selected(), for: .normal)
+            loveButton.snp.makeConstraints {
+                $0.width.equalTo(DairyCellFrame.headerHeight)
+            }
         } else {
-            loveButton.setImage(R.image.icon_today_love(), for: .normal)
+            loveButton.snp.makeConstraints {
+                $0.width.equalTo(0)
+            }
         }
         
-        if dairy.mood != "" {
-            moodView.isHidden = false
+        if dairy.mood == "" {
+            moodView.snp.makeConstraints {
+                $0.width.equalTo(0)
+            }
+        } else {
             moodView.image = UIImage(named: "icon_mood_\(dairy.mood)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
+            moodView.snp.makeConstraints {
+                $0.width.equalTo(DairyCellFrame.headerHeight)
+            }
         }
         
-        if dairy.weather != "" {
-            weatherView.isHidden = false
+        if dairy.location == "" {
+            locationButton.snp.makeConstraints {
+                $0.width.equalTo(0)
+            }
+        } else {
+            locationButton.setImage(R.image.icon_editor_location_selected(), for: .normal)
+            locationButton.snp.makeConstraints {
+                $0.width.equalTo(DairyCellFrame.headerHeight)
+            }
+        }
+        
+        if dairy.weather == "" {
+            weatherView.snp.makeConstraints {
+                $0.width.equalTo(0)
+            }
+        } else {
             weatherView.image = UIImage(named: "icon_weather_\(dairy.weather)")?.withAlignmentRectInsets(UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
-            
-            if dairy.mood == "" {
-                weatherView.snp.makeConstraints {
-                    $0.right.equalTo(loveButton.snp.left)
-                }
-            } else {
-                weatherView.snp.makeConstraints {
-                    $0.right.equalTo(moodView.snp.left)
-                }
+            weatherView.snp.makeConstraints {
+                $0.width.equalTo(DairyCellFrame.headerHeight)
             }
         }
         
@@ -226,13 +255,12 @@ extension DairyCell {
         }
         
         _ = lockButton.then {
-            $0.isHidden = true
             $0.setImage(R.image.icon_today_locked(), for: .normal)
             headerView.addSubview($0)
             $0.snp.makeConstraints {
                 $0.centerY.equalToSuperview()
                 $0.right.equalToSuperview().offset(-10)
-                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                $0.height.equalTo(DairyCellFrame.headerHeight)
             }
             $0.addTarget(self, action: #selector(unlockDairy), for: .touchUpInside)
         }
@@ -249,24 +277,34 @@ extension DairyCell {
         }
         
         _ = loveButton.then {
-                    $0.isHidden = true
-                    headerView.addSubview($0)
-                    $0.snp.makeConstraints {
-                        $0.right.equalTo(editButton.snp.left)
-                        $0.centerY.equalToSuperview()
-                        $0.width.height.equalTo(DairyCellFrame.headerHeight)
-                    }
-        //            $0.addTarget(self, action: #selector(showCate), for: .touchUpInside)
-                }
+            $0.isHidden = true
+            headerView.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.right.equalTo(editButton.snp.left)
+                $0.centerY.equalToSuperview()
+                $0.height.equalTo(DairyCellFrame.headerHeight)
+            }
+        }
         
         _ = moodView.then {
             $0.isHidden = true
             $0.contentMode = .scaleAspectFill
             headerView.addSubview($0)
             $0.snp.makeConstraints {
-                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                $0.height.equalTo(DairyCellFrame.headerHeight)
                 $0.centerY.equalToSuperview()
                 $0.right.equalTo(loveButton.snp.left)
+            }
+        }
+        
+        _ = locationButton.then {
+            $0.isHidden = true
+            $0.contentMode = .scaleAspectFill
+            headerView.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.height.equalTo(DairyCellFrame.headerHeight)
+                $0.centerY.equalToSuperview()
+                $0.right.equalTo(moodView.snp.left)
             }
         }
         
@@ -275,9 +313,9 @@ extension DairyCell {
             $0.contentMode = .scaleAspectFill
             headerView.addSubview($0)
             $0.snp.makeConstraints {
-                $0.width.height.equalTo(DairyCellFrame.headerHeight)
+                $0.height.equalTo(DairyCellFrame.headerHeight)
                 $0.centerY.equalToSuperview()
-                
+                $0.right.equalTo(locationButton.snp.left)
             }
         }
     }

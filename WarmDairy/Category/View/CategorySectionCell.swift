@@ -14,6 +14,7 @@ class CategorySectionCell: UICollectionViewCell {
     lazy var bgImage = UIImageView()
     lazy var titleLabel = UILabel()
     lazy var countLabel = UILabel()
+    lazy var moreButton = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,7 +26,8 @@ class CategorySectionCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        // super.prepareForReuse()
+        super.prepareForReuse()
+        moreButton.isHidden = true
     }
     
     func initData(monthData: CategoryMonthModel) {
@@ -39,6 +41,7 @@ class CategorySectionCell: UICollectionViewCell {
         titleLabel.text = data.name
         titleLabel.font = UIFont.systemFont(ofSize: 22)
         countLabel.text = "\(data.dairies.count)篇日记"
+        moreButton.isHidden = false
         bgImage.kf.setImage(with: URL(string: data.image))
     }
 }
@@ -69,6 +72,17 @@ extension CategorySectionCell {
             }
         }
         
+        _ = moreButton.then {
+            $0.isHidden = true
+            $0.setImage(R.image.icon_category_more(), for: .normal)
+            addSubview($0)
+            $0.snp.makeConstraints {
+                $0.width.height.equalTo(44)
+                $0.top.equalToSuperview()
+                $0.right.equalToSuperview()
+            }
+        }
+        
         _ = countLabel.then {
             $0.textColor = UIColor(hexString: "ffffff", alpha: 0.8)
             $0.font = UIFont.systemFont(ofSize: 16)
@@ -81,16 +95,6 @@ extension CategorySectionCell {
     }
     
     func setupBackground() {
-        //        let mask = UIView().then {
-        //            $0.backgroundColor = .clear
-        //            $0.layer.cornerRadius = 12
-        //            $0.clipsToBounds = true
-        //            addSubview($0)
-        //            $0.snp.makeConstraints {
-        //                $0.edges.equalToSuperview()
-        //            }
-        //        }
-        //
         _ = bgImage.then {
             $0.contentMode = .scaleAspectFill
             $0.layer.cornerRadius = 12

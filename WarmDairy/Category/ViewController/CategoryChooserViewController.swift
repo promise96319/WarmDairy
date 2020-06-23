@@ -19,12 +19,8 @@ class CategoryChooserViewController: UIViewController {
     lazy var categories = [CategoryModel]()
     lazy var catesID = [Int]()
     
-    lazy var titleLabel = UILabel()
-    lazy var backButton = UIButton()
-    lazy var addButton = UIButton()
-    lazy var saveButton = UIButton()
-    
-    var collectionView: UICollectionView!
+    lazy var navbar = CustomNavigationBar()
+    lazy var categoryTableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +32,7 @@ class CategoryChooserViewController: UIViewController {
     @objc func loadData() {
         CategoryAPI.getCategories { (categories) in
             self.categories = categories
-            self.collectionView.reloadData()
+            self.categoryTableView.reloadData()
         }
     }
     
@@ -53,12 +49,6 @@ class CategoryChooserViewController: UIViewController {
 extension CategoryChooserViewController {
     @objc func goBack() {
         dismiss(animated: true, completion: nil)
-    }
-    @objc func saveCate() {
-        AnalysisTool.shared.logEvent(event: "编辑器_保存分类")
-        let ids = catesID.map { "\($0)" }
-        delegate?.moveToCate(cateIds: ids.joined(separator: ","))
-        goBack()
     }
     
     @objc func addCate() {
@@ -92,120 +82,159 @@ extension CategoryChooserViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-}
-
-// MARK: - UICollectionViewDataSource
-extension CategoryChooserViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categories.count
+    @objc func editCate(cate: CategoryModel) {
+        AnalysisTool.shared.logEvent(event: "编辑器_编辑分类")
+        
+        let alert = UIAlertController(title: "编辑分类", message: "", preferredStyle: .alert)
+        
+        alert.addTextField{(usernameText) ->Void in
+            usernameText.text = cate.name
+        }
+        
+        let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        let confirm = UIAlertAction(title: "确定", style: .default, handler: {
+            ACTION in
+            let text = alert.textFields?.first?.text
+            if let text = text {
+                if text != "" {
+                    CategoryAPI.updateCategory(id: cate.id, name: text) { (isUpdated) in
+                        if isUpdated {
+                            
+                        }
+                    }
+                }
+            }
+        })
+        
+        alert.addAction(cancel)
+        alert.addAction(confirm)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func deleteCate(index: Int) {
+        let deleteAlert = UIAlertController(title: "删除分类", message: categories[index].name, preferredStyle: .alert)
+        
+        let deleteCancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        let deleteConfirm = UIAlertAction(title: "删除", style: .destructive, handler: {
+            [weak self] ACTION in
+            guard let self = self else { return }
+            CategoryAPI.removeCategory(id: self.categories[index].id) { (isDeleted) in
+            }
+        })
+        deleteAlert.addAction(deleteCancel)
+        deleteAlert.addAction(deleteConfirm)
+        present(deleteAlert, animated: true, completion: nil)
     }
 }
 
-// MARK: - UICollectionViewDelegate
-extension CategoryChooserViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryChooserCell.identifier, for: indexPath) as! CategoryChooserCell
-        cell.initData(cate: categories[indexPath.row].name, isSelected: catesID.contains(categories[indexPath.row].id))
+extension CategoryChooserViewController: CategoryChooserCellDelegate {
+    func moreButtonClicked(index: Int) {
+        let cate = categories[index]
+        let alert = UIAlertController(title: "编辑分类", message: cate.name, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        let confirm = UIAlertAction(title: "编辑", style: .default, handler: {
+            ACTION in
+            AnalysisTool.shared.logEvent(event: "归档_长按编辑分类")
+            self.editCate(cate: cate)
+        })
+        
+        let delete = UIAlertAction(title: "删除", style: .destructive) { (ACTION) in
+            self.deleteCate(index: index)
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(confirm)
+        alert.addAction(delete)
+        if DeviceInfo.isiPad {
+            let popover = alert.popoverPresentationController
+            if let popover = popover {
+                popover.sourceView = view
+                popover.sourceRect = CGRect(x: 0, y: DeviceInfo.screenHeight, width: DeviceInfo.screenWidth, height: 480)
+            }
+        }
+        present(alert, animated: true, completion: nil)
+    }
+}
+
+// MARK: - delegate
+extension CategoryChooserViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "删除") { [weak self] (rowAction, indexPath) in
+            self?.deleteCate(index: indexPath.row)
+        }
+        
+        let editAction = UITableViewRowAction(style: .default, title: "编辑") { [weak self] (rowAction, indexPath) in
+            guard let self = self else { return }
+            self.editCate(cate: self.categories[indexPath.row])
+        }
+        
+        editAction.backgroundColor = UIColor(hexString: "0CC4C4")
+        
+        return [deleteAction, editAction]
+    }
+}
+extension CategoryChooserViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categories.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryChooserCell.identifier, for: indexPath) as! CategoryChooserCell
+        cell.selectionStyle = .none
+        cell.initData(cate: categories[indexPath.row].name, isSelected: catesID.contains(categories[indexPath.row].id), index: indexPath.row)
+        cell.delegate = self
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let id = categories[indexPath.row].id
         if catesID.contains(id) {
             catesID = catesID.filter { $0 != id }
         } else {
             catesID.append(id)
         }
-        collectionView.reloadData()
+        let ids = catesID.map { "\($0)" }
+        delegate?.moveToCate(cateIds: ids.joined(separator: ","))
+        categoryTableView.reloadData()
     }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if (kind == UICollectionView.elementKindSectionFooter) {
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "FooterCollectionReusableView", for: indexPath)
-            _ = addButton.then {
-                $0.setTitle("新增分类", for: .normal)
-                $0.setTitleColor(UIColor(hexString: "409EFF"), for: .normal)
-                $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-                footerView.addSubview($0)
-                $0.snp.makeConstraints {
-                    $0.center.equalToSuperview()
-                    $0.height.equalTo(44)
-                    $0.width.equalToSuperview()
-                }
-                $0.addTarget(self, action: #selector(addCate), for: .touchUpInside)
-            }
-            return footerView
-        }
-        
-        fatalError()
-    }
-    
 }
+
 
 // MARK: - UI 界面
 extension CategoryChooserViewController {
     func setupUI() {
         view.backgroundColor = UIColor(hexString: "F1F6FA")
         
-        _ = titleLabel.then {
-            $0.text = "日记分类"
-            $0.textColor = UIColor(hexString: "303133")
-            $0.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        _ = navbar.then {
+            $0.initData(title: "日记分类", isPresent: true, rightText: "添加") { [weak self] in
+                self?.goBack()
+            }
             view.addSubview($0)
             $0.snp.makeConstraints {
-                $0.centerX.equalToSuperview()
-                $0.top.equalTo(topLayoutGuide.snp.bottom).offset(20)
+                $0.left.right.top.equalToSuperview()
+                $0.bottom.equalTo(topLayoutGuide.snp.bottom).offset(CustomNavigationBar.height)
             }
         }
         
-        _ = backButton.then {
-            $0.setImage(R.image.icon_editor_back(), for: .normal)
-            view.addSubview($0)
-            $0.snp.makeConstraints {
-                $0.centerY.equalTo(titleLabel)
-                $0.left.equalToSuperview().offset(10)
-                $0.width.height.equalTo(44)
-            }
-            $0.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-        }
+        navbar.rightButton.addTarget(self, action: #selector(addCate), for: .touchUpInside)
         
-        _ = saveButton.then {
-            $0.setTitle("确定", for: .normal)
-            $0.setTitleColor(UIColor(hexString: "409EFF"), for: .normal)
-            $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-            view.addSubview($0)
-            $0.snp.makeConstraints {
-                $0.centerY.equalTo(titleLabel)
-                $0.right.equalToSuperview().offset(-24)
-                $0.width.height.equalTo(44)
-            }
-            $0.addTarget(self, action: #selector(saveCate), for: .touchUpInside)
-        }
-        
-        let layout = UICollectionViewFlowLayout().then {
-            $0.itemSize = CGSize(width: DeviceInfo.screenWidth - 48, height: 44)
-            $0.minimumLineSpacing = 12
-            $0.minimumInteritemSpacing = 12
-            $0.scrollDirection = .vertical
-            $0.footerReferenceSize = CGSize(width: DeviceInfo.screenWidth - 48, height: 44)
-        }
-        
-        collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 0, height: 0), collectionViewLayout: layout).then {
-            $0.isScrollEnabled = true
-            $0.showsVerticalScrollIndicator = false
-            $0.showsHorizontalScrollIndicator = false
+        _ = categoryTableView.then {
             $0.backgroundColor = .clear
+            $0.separatorColor = .clear
+            $0.rowHeight = 64
             $0.delegate = self
             $0.dataSource = self
             view.addSubview($0)
-            $0.register(CategoryChooserCell.self, forCellWithReuseIdentifier: CategoryChooserCell.identifier)
             $0.snp.makeConstraints {
-                $0.left.equalToSuperview().offset(24)
-                $0.right.equalToSuperview().offset(-24)
-                $0.top.equalTo(titleLabel.snp.bottom).offset(24)
-                $0.bottom.equalToSuperview()
+                $0.left.right.bottom.equalToSuperview()
+                $0.top.equalTo(navbar.snp.bottom)
             }
-            $0.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "FooterCollectionReusableView")
+            $0.register(CategoryChooserCell.self, forCellReuseIdentifier: CategoryChooserCell.identifier)
         }
     }
 }

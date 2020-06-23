@@ -12,14 +12,26 @@ import RealmSwift
 class DairyAPI {
     static func getDairy(callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
-        let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false").map { $0 }
+        let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false").sorted(byKeyPath: "id", ascending: false).map { $0 }
         callback(res)
     }
     
     static func getDairy(cateId: Int, callback: @escaping(_ data: [DairyModel]) -> Void) {
         let realm = try! Realm()
         let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false AND cateIds CONTAINS %@", "\(cateId)").map { $0 }
-        callback(res)
+        
+        var replaceHtml = res
+        replaceHtml.sort { $0.createdAt < $1.createdAt }
+        callback(replaceHtml)
+    }
+    
+    static func getDairy(locationId: Int, callback: @escaping(_ data: [DairyModel]) -> Void) {
+        let realm = try! Realm()
+        let res: [DairyModel] = realm.objects(DairyModel.self).filter("isDeleted = false AND location = %@", "\(locationId)").map { $0 }
+        
+        var replaceHtml = res
+        replaceHtml.sort { $0.createdAt < $1.createdAt }
+        callback(replaceHtml)
     }
     
     static func getDairy(date: Date, callback: @escaping(_ data: [DairyModel]) -> Void) {
@@ -28,7 +40,14 @@ class DairyAPI {
         let filterRes = res.filter {
             return $0.createdAt.compare(toDate: date, granularity: .day) == .orderedSame
         }
-        var replaceHtml = filterRes.map { (dairy) -> DairyModel in
+        
+        var replaceHtml = formatDairyImagePath(dairies: filterRes)
+        replaceHtml.sort { $0.createdAt > $1.createdAt }
+        callback(replaceHtml)
+    }
+    
+    static func formatDairyImagePath(dairies: [DairyModel]) -> [DairyModel] {
+        let newDairies = dairies.map { (dairy) -> DairyModel in
             let newDairy = DairyModel()
             newDairy.id = dairy.id
             newDairy.createdAt = dairy.createdAt
@@ -52,11 +71,11 @@ class DairyAPI {
 
             return newDairy
         }
-        replaceHtml.sort { $0.createdAt > $1.createdAt }
-        callback(replaceHtml)
+        
+        return newDairies
     }
     
-    static func addDairy(dairy: DairyModel, callback: @escaping(_ isAdded: Bool) -> Void) {
+    static func addDairy(dairy: DairyModel, isNotify: Bool = true, callback: @escaping(_ isAdded: Bool) -> Void) {
         
         // 此时日记是没有问题的。添加格言
         MottoAPI.addMotto(date: dairy.createdAt) { isMottoAdded in
@@ -66,7 +85,9 @@ class DairyAPI {
                 try! realm.write {
                     realm.add(dairy, update: .modified)
                 }
-                NotificationCenter.default.post(name: .dairyDidAdded, object: nil)
+                if isNotify {
+                  NotificationCenter.default.post(name: .dairyDidAdded, object: nil)
+                }
                 callback(true)
             } else {
                 callback(false)

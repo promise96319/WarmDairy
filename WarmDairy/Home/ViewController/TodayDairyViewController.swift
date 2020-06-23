@@ -43,14 +43,14 @@ class TodayDairyViewController: UIViewController {
         super.viewDidLoad()
         editButton.alpha = 0
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
         setupUI()
-        loadData()
+        setupDairyView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         mottoLabel.shine()
+        
         for (index, cell) in dairyCells.enumerated() {
             if index < currentAnimateCellIndex {
                 UIView.animate(withDuration: 0.2) {
@@ -74,8 +74,11 @@ class TodayDairyViewController: UIViewController {
         }
     }
     
-    func initData(mottoData: MottoModel) {
+    /// 第一次进入的时候，先获取 diaries 再进入
+    func initData(mottoData: MottoModel, dairies: [DairyModel]) {
         self.mottoData = mottoData
+        self.dairesData = dairies
+        self.currentAnimateCellIndex = 0
         bgImage.kf.setImage(with: URL(string: mottoData.imageURL))
         mottoLabel.text = mottoData.motto
         authorLabel.text = mottoData.author
@@ -97,7 +100,6 @@ class TodayDairyViewController: UIViewController {
     deinit {
         CLog("today 注销")
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
     }
 }
 
@@ -108,7 +110,7 @@ extension TodayDairyViewController {
     }
     
     @objc func showEditor() {
-        AnalysisTool.shared.logEvent(event: "today_addbutton_clicked")
+        AnalysisTool.shared.logEvent(event: "今天-添加按钮点击")
         let vc = EditorViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.initBg(image: mottoData.imageURL)
@@ -116,7 +118,7 @@ extension TodayDairyViewController {
     }
     
     func editDairy(dairy: DairyModel) {
-        AnalysisTool.shared.logEvent(event: "today_editbutton_clicked")
+        AnalysisTool.shared.logEvent(event: "今天-编辑按钮点击")
         let vc = EditorViewController()
         vc.initData(dairy: dairy, isDairyEditing: true)
         vc.initBg(image: mottoData.imageURL)

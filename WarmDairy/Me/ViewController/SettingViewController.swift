@@ -27,8 +27,10 @@ class SettingViewController: UIViewController {
     lazy var discriptionCell = SettingCell()
     
     lazy var settingContainer = UIView()
+    lazy var reminderCell = SettingCell()
     lazy var imageQualityCell = SettingCell()
     lazy var passwordCell = SettingCell()
+    lazy var exportDiaryCell = SettingCell()
     
     lazy var purchaseContainer = UIView()
     lazy var subscriptionCell = SettingCell()
@@ -82,7 +84,7 @@ class SettingViewController: UIViewController {
 
 extension SettingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let pickedImage = info[.editedImage] as! UIImage
+        guard let pickedImage = info[.editedImage] as? UIImage else { return }
         let imageData = ImageCompressTool.compress(image: pickedImage, to: 300)
         
         picker.dismiss(animated: true, completion: nil)
@@ -94,7 +96,20 @@ extension SettingViewController: UIImagePickerControllerDelegate, UINavigationCo
 
 // MARK: -  ************ 用户设置 ************
 extension SettingViewController {
+    func setReminder() {
+        CLog("ssss的值为: \(Defaults[.isReminderOn])")
+        if (Defaults[.isReminderOn]) {
+            reminderCell.rightArrowIcon.isHidden = true
+            reminderCell.rightLabel.text = "\(Defaults[.reminderHour])时\(Defaults[.reminderMinute])分"
+            reminderCell.rightLabel.isHidden = false
+        } else {
+            reminderCell.rightLabel.isHidden = true
+            reminderCell.rightArrowIcon.isHidden = false
+        }
+    }
+    
     @objc func setLaunchScreenPassword(sender: UISwitch) {
+        AnalysisTool.shared.logEvent(event: "设置-锁屏密码")
         let isOn = sender.isOn
         PasswordManager.shared.passwordAuth(reason: "Warm Diary 锁屏") { [weak self] (success) in
             if (success) {
@@ -143,7 +158,7 @@ extension SettingViewController {
     func showHelpDocment() {
         //        https://sites.google.com/view/warmdiary-helpdocument
         AnalysisTool.shared.logEvent(event: "设置-帮助文档按钮")
-        if let url = URL(string: "https://sites.google.com/view/warmdiary-helpdocument") {
+        if let url = URL(string: URLManager.help.rawValue) {
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true, completion: nil)
         }
@@ -157,8 +172,9 @@ extension SettingViewController {
     }
     
     func share() {
-        let text = "我在Warm Diary里写了一本日记，你也来写写吧~"
-        let url = URL.init(string: "https://itunes.apple.com/us/app/id1504446852")!
+        AnalysisTool.shared.logEvent(event: "设置-分享点击")
+        let text = "我在Warm Diary里写了一本日记，你也来写一写吧~"
+        let url = URL.init(string: URLManager.share.rawValue)!
         let image = R.image.launch_logo()
         let activityVC = UIActivityViewController(activityItems: [text, url, image as Any], applicationActivities: nil)
         
@@ -171,6 +187,7 @@ extension SettingViewController {
     }
     
     func showAbout() {
+        AnalysisTool.shared.logEvent(event: "设置-关于我们点击")
         let vc = AboutMeViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -202,7 +219,7 @@ extension SettingViewController {
     
     func showTerms() {
         AnalysisTool.shared.logEvent(event: "设置-使用协议按钮")
-        if let url = URL(string: "https://sites.google.com/view/warmdiary-terms") {
+        if let url = URL(string: URLManager.terms.rawValue) {
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true, completion: nil)
         }
@@ -210,7 +227,8 @@ extension SettingViewController {
     
     func showPolicy() {
         AnalysisTool.shared.logEvent(event: "设置-隐私按钮")
-        if let url = URL(string: "https://sites.google.com/view/warm-diary-privacy-policy") {
+        
+        if let url = URL(string: URLManager.privacy.rawValue) {
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true, completion: nil)
         }
@@ -246,7 +264,6 @@ extension SettingViewController {
                 if let expire = expireDate {
                     Defaults[.subscriptionExprireDate] = expire.timeIntervalSince1970
                 }
-                CLog("expire的值为: \(expireDate?.toFormat("MM dd HH:mm:ss"))")
                 self?.dismiss(animated: true, completion: nil)
                 break
             case .networkError:
@@ -305,7 +322,6 @@ extension SettingViewController {
                     Defaults[.subscriptionExprireDate] = expire.timeIntervalSince1970
                 }
                 NotificationCenter.default.post(name: .purchaseDidSuccessed, object: nil)
-                CLog("年度会员到期时间: \(expireDate)")
                 // 3.处理订阅界面
                 self?.dismiss(animated: true, completion: nil)
                 break
@@ -334,7 +350,6 @@ extension SettingViewController {
                         if let expire = expireDate {
                             Defaults[.subscriptionExprireDate] = expire.timeIntervalSince1970
                         }
-                        CLog("expire的值为: \(expireDate)")
                         // 3.处理订阅界面
                         self?.dismiss(animated: true, completion: nil)
                     case .expired:
@@ -380,14 +395,17 @@ extension SettingViewController {
                 CLog("图片不支持")
             }
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization { [weak self] (status) in
-                guard let strongSelf = self else { return }
+            PHPhotoLibrary.requestAuthorization { (status) in
+                
                 if status == .authorized {
                     if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                        strongSelf.picker = UIImagePickerController()
-                        strongSelf.picker?.delegate = self
-                        strongSelf.picker?.sourceType = .photoLibrary
-                        strongSelf.present(strongSelf.picker!, animated: true, completion: nil)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let strongSelf = self else { return }
+                            strongSelf.picker = UIImagePickerController()
+                            strongSelf.picker?.delegate = self
+                            strongSelf.picker?.sourceType = .photoLibrary
+                            strongSelf.present(strongSelf.picker!, animated: true, completion: nil)
+                        }
                     } else {
                         CLog("不支持选取图片")
                     }
@@ -507,7 +525,7 @@ extension SettingViewController {
             self?.showHelpDocment()
         }
         
-        rateCell.initData(leftText: "App Store 评分", isRightArrowIcon: true) { [weak self] in
+        rateCell.initData(leftText: "App Store 好评鼓励", isRightArrowIcon: true) { [weak self] in
             self?.showRate()
         }
         
@@ -570,11 +588,11 @@ extension SettingViewController {
             $0.snp.makeConstraints {
                 $0.left.right.equalToSuperview()
                 $0.top.equalTo(userContainer.snp.bottom).offset(SettingCellModel.sectionSpacing)
-                $0.height.equalTo(2 * SettingCellModel.cellHeight + 2 * SettingCellModel.spacing)
+                $0.height.equalTo(4 * SettingCellModel.cellHeight + 3 * SettingCellModel.spacing)
             }
         }
         
-        for (index, cell) in [imageQualityCell, passwordCell].enumerated() {
+        for (index, cell) in [reminderCell, imageQualityCell, passwordCell, exportDiaryCell].enumerated() {
             _ = cell.then {
                 settingContainer.addSubview($0)
                 $0.snp.makeConstraints {
@@ -585,13 +603,26 @@ extension SettingViewController {
             }
         }
         
+        reminderCell.initData(leftText: "设置提醒", isRightArrowIcon: true) { [weak self] in
+            let vc = ReminderViewController()
+            vc.delegate = self
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+        setReminder()
+        
         let index = Defaults[.imageQuality]
         imageQualityCell.initData(leftText: "日记图片质量", rightText: ImageQuality.all[index].name) { [weak self] in
             self?.showChooseImageQuality()
         }
         
-        passwordCell.initData(leftText: "启动页锁屏(Face ID)", isBorder: false, isRightSwitch: true) {}
+        passwordCell.initData(leftText: "启动页锁屏(Face ID)", isRightSwitch: true) {}
         passwordCell.rightSwitch.addTarget(self, action: #selector(setLaunchScreenPassword), for: .valueChanged)
+        
+        exportDiaryCell.initData(leftText: "导出日记", isBorder: false, isRightArrowIcon: true) { [weak self] in
+            AnalysisTool.shared.logEvent(event: "设置-导出日记")
+            let vc = ExportDiaryViewController()
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     func setupUserInfo() {

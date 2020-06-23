@@ -13,6 +13,16 @@ class WeatherFrameModel {
     static let totalHeight: CGFloat = 64 * 2 + CGFloat(Weathers.all.count) * (54 + 20)
 }
 
+class WeatherModel {
+    var id = ""
+    var name = ""
+    
+    init(id: String, name: String) {
+        self.id = id
+        self.name = name
+    }
+}
+
 enum Weathers: String {
     case sun = "sun"
     case couldSun = "cloud_sun"
@@ -25,6 +35,17 @@ enum Weathers: String {
     static let all: [[Weathers]] = [
         [.sun, .couldSun, .wind, .rainbow],
         [.cloud, .light, .rain, .snow]
+    ]
+    
+    static let locale = [
+        WeatherModel(id: Weathers.sun.rawValue, name: "晴"),
+        WeatherModel(id: Weathers.couldSun.rawValue, name: "多云"),
+        WeatherModel(id: Weathers.wind.rawValue, name: "风"),
+        WeatherModel(id: Weathers.rainbow.rawValue, name: "雨过天晴"),
+        WeatherModel(id: Weathers.cloud.rawValue, name: "阴"),
+        WeatherModel(id: Weathers.light.rawValue, name: "雷"),
+        WeatherModel(id: Weathers.rain.rawValue, name: "雨"),
+        WeatherModel(id: Weathers.snow.rawValue, name: "雪"),
     ]
 }
 

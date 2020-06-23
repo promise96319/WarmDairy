@@ -125,6 +125,16 @@ extension CategorySection {
     @objc func cellLongPress(sender: UILongPressGestureRecognizer) {
         AnalysisTool.shared.logEvent(event: "归档_长按打开菜单")
         guard let tag = sender.view?.tag else { return }
+        popCategoryEditOptions(tag: tag)
+    }
+    
+    @objc func cellMoreClick(sender: UIButton) {
+        AnalysisTool.shared.logEvent(event: "归档_更多打开菜单")
+        let tag = sender.tag
+        popCategoryEditOptions(tag: tag)
+    }
+    
+    func popCategoryEditOptions(tag: Int) {
         currentSelectedCategoryIndex = tag
         let alert = UIAlertController(title: "编辑分类", message: favoriteData[tag].name, preferredStyle: .actionSheet)
         
@@ -188,8 +198,10 @@ extension CategorySection: UICollectionViewDelegate {
         if isFavorite {
             cell.initFavoriteData(data: favoriteData[indexPath.row])
             cell.tag = indexPath.row
+            cell.moreButton.tag = indexPath.row
             let longPressGuesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPress))
             cell.addGestureRecognizer(longPressGuesture)
+            cell.moreButton.addTarget(self, action: #selector(cellMoreClick), for: .touchUpInside)
         } else {
             cell.initData(monthData: monthData[indexPath.row])
         }
@@ -285,13 +297,13 @@ extension CategorySection {
         }
         
         _ = titleButton.then {
-            $0.setTitle("更多...", for: .normal)
+            $0.setTitle("更多分类", for: .normal)
             $0.setTitleColor(UIColor(hexString: "606266"), for: .normal)
             $0.titleLabel?.font = UIFont.systemFont(ofSize: 16)
             addSubview($0)
             $0.snp.makeConstraints {
                 $0.right.equalToSuperview().offset(-24)
-                $0.width.equalTo(64)
+                $0.width.equalTo(100)
                 $0.height.equalTo(44)
                 $0.centerY.equalTo(titleLabel)
             }

@@ -120,10 +120,14 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
   
-  /// This `R.image` struct is generated, and contains static references to 70 images.
+  /// This `R.image` struct is generated, and contains static references to 74 images.
   struct image {
+    /// Image `add_to_siri`.
+    static let add_to_siri = Rswift.ImageResource(bundle: R.hostingBundle, name: "add_to_siri")
     /// Image `icon_category_check`.
     static let icon_category_check = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_category_check")
+    /// Image `icon_category_more`.
+    static let icon_category_more = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_category_more")
     /// Image `icon_editor_align_center`.
     static let icon_editor_align_center = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_align_center")
     /// Image `icon_editor_align_left`.
@@ -174,6 +178,10 @@ struct R: Rswift.Validatable {
     static let icon_editor_weather = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_editor_weather")
     /// Image `icon_home_add`.
     static let icon_home_add = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_home_add")
+    /// Image `icon_location_more`.
+    static let icon_location_more = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_location_more")
+    /// Image `icon_location_tag`.
+    static let icon_location_tag = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_location_tag")
     /// Image `icon_me_arrow_left`.
     static let icon_me_arrow_left = Rswift.ImageResource(bundle: R.hostingBundle, name: "icon_me_arrow_left")
     /// Image `icon_me_arrow_right`.
@@ -263,9 +271,19 @@ struct R: Rswift.Validatable {
     /// Image `logo`.
     static let logo = Rswift.ImageResource(bundle: R.hostingBundle, name: "logo")
     
+    /// `UIImage(named: "add_to_siri", bundle: ..., traitCollection: ...)`
+    static func add_to_siri(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.add_to_siri, compatibleWith: traitCollection)
+    }
+    
     /// `UIImage(named: "icon_category_check", bundle: ..., traitCollection: ...)`
     static func icon_category_check(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_category_check, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_category_more", bundle: ..., traitCollection: ...)`
+    static func icon_category_more(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_category_more, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_editor_align_center", bundle: ..., traitCollection: ...)`
@@ -391,6 +409,16 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "icon_home_add", bundle: ..., traitCollection: ...)`
     static func icon_home_add(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.icon_home_add, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_location_more", bundle: ..., traitCollection: ...)`
+    static func icon_location_more(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_location_more, compatibleWith: traitCollection)
+    }
+    
+    /// `UIImage(named: "icon_location_tag", bundle: ..., traitCollection: ...)`
+    static func icon_location_tag(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icon_location_tag, compatibleWith: traitCollection)
     }
     
     /// `UIImage(named: "icon_me_arrow_left", bundle: ..., traitCollection: ...)`

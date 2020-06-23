@@ -9,6 +9,8 @@
 import UIKit
 import SwiftyUserDefaults
 import ViewAnimator
+import MapKit
+import CoreLocation
 
 class MeViewController: UIViewController {
     lazy var userInfo = UserInfo()
@@ -17,6 +19,9 @@ class MeViewController: UIViewController {
     let totalHeight: CGFloat = 132
     var moodTotalCount = 0
     var moodMaxCount = 0
+    
+    lazy var allDiaries = [DairyModel]()
+    lazy var allLocations = [LocationModel]()
     
     lazy var scrollView = UIScrollView()
     lazy var contentView = UIView()
@@ -39,21 +44,31 @@ class MeViewController: UIViewController {
     lazy var moodCountLabel = UILabel()
     var moodCollectionView: UICollectionView!
     
+    lazy var mapContainer = UIView()
+    lazy var mapTitle = UILabel()
+    lazy var mapCountLabel = UILabel()
+    lazy var mapView = MKMapView()
+    lazy var annotions = [MKPointAnnotation]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         userContainer.alpha = 0
         premiumView.alpha = 0
         moodView.alpha = 0
+        mapContainer.alpha = 0
         NotificationCenter.default.addObserver(self, selector: #selector(loadUserInfo), name: .userInfoDidChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .dairyDidAdded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadLocations), name: .locationDidChanged, object: nil)
         setupUI()
         loadUserInfo()
         loadData()
+        loadLocations()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupAnimations()
+        showAnnotions()
     }
     
     func setupAnimations() {
@@ -61,7 +76,7 @@ class MeViewController: UIViewController {
         view.animate(animations: [fromAnimation], reversed: false, initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 1, usingSpringWithDamping: 0.9, initialSpringVelocity: 1)
 
         let cellAnimation = AnimationType.from(direction: .bottom, offset: 60.0)
-        UIView.animate(views: [userContainer, moodView], animations: [cellAnimation], duration: 0.8)
+        UIView.animate(views: [userContainer, moodView, mapContainer], animations: [cellAnimation], duration: 0.8)
 
         let moodCellAnimation = AnimationType.from(direction: .right, offset: 60.0)
         moodCollectionView?.performBatchUpdates({ [weak self] in
@@ -91,6 +106,8 @@ class MeViewController: UIViewController {
         self.moodMaxCount = 0
         DairyAPI.getDairy { [weak self] (dairies) in
             guard let weakSelf = self else { return }
+            weakSelf.allDiaries = dairies
+            weakSelf.mapCountLabel.text = "\(dairies.count)个故事/\(weakSelf.allLocations.count)个地方 >"
             weakSelf.allDairyLabel.text = "\(dairies.count)篇"
             for mood in weakSelf.allMoods {
                 mood.dairyCount = 0
@@ -114,6 +131,26 @@ class MeViewController: UIViewController {
         }
     }
     
+    @objc func loadLocations() {
+        LocationAPI.getLocations { [weak self] (locations) in
+            CLog("locations的值为: \(locations)")
+            guard let self = self else { return }
+            self.allLocations = locations
+            self.mapCountLabel.text = "\(self.allDiaries.count)个故事/\(locations.count)个地方 >"
+        }
+    }
+    
+    func showAnnotions() {
+        mapView.removeAnnotations(annotions)
+        allLocations.forEach { (location) in
+            let pointAnnotation = MKPointAnnotation()
+            self.annotions.append(pointAnnotation)
+            pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: CLLocationDegrees(location.latitude), longitude: CLLocationDegrees(location.longitude))
+            pointAnnotation.title = location.name
+            self.mapView.addAnnotation(pointAnnotation)
+        }
+    }
+
     func formatRecordTime(minutes: Int) -> String {
         if minutes < 60 {
             return "\(minutes)分钟"
@@ -127,12 +164,21 @@ class MeViewController: UIViewController {
     deinit {
         NotificationCenter.default.removeObserver(self, name: .userInfoDidChanged, object: nil)
         NotificationCenter.default.removeObserver(self, name: .dairyDidAdded, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .locationDidChanged, object: nil)
         CLog("me 注销")
     }
 }
 
 // MARK: - 事件处理
 extension MeViewController {
+    @objc func showLocations() {
+        AnalysisTool.shared.logEvent(event: "我-位置")
+        let vc = LocationListViewController()
+        vc.initData(isPresented: false, isHideTabbar: true)
+        (navigationController?.tabBarController as? TabBarViewController)?.hideTabbar()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     @objc func showSetting() {
         AnalysisTool.shared.logEvent(event: "我-设置按钮")
         let vc = SettingViewController()
@@ -172,6 +218,29 @@ extension MeViewController: UICollectionViewDelegate {
     }
 }
 
+extension MeViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        if annotation.isKind(of: MKPointAnnotation.self) {
+            let pointReuseIndetifier = "pointReuseIndetifier"
+            var annotationView: MKAnnotationView? = mapView.dequeueReusableAnnotationView(withIdentifier: pointReuseIndetifier)
+            
+            if annotationView == nil {
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: pointReuseIndetifier)
+            }
+            
+            annotationView!.image = R.image.icon_location_tag()
+            
+            //设置中心点偏移，使得标注底部中间点成为经纬度对应点
+            annotationView!.centerOffset = CGPoint(x: 0, y: -18);
+            
+            return annotationView!
+        }
+        
+        return nil
+    }
+}
+
 // MARK: - UI 界面
 extension MeViewController {
     func setupUI() {
@@ -180,8 +249,57 @@ extension MeViewController {
         setupRecord()
         setupPremiumView()
         setupMoods()
-        moodView.snp.makeConstraints {
+        setupMap()
+        mapContainer.snp.makeConstraints {
             $0.bottom.equalTo(contentView.snp.bottom).offset(-64)
+        }
+    }
+    
+    func setupMap() {
+        _ = mapContainer.then {
+            addBg(view: $0)
+            contentView.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.left.equalToSuperview().offset(16)
+                $0.right.equalToSuperview().offset(-16)
+                $0.top.equalTo(moodView.snp.bottom).offset(16)
+                $0.height.equalTo(MeMapFrameModel.mapHeight + MeMapFrameModel.headerHeight + 16)
+            }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showLocations))
+            $0.addGestureRecognizer(tapGesture)
+        }
+        
+        _ = mapTitle.then {
+            $0.text = "雁过留痕"
+            $0.textColor = UIColor(hexString: "303133")
+            $0.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            mapContainer.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.left.equalToSuperview().offset(16)
+                $0.top.equalToSuperview().offset(12)
+            }
+        }
+        
+        _ = mapCountLabel.then {
+            $0.textColor = UIColor(hexString: "606266")
+            $0.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+            mapContainer.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.right.equalToSuperview().offset(-16)
+                $0.centerY.equalTo(mapTitle)
+            }
+        }
+        
+        _ = mapView.then {
+            $0.isUserInteractionEnabled = false
+            $0.delegate = self
+            mapContainer.addSubview($0)
+            $0.snp.makeConstraints {
+                $0.left.equalToSuperview().offset(16)
+                $0.right.equalToSuperview().offset(-16)
+                $0.height.equalTo(MeMapFrameModel.mapHeight)
+                $0.bottom.equalToSuperview().offset(-16)
+            }
         }
     }
     
@@ -217,7 +335,7 @@ extension MeViewController {
             $0.font = UIFont.systemFont(ofSize: 14, weight: .regular)
             moodView.addSubview($0)
             $0.snp.makeConstraints {
-                $0.right.equalToSuperview().offset(-12)
+                $0.right.equalToSuperview().offset(-16)
                 $0.centerY.equalTo(moodTitle)
             }
         }
@@ -422,6 +540,8 @@ extension MeViewController {
         view.backgroundColor = UIColor(hexString: "F1F6FA")
         
         _ = scrollView.then {
+            $0.showsHorizontalScrollIndicator = false
+            $0.showsVerticalScrollIndicator = false
             view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.edges.equalToSuperview()
@@ -451,11 +571,11 @@ extension MeViewController {
         let bgView = UIView().then {
             $0.layer.cornerRadius = 22
             $0.addShadow()
-            contentView.addSubview($0)
+            view.addSubview($0)
             $0.snp.makeConstraints {
                 $0.width.equalTo(88)
                 $0.height.equalTo(44)
-                $0.top.equalToSuperview().offset(16)
+                $0.top.equalTo(topLayoutGuide.snp.bottom).offset(16)
                 $0.right.equalToSuperview().offset(22)
             }
         }

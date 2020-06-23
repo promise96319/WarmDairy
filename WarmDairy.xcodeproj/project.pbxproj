@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		894C3201F9E43BFE006268CA /* Pods_WarmDairy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 103890749CFA55E140750473 /* Pods_WarmDairy.framework */; };
+		B103EE09249F9F6D00AC5255 /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103EE08249F9F6D00AC5255 /* ReminderViewController.swift */; };
+		B103EE0B249FA56300AC5255 /* ReminderNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103EE0A249FA56300AC5255 /* ReminderNotificationManager.swift */; };
 		B122B90724275C74003C5DC9 /* MoodModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B90624275C74003C5DC9 /* MoodModel.swift */; };
 		B122B9092427620F003C5DC9 /* MeMoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B9082427620F003C5DC9 /* MeMoodCell.swift */; };
 		B122B90B242773CB003C5DC9 /* UserInfoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B122B90A242773CB003C5DC9 /* UserInfoAPI.swift */; };
@@ -76,6 +78,12 @@
 		B17CD42A242E130700E7BACA /* AnalysisTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17CD429242E130700E7BACA /* AnalysisTool.swift */; };
 		B18302EE241E065A00A8E527 /* DairyImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18302ED241E065A00A8E527 /* DairyImageModel.swift */; };
 		B18302F0241E091400A8E527 /* DairyImageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18302EF241E091400A8E527 /* DairyImageAPI.swift */; };
+		B1990BBE24381BCF00A717B6 /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1990BBD24381BCF00A717B6 /* LocationModel.swift */; };
+		B1990BC0243830D600A717B6 /* AddLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1990BBF243830D600A717B6 /* AddLocationViewController.swift */; };
+		B1990BC224383D0C00A717B6 /* DiaryLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1990BC124383D0C00A717B6 /* DiaryLocationManager.swift */; };
+		B1990BC42438573800A717B6 /* LocationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1990BC32438573800A717B6 /* LocationAPI.swift */; };
+		B1990BC624385B2E00A717B6 /* LocationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1990BC524385B2E00A717B6 /* LocationListViewController.swift */; };
+		B1990BC824385D1300A717B6 /* LocationListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1990BC724385D1300A717B6 /* LocationListCell.swift */; };
 		B1A0D2D2241E6B9900BCC8C0 /* MottoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2D1241E6B9900BCC8C0 /* MottoModel.swift */; };
 		B1A0D2D4241E6D1500BCC8C0 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2D3241E6D1500BCC8C0 /* UserInfo.swift */; };
 		B1A0D2D6241E79FC00BCC8C0 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2D5241E79FC00BCC8C0 /* UILabel+Extension.swift */; };
@@ -85,6 +93,14 @@
 		B1A0D2E2241F2DB700BCC8C0 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E1241F2DB700BCC8C0 /* CategoryViewController.swift */; };
 		B1A0D2E6242093B600BCC8C0 /* WeatherPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E5242093B600BCC8C0 /* WeatherPicker.swift */; };
 		B1A0D2E8242093E900BCC8C0 /* MoodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0D2E7242093E900BCC8C0 /* MoodPicker.swift */; };
+		B1A28374244D7FAF008D9737 /* BookOpenNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A28373244D7FAF008D9737 /* BookOpenNavigationController.swift */; };
+		B1A28376244D879C008D9737 /* URLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A28375244D879C008D9737 /* URLManager.swift */; };
+		B1A90ABF24388DF000AAAFC1 /* MeMapFrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A90ABE24388DF000AAAFC1 /* MeMapFrameModel.swift */; };
+		B1A90AC52439AFE100AAAFC1 /* CustomPrintPageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A90AC42439AFE100AAAFC1 /* CustomPrintPageRenderer.swift */; };
+		B1A90AC7243ACEB100AAAFC1 /* ExportDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A90AC6243ACEB100AAAFC1 /* ExportDiaryViewController.swift */; };
+		B1A90AC9243AD59E00AAAFC1 /* ExportDiaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A90AC8243AD59E00AAAFC1 /* ExportDiaryCell.swift */; };
+		B1A90ACB243ADA0E00AAAFC1 /* CustomLocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A90ACA243ADA0E00AAAFC1 /* CustomLocationModel.swift */; };
+		B1A90ACD243AFBFB00AAAFC1 /* ExportDiaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A90ACC243AFBFB00AAAFC1 /* ExportDiaryManager.swift */; };
 		B1BA8D01242E5F0000A02EB9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1BA8D00242E5F0000A02EB9 /* GoogleService-Info.plist */; };
 		B1C6576C2421D6F700D6F56A /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6576B2421D6F700D6F56A /* UserDefaults.swift */; };
 		B1C6576E2421DABA00D6F56A /* AppDelegate+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C6576D2421DABA00D6F56A /* AppDelegate+Extension.swift */; };
@@ -133,6 +149,8 @@
 /* Begin PBXFileReference section */
 		103890749CFA55E140750473 /* Pods_WarmDairy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WarmDairy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48502487EE9789126C4ACC36 /* Pods-WarmDairy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WarmDairy.release.xcconfig"; path = "Target Support Files/Pods-WarmDairy/Pods-WarmDairy.release.xcconfig"; sourceTree = "<group>"; };
+		B103EE08249F9F6D00AC5255 /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
+		B103EE0A249FA56300AC5255 /* ReminderNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationManager.swift; sourceTree = "<group>"; };
 		B122B90624275C74003C5DC9 /* MoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodModel.swift; sourceTree = "<group>"; };
 		B122B9082427620F003C5DC9 /* MeMoodCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeMoodCell.swift; sourceTree = "<group>"; };
 		B122B90A242773CB003C5DC9 /* UserInfoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoAPI.swift; sourceTree = "<group>"; };
@@ -191,7 +209,7 @@
 		B147B1D5242FA80100EA2D0A /* BackgroundChooserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundChooserViewController.swift; sourceTree = "<group>"; };
 		B147B1D724304EA200EA2D0A /* ImageQualityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageQualityModel.swift; sourceTree = "<group>"; };
 		B147B1D924307F3600EA2D0A /* PasswordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordManager.swift; sourceTree = "<group>"; };
-		B1551BAF24112E0500A7782B /* WarmDiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WarmDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1551BAF24112E0500A7782B /* 温暖日记.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "温暖日记.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1551BB224112E0500A7782B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B1551BB624112E0500A7782B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B1551BB924112E0500A7782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -204,6 +222,12 @@
 		B17CD429242E130700E7BACA /* AnalysisTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisTool.swift; sourceTree = "<group>"; };
 		B18302ED241E065A00A8E527 /* DairyImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyImageModel.swift; sourceTree = "<group>"; };
 		B18302EF241E091400A8E527 /* DairyImageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DairyImageAPI.swift; sourceTree = "<group>"; };
+		B1990BBD24381BCF00A717B6 /* LocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
+		B1990BBF243830D600A717B6 /* AddLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationViewController.swift; sourceTree = "<group>"; };
+		B1990BC124383D0C00A717B6 /* DiaryLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryLocationManager.swift; sourceTree = "<group>"; };
+		B1990BC32438573800A717B6 /* LocationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAPI.swift; sourceTree = "<group>"; };
+		B1990BC524385B2E00A717B6 /* LocationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListViewController.swift; sourceTree = "<group>"; };
+		B1990BC724385D1300A717B6 /* LocationListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListCell.swift; sourceTree = "<group>"; };
 		B1A0D2D1241E6B9900BCC8C0 /* MottoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MottoModel.swift; sourceTree = "<group>"; };
 		B1A0D2D3241E6D1500BCC8C0 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		B1A0D2D5241E79FC00BCC8C0 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
@@ -213,6 +237,15 @@
 		B1A0D2E1241F2DB700BCC8C0 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		B1A0D2E5242093B600BCC8C0 /* WeatherPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherPicker.swift; sourceTree = "<group>"; };
 		B1A0D2E7242093E900BCC8C0 /* MoodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodPicker.swift; sourceTree = "<group>"; };
+		B1A28373244D7FAF008D9737 /* BookOpenNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookOpenNavigationController.swift; sourceTree = "<group>"; };
+		B1A28375244D879C008D9737 /* URLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLManager.swift; sourceTree = "<group>"; };
+		B1A90ABE24388DF000AAAFC1 /* MeMapFrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeMapFrameModel.swift; sourceTree = "<group>"; };
+		B1A90AC42439AFE100AAAFC1 /* CustomPrintPageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPrintPageRenderer.swift; sourceTree = "<group>"; };
+		B1A90AC6243ACEB100AAAFC1 /* ExportDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryViewController.swift; sourceTree = "<group>"; };
+		B1A90AC8243AD59E00AAAFC1 /* ExportDiaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryCell.swift; sourceTree = "<group>"; };
+		B1A90ACA243ADA0E00AAAFC1 /* CustomLocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationModel.swift; sourceTree = "<group>"; };
+		B1A90ACC243AFBFB00AAAFC1 /* ExportDiaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryManager.swift; sourceTree = "<group>"; };
+		B1A90ADB243C1EA600AAAFC1 /* ObjectCHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectCHeader.h; sourceTree = "<group>"; };
 		B1BA8D00242E5F0000A02EB9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B1C6576B2421D6F700D6F56A /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		B1C6576D2421DABA00D6F56A /* AppDelegate+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Extension.swift"; sourceTree = "<group>"; };
@@ -288,6 +321,11 @@
 			children = (
 				B122B90D24278A3C003C5DC9 /* RecordTimeManager.swift */,
 				B147B1D924307F3600EA2D0A /* PasswordManager.swift */,
+				B1990BC124383D0C00A717B6 /* DiaryLocationManager.swift */,
+				B1A90AC42439AFE100AAAFC1 /* CustomPrintPageRenderer.swift */,
+				B1A90ACC243AFBFB00AAAFC1 /* ExportDiaryManager.swift */,
+				B1A28375244D879C008D9737 /* URLManager.swift */,
+				B103EE0A249FA56300AC5255 /* ReminderNotificationManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -544,7 +582,7 @@
 		B1551BB024112E0500A7782B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B1551BAF24112E0500A7782B /* WarmDiary.app */,
+				B1551BAF24112E0500A7782B /* 温暖日记.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -579,6 +617,7 @@
 				B1C657712423198F00D6F56A /* README.md */,
 				B1BA8D00242E5F0000A02EB9 /* GoogleService-Info.plist */,
 				B122B921242A1F50003C5DC9 /* GIF.bundle */,
+				B1A90ADB243C1EA600AAAFC1 /* ObjectCHeader.h */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -669,6 +708,7 @@
 				B1C9BAFF242609A300ED55B3 /* CategoryEditViewController.swift */,
 				B1C9BB0D24263B2100ED55B3 /* CategoryChooserViewController.swift */,
 				B1C9BB0F24265D1600ED55B3 /* SearchDairyViewController.swift */,
+				B1A28373244D7FAF008D9737 /* BookOpenNavigationController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -714,6 +754,7 @@
 				B1A0D2D1241E6B9900BCC8C0 /* MottoModel.swift */,
 				B1A0D2D3241E6D1500BCC8C0 /* UserInfo.swift */,
 				B1C657752424A5CB00D6F56A /* CategoryModel.swift */,
+				B1990BBD24381BCF00A717B6 /* LocationModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -726,6 +767,7 @@
 				B1C6576F2421E02F00D6F56A /* MottoAPI.swift */,
 				B1C657852425F8E800D6F56A /* CategoryAPI.swift */,
 				B122B90A242773CB003C5DC9 /* UserInfoAPI.swift */,
+				B1990BC32438573800A717B6 /* LocationAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -780,6 +822,10 @@
 				B1F5C115241DFC5600F2D21E /* MeViewController.swift */,
 				B122B9112427958E003C5DC9 /* SettingViewController.swift */,
 				B131CC6A242F1EDF008B7279 /* AboutMeViewController.swift */,
+				B1990BBF243830D600A717B6 /* AddLocationViewController.swift */,
+				B1990BC524385B2E00A717B6 /* LocationListViewController.swift */,
+				B1A90AC6243ACEB100AAAFC1 /* ExportDiaryViewController.swift */,
+				B103EE08249F9F6D00AC5255 /* ReminderViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -790,6 +836,8 @@
 				B122B9082427620F003C5DC9 /* MeMoodCell.swift */,
 				B122B9152427BA45003C5DC9 /* SettingCell.swift */,
 				B122B93F242DAA0C003C5DC9 /* CustomNavigationBar.swift */,
+				B1990BC724385D1300A717B6 /* LocationListCell.swift */,
+				B1A90AC8243AD59E00AAAFC1 /* ExportDiaryCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -800,6 +848,8 @@
 				B122B90624275C74003C5DC9 /* MoodModel.swift */,
 				B122B9132427B862003C5DC9 /* SettingCellModel.swift */,
 				B147B1D724304EA200EA2D0A /* ImageQualityModel.swift */,
+				B1A90ABE24388DF000AAAFC1 /* MeMapFrameModel.swift */,
+				B1A90ACA243ADA0E00AAAFC1 /* CustomLocationModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -827,6 +877,7 @@
 				B1551BAD24112E0500A7782B /* Resources */,
 				0CA57C3A0B4A8AC2B68D93A3 /* [CP] Embed Pods Frameworks */,
 				F974F9CB36FAB8E0B22DCB8B /* [CP-User] Fabric */,
+				18C7D03ACF30CA7EDEB29E3F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -834,7 +885,7 @@
 			);
 			name = WarmDairy;
 			productName = WarmDairy;
-			productReference = B1551BAF24112E0500A7782B /* WarmDiary.app */;
+			productReference = B1551BAF24112E0500A7782B /* 温暖日记.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -912,6 +963,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WarmDairy/Pods-WarmDairy-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		18C7D03ACF30CA7EDEB29E3F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WarmDairy/Pods-WarmDairy-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WarmDairy/Pods-WarmDairy-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WarmDairy/Pods-WarmDairy-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3B163BCB514664F4306EABBB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -979,6 +1047,7 @@
 				B1335A6A241A866E006F1785 /* ToolbarModel.swift in Sources */,
 				B1C6577E2424BF1700D6F56A /* CategorySectionFrameModel.swift in Sources */,
 				B1A0D2DC241F1AB900BCC8C0 /* TodayDairyViewController.swift in Sources */,
+				B1990BC824385D1300A717B6 /* LocationListCell.swift in Sources */,
 				B122B90724275C74003C5DC9 /* MoodModel.swift in Sources */,
 				B1A0D2E2241F2DB700BCC8C0 /* CategoryViewController.swift in Sources */,
 				B122B91824289BB6003C5DC9 /* MessageTool.swift in Sources */,
@@ -986,6 +1055,9 @@
 				B1551BB724112E0500A7782B /* ViewController.swift in Sources */,
 				B1551BB324112E0500A7782B /* AppDelegate.swift in Sources */,
 				B1297F6D242129C70015DFDA /* DatePicker.swift in Sources */,
+				B1A90AC52439AFE100AAAFC1 /* CustomPrintPageRenderer.swift in Sources */,
+				B1A28374244D7FAF008D9737 /* BookOpenNavigationController.swift in Sources */,
+				B1A90AC7243ACEB100AAAFC1 /* ExportDiaryViewController.swift in Sources */,
 				B1335A5B24193C22006F1785 /* SQTextAttribute.swift in Sources */,
 				B18302EE241E065A00A8E527 /* DairyImageModel.swift in Sources */,
 				B1297F6F2421C7DC0015DFDA /* Date.swift in Sources */,
@@ -994,7 +1066,9 @@
 				B1335A96241BE755006F1785 /* DUAConfiguration.swift in Sources */,
 				B1C6576E2421DABA00D6F56A /* AppDelegate+Extension.swift in Sources */,
 				B1C6576C2421D6F700D6F56A /* UserDefaults.swift in Sources */,
+				B1990BC224383D0C00A717B6 /* DiaryLocationManager.swift in Sources */,
 				B1C9BB04242618EC00ED55B3 /* AddCategoryView.swift in Sources */,
+				B1A28376244D879C008D9737 /* URLManager.swift in Sources */,
 				B1F5C10C241DD94900F2D21E /* SyncObject.swift in Sources */,
 				B1F5C105241DD94900F2D21E /* SyncEngine.swift in Sources */,
 				B1A0D2DA241E831100BCC8C0 /* CarouselFrameModel.swift in Sources */,
@@ -1005,6 +1079,7 @@
 				B147B1D4242F9D6C00EA2D0A /* CategoryChooserCell.swift in Sources */,
 				B1F5C107241DD94900F2D21E /* CKRecordRecoverable.swift in Sources */,
 				B1335A9B241BE755006F1785 /* DUAPageModel.swift in Sources */,
+				B1990BC42438573800A717B6 /* LocationAPI.swift in Sources */,
 				B1F5C10A241DD94900F2D21E /* CreamAsset.swift in Sources */,
 				B17CD42A242E130700E7BACA /* AnalysisTool.swift in Sources */,
 				B1335A93241BE755006F1785 /* DUAReader.swift in Sources */,
@@ -1022,6 +1097,7 @@
 				B1335A9F241BE755006F1785 /* DUATableViewCell.swift in Sources */,
 				B1C6577424236C2D00D6F56A /* DairyCell.swift in Sources */,
 				B131CC6B242F1EDF008B7279 /* AboutMeViewController.swift in Sources */,
+				B1990BC624385B2E00A717B6 /* LocationListViewController.swift in Sources */,
 				B1F5C110241DE8BF00F2D21E /* CustomTabBarView.swift in Sources */,
 				B1F5C0E8241CC32200F2D21E /* DairyModel.swift in Sources */,
 				B1335A98241BE755006F1785 /* DUAEpubDataParser.swift in Sources */,
@@ -1035,14 +1111,19 @@
 				B1335A9A241BE755006F1785 /* DUAChapterModel.swift in Sources */,
 				B1335A9D241BE755006F1785 /* DUATableView.swift in Sources */,
 				B1F5C10B241DD94900F2D21E /* DatabaseManagerProtocol.swift in Sources */,
+				B1A90AC9243AD59E00AAAFC1 /* ExportDiaryCell.swift in Sources */,
 				B1F5C101241DD94900F2D21E /* ErrorHandler.swift in Sources */,
 				B1C9BB0E24263B2100ED55B3 /* CategoryChooserViewController.swift in Sources */,
 				B1335A6C241A8823006F1785 /* ToolbarCell.swift in Sources */,
+				B1990BC0243830D600A717B6 /* AddLocationViewController.swift in Sources */,
 				B122B91E2428E236003C5DC9 /* SubscriptionViewController.swift in Sources */,
 				B1C657702421E02F00D6F56A /* MottoAPI.swift in Sources */,
 				B1335A92241BE755006F1785 /* DUAPageViewController.swift in Sources */,
+				B1A90ACD243AFBFB00AAAFC1 /* ExportDiaryManager.swift in Sources */,
+				B103EE09249F9F6D00AC5255 /* ReminderViewController.swift in Sources */,
 				B1551BCB2411508900A7782B /* R.generated.swift in Sources */,
 				B122B90B242773CB003C5DC9 /* UserInfoAPI.swift in Sources */,
+				B1A90ACB243ADA0E00AAAFC1 /* CustomLocationModel.swift in Sources */,
 				B147B1DA24307F3600EA2D0A /* PasswordManager.swift in Sources */,
 				B1335A68241A67C0006F1785 /* DeviceInfo.swift in Sources */,
 				B122B9142427B862003C5DC9 /* SettingCellModel.swift in Sources */,
@@ -1059,6 +1140,7 @@
 				B1335A9E241BE755006F1785 /* DUAConVexLensView.swift in Sources */,
 				B1F5C10E241DE89200F2D21E /* TabBarViewController.swift in Sources */,
 				B1C657802424C7C800D6F56A /* CategorySectionCell.swift in Sources */,
+				B1A90ABF24388DF000AAAFC1 /* MeMapFrameModel.swift in Sources */,
 				B1335A94241BE755006F1785 /* DUABackViewController.swift in Sources */,
 				B1F5C106241DD94900F2D21E /* Manifest.swift in Sources */,
 				B1C9BB1224266C8F00ED55B3 /* SearchResultCell.swift in Sources */,
@@ -1067,6 +1149,7 @@
 				B122B9122427958E003C5DC9 /* SettingViewController.swift in Sources */,
 				B1A0D2E6242093B600BCC8C0 /* WeatherPicker.swift in Sources */,
 				B1335A95241BE755006F1785 /* DUAtranslationController.swift in Sources */,
+				B103EE0B249FA56300AC5255 /* ReminderNotificationManager.swift in Sources */,
 				B1F5C0EF241CDBF200F2D21E /* IDTool.swift in Sources */,
 				B1551BD12411ECE100A7782B /* HomeViewController.swift in Sources */,
 				B122B93C242B8D71003C5DC9 /* IAPManager.swift in Sources */,
@@ -1075,6 +1158,7 @@
 				B1F5C100241DD94900F2D21E /* CKRecordConvertible.swift in Sources */,
 				B1C9BB082426215B00ED55B3 /* AnimationTool.swift in Sources */,
 				B1335A5C24193C22006F1785 /* Helper.swift in Sources */,
+				B1990BBE24381BCF00A717B6 /* LocationModel.swift in Sources */,
 				B1C6577C2424BBF100D6F56A /* SystemCategoryModel.swift in Sources */,
 				B1F5C108241DD94900F2D21E /* Syncable.swift in Sources */,
 			);
@@ -1223,7 +1307,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WarmDairy/WarmDairy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = LVUNGKV9VH;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1236,9 +1320,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.4.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.GuanghuiQin.WarmDiary;
-				PRODUCT_NAME = WarmDiary;
+				PRODUCT_NAME = "温暖日记";
+				SWIFT_OBJC_BRIDGING_HEADER = WarmDairy/SupportingFiles/ObjectCHeader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1251,7 +1337,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WarmDairy/WarmDairy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = LVUNGKV9VH;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1263,9 +1349,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.4.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.GuanghuiQin.WarmDiary;
-				PRODUCT_NAME = WarmDiary;
+				PRODUCT_NAME = "温暖日记";
+				SWIFT_OBJC_BRIDGING_HEADER = WarmDairy/SupportingFiles/ObjectCHeader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

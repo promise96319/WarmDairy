@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B1551BAE24112E0500A7782B"
-               BuildableName = "WarmDiary.app"
+               BuildableName = "&#x6e29;&#x6696;&#x65e5;&#x8bb0;.app"
                BlueprintName = "WarmDairy"
                ReferencedContainer = "container:WarmDairy.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B1551BAE24112E0500A7782B"
-            BuildableName = "WarmDiary.app"
+            BuildableName = "&#x6e29;&#x6696;&#x65e5;&#x8bb0;.app"
             BlueprintName = "WarmDairy"
             ReferencedContainer = "container:WarmDairy.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B1551BAE24112E0500A7782B"
-            BuildableName = "WarmDiary.app"
+            BuildableName = "&#x6e29;&#x6696;&#x65e5;&#x8bb0;.app"
             BlueprintName = "WarmDairy"
             ReferencedContainer = "container:WarmDairy.xcodeproj">
          </BuildableReference>

@@ -16,6 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var syncEngine: SyncEngine?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        /// 配置图片缓存
+        configImageCache()
+        
         /// 配置 firebase
         configFirebase()
         
@@ -34,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SyncObject<DairyImageModel>(),
             SyncObject<UserInfo>(),
             SyncObject<CategoryModel>(),
+            SyncObject<LocationModel>(),
         ], databaseScope: .private, container: CKContainer(identifier: "iCloud.com.GuanghuiQin.WarmDairy"))
         application.registerForRemoteNotifications()
         
@@ -54,11 +59,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
             completionHandler(.newData)
         }
-        
+
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
         // How about fetching changes here?
+    }
+    
+    // 进入前台
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "ApplicationDidBecomeActive"), object: nil)
     }
 }
 
